@@ -122,9 +122,10 @@ void main(){
 }`;
 
 const MODES = ["Lattice", "Shards", "Contour", "Prism", "Life"];
+const DEFAULT_MODE = 2;
 
 const Field = {
-  mode: store.get("mode", 0) % MODES.length,
+  mode: store.get("background", DEFAULT_MODE) % MODES.length,
   density: 1,
   force: 1,
   paused: false,
@@ -276,14 +277,14 @@ function initField() {
     Field.mode = m;
     mix = 0;
     dirty = true;
-    store.set("mode", m);
+    store.set("background", m);
     Field.listeners.forEach((f) => f(m));
   };
   Field.reset = () => {
     Field.density = 1;
     Field.force = 1;
     Field.paused = false;
-    Field.setMode(0);
+    Field.setMode(DEFAULT_MODE);
     if (life) lifeSeed();
     dirty = true;
   };

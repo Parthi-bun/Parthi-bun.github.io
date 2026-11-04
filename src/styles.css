@@ -125,7 +125,7 @@ kbd {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(90deg, rgba(8, 8, 10, 0.72) 0%, rgba(8, 8, 10, 0.5) 42%, rgba(8, 8, 10, 0) 66%);
 }
-.hero-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr); gap: 48px; align-items: center; }
+.hero-grid { position: relative; }
 .hero-copy { min-width: 0; }
 .eyebrow { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
 .dot { width: 7px; height: 7px; background: var(--ok); box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.14); flex: none; }
@@ -148,16 +148,6 @@ h1 .ch { display: inline-block; transition: color 0.2s; will-change: font-weight
 .chip:hover { color: var(--t1); }
 .chip[aria-pressed="true"] { background: var(--t1); color: var(--bg); position: relative; z-index: 1; border-color: var(--t1); }
 .hint { font-size: 12.5px; color: var(--t3); margin-top: 12px; }
-
-/* polyhedron bench */
-.forge { position: relative; border: 1px solid var(--line-2); background: rgba(10, 10, 13, 0.72); min-width: 0; }
-.forge-h { display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
-#forge { display: block; width: 100%; height: clamp(300px, 34vw, 410px); cursor: grab; touch-action: pan-y; }
-#forge:active { cursor: grabbing; }
-.forge-ctl { padding: 12px 14px 14px; border-top: 1px solid var(--line); display: grid; gap: 12px; }
-.forge-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
-.euler { position: absolute; left: 14px; top: 56px; pointer-events: none; font-family: var(--mono); font-size: 10.5px; line-height: 1.75; color: var(--t3); letter-spacing: 0.04em; }
-.euler b { color: var(--t1); font-weight: 500; }
 
 /* controls */
 .seg { display: flex; flex-wrap: wrap; }
@@ -402,7 +392,6 @@ footer { margin-top: 80px; border-top: 1px solid var(--line); background: rgba(8
 #toast.on { opacity: 1; transform: translate(-50%, 0); }
 
 @media (max-width: 1040px) {
-  .hero-grid { grid-template-columns: minmax(0, 1fr); }
   .hero::before { background: rgba(8, 8, 10, 0.42); }
   .case, .about, .skills { grid-template-columns: minmax(0, 1fr); }
   .case-v { border-left: 0; border-top: 1px solid var(--line); }

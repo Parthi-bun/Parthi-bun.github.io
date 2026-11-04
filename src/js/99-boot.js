@@ -11,7 +11,6 @@ function boot() {
   initMagnets();
   initSkillList();
   initFooter();
-  initForge();
   const toys = { capture: toyCapture, reshard: toyReshard, ahrag: toyAhrag, summary: toySummary, http: toyHttp, analyzer: toyAnalyzer, finance: toyFinance, huffman: toyHuffman, skills: toySkills, plates: toyPlates, redact: toyRedact };
   $$("[data-toy]").forEach((el) => {
     try {
@@ -24,7 +23,7 @@ function boot() {
   $("#mail").addEventListener("click", copyEmail);
   if (matchMedia("(pointer: coarse)").matches) {
     $(".hint").textContent = "The page behind this text is live. Tap anywhere to send a ripple.";
-    $$(".toy-h .label:last-child, .forge-h .label:last-child").forEach((l) => (l.textContent = l.textContent.replace(/click/i, (m) => (m[0] === "C" ? "Tap" : "tap"))));
+    $$(".toy-h .label:last-child").forEach((l) => (l.textContent = l.textContent.replace(/click/i, (m) => (m[0] === "C" ? "Tap" : "tap"))));
   }
   requestAnimationFrame(frame);
 }
