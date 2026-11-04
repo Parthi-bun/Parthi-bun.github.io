@@ -429,7 +429,9 @@ footer { margin-top: 80px; border-top: 1px solid var(--line); background: rgba(8
   .kbd-btn kbd { display: none; }
   .dock-b { padding: 0; width: 38px; justify-content: center; }
   .dock-b span { display: none; }
-  .eyebrow span { display: none; }
+  .eyebrow { row-gap: 2px; }
+  .eyebrow .sep { display: none; }
+  .eyebrow .vit { flex-basis: 100%; padding-left: 17px; }
   .tx-form { grid-template-columns: minmax(0, 1fr) 84px; }
   .contact { padding: 32px 18px; margin-top: 76px; }
   .side-l { grid-template-columns: minmax(0, 1fr); }

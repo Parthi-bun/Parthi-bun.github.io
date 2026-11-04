@@ -449,7 +449,9 @@ footer { margin-top: 80px; border-top: 1px solid var(--line); background: rgba(8
   .kbd-btn kbd { display: none; }
   .dock-b { padding: 0; width: 38px; justify-content: center; }
   .dock-b span { display: none; }
-  .eyebrow span { display: none; }
+  .eyebrow { row-gap: 2px; }
+  .eyebrow .sep { display: none; }
+  .eyebrow .vit { flex-basis: 100%; padding-left: 17px; }
   .tx-form { grid-template-columns: minmax(0, 1fr) 84px; }
   .contact { padding: 32px 18px; margin-top: 76px; }
   .side-l { grid-template-columns: minmax(0, 1fr); }
@@ -495,7 +497,7 @@ footer { margin-top: 80px; border-top: 1px solid var(--line); background: rgba(8
       <div class="wrap">
         <div class="hero-grid">
           <div class="hero-copy">
-            <p class="label eyebrow"><i class="dot"></i>Open to 2027 graduate software roles <span aria-hidden="true">/</span> VIT Vellore</p>
+            <p class="label eyebrow"><i class="dot"></i>Open to 2027 graduate software roles <span class="sep" aria-hidden="true">/</span> <span class="vit">VIT Vellore</span></p>
             <h1 id="title" aria-label="Correct under pressure.">
               <span class="ln" data-split aria-hidden="true">Correct under</span>
               <span class="ln dim" data-split aria-hidden="true">pressure.</span>
