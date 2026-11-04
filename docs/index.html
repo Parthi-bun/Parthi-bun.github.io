@@ -1,0 +1,3615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Parthiban Ilango</title>
+<meta name="description" content="Software engineer and computer science student graduating in May 2027. Distributed systems, secure retrieval and production mobile apps, with a working model of every project.">
+<meta name="theme-color" content="#08080a">
+<link rel="canonical" href="https://parthi-bun.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://parthi-bun.github.io/">
+<meta property="og:title" content="Parthiban Ilango">
+<meta property="og:description" content="Software engineer and computer science student graduating in May 2027. Distributed systems, secure retrieval and production mobile apps, with a working model of every project.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20fill%3D%22%2308080a%22%2F%3E%3Cpath%20d%3D%22M6%2026%2016%206l10%2020z%22%20fill%3D%22none%22%20stroke%3D%22%23ededef%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M16%206v20H6z%22%20fill%3D%22%23ffb224%22%2F%3E%3C%2Fsvg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap">
+</head>
+<body>
+<style>
+/* Layout concept: an engineer's bench. A live field runs behind the whole page,
+   and flat ruled panels sit on top of it holding the record and working models. */
+:root {
+  color-scheme: dark;
+  --bg: #08080a;
+  --raised: #0d0d10;
+  --panel: rgba(11, 11, 14, 0.9);
+  --surface: #131317;
+  --surface-2: #1b1b20;
+  --line: rgba(255, 255, 255, 0.075);
+  --line-2: rgba(255, 255, 255, 0.14);
+  --line-3: rgba(255, 255, 255, 0.26);
+  --t1: #ededef;
+  --t2: #adadb6;
+  --t3: #8b8b95;
+  --t4: #5c5c66;
+  --acc: 255 178 36;
+  --accent: rgb(var(--acc));
+  --ok: #4ade80;
+  --bad: #ff6b57;
+  --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --nav: 72px;
+  --gutter-l: max(24px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(24px, env(safe-area-inset-right, 0px));
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav) + 16px); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--t1);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+::selection { background: rgb(var(--acc) / 0.32); color: #fff; }
+a { color: inherit; text-decoration: none; }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3, p, ul { margin: 0; padding: 0; }
+ul { list-style: none; }
+
+#field { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: block; }
+.no-webgl #field { display: none; }
+.no-webgl body, body.no-webgl {
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.page { position: relative; z-index: 1; }
+.wrap { max-width: 1248px; margin-inline: auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+.mono { font-family: var(--mono); }
+.label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t3);
+  line-height: 1.4;
+}
+.skip {
+  position: fixed; left: 16px; top: -64px; z-index: 100;
+  background: var(--t1); color: var(--bg); padding: 10px 14px; font-size: 14px;
+}
+.skip:focus { top: 16px; }
+
+/* progress */
+#progress { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; height: 2px; width: 100%; transform: scaleX(0); transform-origin: 0 50%; background: var(--accent); z-index: 60; pointer-events: none; }
+
+/* nav */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: rgba(8, 8, 10, 0.95);
+  border-bottom: 1px solid var(--line);
+}
+.nav-in { height: var(--nav); display: flex; align-items: center; gap: 28px; }
+.brand { display: inline-flex; align-items: center; gap: 12px; font-weight: 600; font-size: 15px; letter-spacing: -0.02em; }
+.brand svg { width: 30px; height: 30px; display: block; }
+.brand span span { color: var(--t3); font-weight: 500; }
+.nav-links { display: flex; gap: 2px; margin-left: 12px; }
+.nav-links a {
+  font-size: 13.5px; color: var(--t2); padding: 8px 10px;
+  transition: color 0.15s;
+}
+.nav-links a:hover, .nav-links a.on { color: var(--t1); }
+.nav-links a.on { box-shadow: inset 0 -1px 0 var(--accent); }
+.nav-r { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.kbd-btn {
+  display: inline-flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px 0 12px;
+  border: 1px solid var(--line-2); font-size: 12.5px; color: var(--t2); background: var(--raised);
+  transition: border-color 0.15s, color 0.15s;
+}
+.kbd-btn:hover { border-color: var(--line-3); color: var(--t1); }
+kbd {
+  font-family: var(--mono); font-size: 10.5px; color: var(--t3);
+  border: 1px solid var(--line-2); padding: 1px 5px; background: var(--surface);
+}
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+  height: 52px; padding: 0 24px; font-size: 14.5px; font-weight: 500;
+  border: 1px solid var(--line-2); background: var(--raised); color: var(--t1);
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+  will-change: transform;
+}
+.btn:hover { border-color: var(--line-3); background: var(--surface); }
+.btn:active { transform: translateY(1px); }
+.btn.solid { background: var(--t1); color: var(--bg); border-color: var(--t1); }
+.btn.solid:hover { background: #fff; }
+.btn.sm { height: 36px; padding: 0 14px; font-size: 13px; gap: 8px; }
+.btn .arr { transition: transform 0.18s; }
+.btn:hover .arr { transform: translate(3px, 0); }
+
+/* hero */
+.hero { position: relative; padding-top: calc(var(--nav) + env(safe-area-inset-top, 0px) + 72px); padding-bottom: 56px; }
+.hero::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(90deg, rgba(8, 8, 10, 0.72) 0%, rgba(8, 8, 10, 0.5) 42%, rgba(8, 8, 10, 0) 66%);
+}
+.hero-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr); gap: 48px; align-items: center; }
+.hero-copy { min-width: 0; }
+.eyebrow { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.dot { width: 7px; height: 7px; background: var(--ok); box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.14); flex: none; }
+h1 {
+  font-size: clamp(50px, 7.4vw, 104px); font-weight: 600; letter-spacing: -0.058em; line-height: 0.96;
+  margin-top: 26px; cursor: default;
+}
+h1 .ln { display: block; white-space: nowrap; }
+h1 .ln.dim { color: var(--t4); }
+h1 .ch { display: inline-block; transition: color 0.2s; will-change: font-weight; }
+.hero-sub { max-width: 34em; margin-top: 26px; color: var(--t2); font-size: 17px; line-height: 1.68; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.modes { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.chips { display: flex; flex-wrap: wrap; gap: 0; }
+.chip {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--t3);
+  border: 1px solid var(--line-2); padding: 7px 11px; margin-right: -1px; background: rgba(8, 8, 10, 0.6);
+  transition: color 0.15s, background 0.15s;
+}
+.chip:hover { color: var(--t1); }
+.chip[aria-pressed="true"] { background: var(--t1); color: var(--bg); position: relative; z-index: 1; border-color: var(--t1); }
+.hint { font-size: 12.5px; color: var(--t3); margin-top: 12px; }
+
+/* polyhedron bench */
+.forge { position: relative; border: 1px solid var(--line-2); background: rgba(10, 10, 13, 0.72); min-width: 0; }
+.forge-h { display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+#forge { display: block; width: 100%; height: clamp(300px, 34vw, 410px); cursor: grab; touch-action: pan-y; }
+#forge:active { cursor: grabbing; }
+.forge-ctl { padding: 12px 14px 14px; border-top: 1px solid var(--line); display: grid; gap: 12px; }
+.forge-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+.euler { position: absolute; left: 14px; top: 56px; pointer-events: none; font-family: var(--mono); font-size: 10.5px; line-height: 1.75; color: var(--t3); letter-spacing: 0.04em; }
+.euler b { color: var(--t1); font-weight: 500; }
+
+/* controls */
+.seg { display: flex; flex-wrap: wrap; }
+.seg button {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--t3);
+  padding: 7px 10px; border: 1px solid var(--line-2); margin-right: -1px; margin-bottom: -1px; background: var(--raised);
+  transition: color 0.12s;
+}
+.seg button:hover { color: var(--t1); }
+.seg button[aria-pressed="true"] { background: var(--surface-2); color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }
+.rng { display: grid; gap: 6px; min-width: 0; }
+.rng-h { display: flex; justify-content: space-between; gap: 8px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--t3); }
+.rng-h output { color: var(--t1); font-variant-numeric: tabular-nums; }
+input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 18px; background: transparent; margin: 0; cursor: ew-resize; }
+input[type="range"]::-webkit-slider-runnable-track { height: 2px; background: var(--line-3); }
+input[type="range"]::-moz-range-track { height: 2px; background: var(--line-3); }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 11px; height: 17px; margin-top: -8px; background: var(--t1); border: 0; border-radius: 0; }
+input[type="range"]::-moz-range-thumb { width: 11px; height: 17px; background: var(--t1); border: 0; border-radius: 0; }
+input[type="range"]:hover::-webkit-slider-thumb { background: var(--accent); }
+input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
+
+/* stats */
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line-2); margin-top: 56px; background: var(--panel); position: relative; }
+.stat { padding: 22px 22px 20px; border-right: 1px solid var(--line); min-width: 0; }
+.stat:last-child { border-right: 0; }
+.stat .num { display: block; font-size: 38px; font-weight: 500; letter-spacing: -0.04em; line-height: 1.1; margin-top: 12px; font-variant-numeric: tabular-nums; }
+
+/* marquee */
+.marq { overflow: hidden; border-block: 1px solid var(--line); background: rgba(8, 8, 10, 0.72); margin-top: 8px; }
+.marq-t { display: flex; width: max-content; animation: marq 46s linear infinite; }
+.marq:hover .marq-t { animation-play-state: paused; }
+.marq-t span { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; color: var(--t3); padding: 14px 22px; white-space: nowrap; text-transform: uppercase; border-right: 1px solid var(--line); }
+@keyframes marq { to { transform: translateX(-50%); } }
+
+/* sections */
+section { position: relative; }
+.sec { padding-block: 104px 0; }
+.sec-h { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 32px 64px; align-items: end; margin-bottom: 44px; }
+.sec-tag { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.sec-tag b { color: var(--accent); font-weight: 500; }
+.sec-tag i { display: block; width: 52px; height: 1px; background: var(--line-3); }
+h2 { font-size: clamp(36px, 4.7vw, 58px); line-height: 1.02; letter-spacing: -0.045em; font-weight: 600; text-wrap: balance; }
+h2 span { color: var(--t4); display: block; }
+.sec-h p { color: var(--t2); max-width: 36em; background: rgba(8, 8, 10, 0.62); }
+
+/* panels */
+.panel { position: relative; border: 1px solid var(--line-2); background: var(--panel); min-width: 0; }
+.panel::before, .panel::after {
+  content: ""; position: absolute; width: 9px; height: 9px; pointer-events: none;
+  border: 1px solid var(--line-3);
+}
+.panel::before { left: -1px; top: -1px; border-right: 0; border-bottom: 0; }
+.panel::after { right: -1px; bottom: -1px; border-left: 0; border-top: 0; }
+.case { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); margin-bottom: 20px; transition: border-color 0.2s; }
+.case:hover, .card:hover { border-color: var(--line-3); }
+.case-t { padding: 30px 32px 32px; display: flex; flex-direction: column; min-width: 0; }
+.case-v { border-left: 1px solid var(--line); min-width: 0; display: flex; flex-direction: column; }
+.meta-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 26px; flex-wrap: wrap; }
+.pill { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.07em; color: var(--ok); text-transform: uppercase; }
+.pill::before { content: ""; width: 6px; height: 6px; background: currentColor; }
+.pill.acc { color: var(--accent); }
+.pill.mute { color: var(--t3); }
+.kick { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+h3 { font-size: clamp(26px, 2.9vw, 36px); line-height: 1.08; letter-spacing: -0.04em; font-weight: 600; text-wrap: balance; }
+.lede { color: var(--t2); margin-top: 14px; }
+.pts { margin-top: 16px; display: grid; gap: 9px; font-size: 14.5px; color: var(--t2); line-height: 1.55; }
+.pts li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 6px; }
+.pts li::before { content: ""; width: 5px; height: 5px; background: var(--t4); margin-top: 8px; transform: rotate(45deg); }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 20px; }
+.fig { background: var(--raised); padding: 12px 12px 11px; min-width: 0; }
+.fig b { display: block; font-size: 24px; font-weight: 500; letter-spacing: -0.03em; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.fig span { display: block; font-size: 11.5px; color: var(--t3); line-height: 1.35; margin-top: 4px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px; }
+.tags li { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--t2); border: 1px solid var(--line-2); padding: 4px 7px; }
+.links { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: auto; padding-top: 22px; }
+.tlink { font-size: 13.5px; font-weight: 500; display: inline-flex; gap: 8px; box-shadow: inset 0 -1px 0 var(--line-3); padding-bottom: 3px; transition: box-shadow 0.15s; }
+.tlink:hover { box-shadow: inset 0 -1px 0 var(--accent); }
+.muted { font-size: 13px; color: var(--t3); }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.card { display: flex; flex-direction: column; transition: border-color 0.2s; }
+.card .case-t { padding-bottom: 24px; flex: 1 1 auto; }
+.card .toy { border-top: 1px solid var(--line); }
+
+.pidx { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; background: var(--line-2); border: 1px solid var(--line-2); margin-bottom: 20px; }
+.pidx a { background: var(--raised); padding: 11px 12px; font-size: 13px; color: var(--t2); transition: color 0.15s, background 0.15s; line-height: 1.3; min-width: 0; }
+.pidx a span { display: block; font-family: var(--mono); font-size: 10px; color: var(--t3); margin-bottom: 3px; }
+.pidx a:hover { background: var(--surface-2); color: var(--t1); }
+.pidx a:hover span { color: var(--accent); }
+
+/* working models */
+.toy { display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; --h: 280px; }
+.toy-h { display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.toy-h .label:last-child { color: var(--accent); text-align: right; }
+.toy-b { display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; }
+.cv { display: block; width: 100%; height: var(--h); touch-action: pan-y; }
+.ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 14px; border-top: 1px solid var(--line); }
+.ctl .grow { flex: 1 1 140px; min-width: 120px; }
+.meters { display: grid; grid-template-columns: repeat(auto-fit, minmax(78px, 1fr)); border-top: 1px solid var(--line); margin-top: auto; }
+.meter { padding: 9px 12px 8px; border-right: 1px solid var(--line); min-width: 0; }
+.meter:last-child { border-right: 0; }
+.meter span { display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--t3); line-height: 1.3; }
+.meter b { display: block; font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin-top: 2px; }
+.meter b.bad { color: var(--bad); }
+.note { padding: 10px 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--t3); line-height: 1.45; }
+.field-l { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t3); margin-bottom: 6px; }
+.txt {
+  width: 100%; background: var(--raised); border: 1px solid var(--line-2); padding: 10px 11px;
+  font-size: 13.5px; line-height: 1.5; color: var(--t1); border-radius: 0; resize: vertical; display: block;
+}
+.txt:focus { outline: 0; border-color: var(--accent); }
+.pad { padding: 14px; display: grid; gap: 12px; min-width: 0; }
+
+/* retrieval model */
+.gate-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.docs { display: grid; gap: 1px; background: var(--line); border-block: 1px solid var(--line); }
+.doc { background: var(--raised); display: grid; grid-template-columns: minmax(0, 1fr) 148px; gap: 10px; padding: 7px 12px; align-items: center; min-height: 40px; }
+.doc-t { min-width: 0; font-size: 13px; line-height: 1.3; }
+.doc-t small { display: block; font-family: var(--mono); font-size: 10px; color: var(--t3); margin-top: 1px; letter-spacing: 0.02em; }
+.doc-s { font-family: var(--mono); font-size: 10px; letter-spacing: 0.03em; text-align: right; color: var(--t3); }
+.doc-bar { height: 3px; background: var(--line-2); margin-top: 4px; position: relative; }
+.doc-bar i { position: absolute; inset: 0 auto 0 0; background: var(--accent); }
+.doc.blocked .doc-t { color: var(--t3); text-decoration: line-through; text-decoration-color: var(--t4); }
+.doc.top { background: rgb(var(--acc) / 0.09); }
+.doc.top .doc-s { color: var(--accent); }
+.doc.leak { background: rgba(255, 107, 87, 0.12); }
+.doc.leak .doc-s { color: var(--bad); }
+
+/* summary model */
+.sum-out { display: grid; gap: 8px; padding: 12px 14px; border-top: 1px solid var(--line); font-size: 13.5px; line-height: 1.5; color: var(--t1); }
+.sum-out li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 10px; }
+.sum-out li i { display: block; height: 3px; background: var(--accent); margin-top: 9px; }
+
+/* keyword model */
+.ana { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px 14px; border-top: 1px solid var(--line); }
+.ana canvas { width: 120px; height: 120px; display: block; }
+.ana-l { display: grid; gap: 8px; min-width: 0; }
+.mini { display: flex; flex-wrap: wrap; gap: 4px; }
+.mini li { font-family: var(--mono); font-size: 10px; border: 1px solid var(--line-2); padding: 2px 5px; color: var(--t2); }
+.mini.have li { border-color: rgb(var(--acc) / 0.5); color: var(--accent); }
+
+/* ledger model */
+.ledger { display: grid; gap: 1px; background: var(--line); border-block: 1px solid var(--line); max-height: 170px; overflow-y: auto; }
+.tx { background: var(--raised); display: grid; grid-template-columns: 70px minmax(0, 1fr) auto 26px; gap: 8px; align-items: center; padding: 5px 8px 5px 12px; font-size: 13px; }
+.tx .d { font-family: var(--mono); font-size: 10.5px; color: var(--t3); }
+.tx .a { font-variant-numeric: tabular-nums; }
+.tx .a.in { color: var(--ok); }
+.tx button { width: 24px; height: 24px; color: var(--t3); font-size: 15px; line-height: 1; }
+.tx button:hover { color: var(--bad); }
+.tx-form { display: grid; grid-template-columns: minmax(0, 1fr) 96px auto auto; gap: 8px; padding: 12px 14px; border-top: 1px solid var(--line); align-items: stretch; }
+.tx-form .txt { padding: 7px 9px; }
+
+/* huffman */
+.codes { display: flex; flex-wrap: wrap; gap: 4px; padding: 10px 14px; border-top: 1px solid var(--line); }
+.code { font-family: var(--mono); font-size: 10.5px; border: 1px solid var(--line-2); padding: 2px 6px; color: var(--t2); cursor: default; }
+.code b { color: var(--t1); font-weight: 500; margin-right: 4px; }
+.code.on { border-color: var(--accent); color: var(--accent); }
+
+/* redacted */
+.redact { padding: 16px 14px; display: grid; gap: 9px; font-size: 13px; line-height: 1.2; flex: 1 1 auto; align-content: start; }
+.redact .ln { display: flex; flex-wrap: wrap; gap: 6px; }
+.redact i { display: block; height: 12px; background: var(--surface-2); transition: background 0.12s; }
+.redact i:hover { background: var(--accent); }
+
+/* skills */
+.skills { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+.skills .toy { border-right: 1px solid var(--line); --h: 470px; }
+.skills-l { padding: 26px 28px; display: grid; gap: 22px; align-content: start; min-width: 0; }
+.skills-l h3 { font-size: 15px; letter-spacing: -0.01em; font-weight: 500; margin-bottom: 8px; }
+.sk { display: flex; flex-wrap: wrap; gap: 5px; }
+.sk button { font-family: var(--mono); font-size: 11px; color: var(--t2); border: 1px solid var(--line-2); padding: 4px 8px; transition: color 0.12s, border-color 0.12s; }
+.sk button:hover, .sk button.on { color: var(--accent); border-color: var(--accent); }
+
+/* about */
+.about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); }
+.facts { display: grid; gap: 0; }
+.factr { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; padding: 13px 0; border-top: 1px solid var(--line); font-size: 14.5px; color: var(--t2); }
+.factr:first-child { border-top: 0; }
+.factr b { color: var(--t1); font-weight: 500; }
+
+/* contact */
+.contact { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px; align-items: center; padding: 56px 48px; margin-top: 104px; overflow: hidden; }
+.contact h2 { font-size: clamp(34px, 4.6vw, 56px); }
+.contact p { color: var(--t2); margin-top: 16px; max-width: 32em; }
+.mail {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: center; width: 100%; text-align: left;
+  background: var(--t1); color: var(--bg); padding: 18px 20px; transition: background 0.15s;
+}
+.mail:hover { background: #fff; }
+.mail .label { color: #55555e; grid-column: 1 / -1; }
+.mail b { font-size: clamp(14px, 1.45vw, 18px); font-weight: 600; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.side-l { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.side-l .btn { height: 46px; }
+
+/* footer */
+footer { margin-top: 80px; border-top: 1px solid var(--line); background: rgba(8, 8, 10, 0.72); overflow: hidden; }
+.foot { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)); gap: 32px; padding-block: 44px 28px; font-size: 13.5px; color: var(--t2); }
+.foot p { max-width: 26em; margin-top: 14px; color: var(--t3); }
+.foot h4 { margin: 0 0 12px; }
+.foot li { margin-bottom: 7px; }
+.foot a:hover, .foot button:hover { color: var(--t1); }
+.foot-b { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; padding-block: 16px; border-top: 1px solid var(--line); }
+.bigname {
+  display: flex; justify-content: center; font-size: 15.4vw; line-height: 0.82; font-weight: 700; letter-spacing: -0.05em;
+  color: transparent; -webkit-text-stroke: 1px var(--line-3); user-select: none; padding-bottom: 8px; cursor: default; white-space: nowrap;
+}
+.bigname span { display: inline-block; will-change: transform; transition: color 0.2s; }
+
+/* dock */
+#dock {
+  position: fixed; z-index: 55;
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  width: min(286px, calc(100vw - 32px));
+  display: flex; flex-direction: column; align-items: stretch;
+  pointer-events: none;
+}
+#dock > * { pointer-events: auto; }
+.dock-b { display: flex; align-items: center; gap: 8px; align-self: flex-end; height: 36px; padding: 0 12px; background: var(--raised); border: 1px solid var(--line-3); font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--t1); text-transform: uppercase; }
+.dock-b:hover { border-color: var(--accent); }
+.dock-b i { display: block; width: 8px; height: 8px; background: var(--accent); transform: rotate(45deg); transition: transform 0.25s; }
+#dock.open .dock-b i { transform: rotate(135deg) scale(1.1); }
+.dock-p { background: var(--raised); border: 1px solid var(--line-3); padding: 14px; display: grid; gap: 14px; margin-bottom: 8px; max-height: calc(100dvh - 120px); overflow-y: auto; }
+.dock-p[hidden] { display: none; }
+.sw { display: flex; gap: 6px; }
+.sw button { width: 26px; height: 26px; background: var(--c); border: 2px solid transparent; outline-offset: 1px; clip-path: polygon(0 0, 100% 0, 100% 72%, 72% 100%, 0 100%); }
+.sw button[aria-pressed="true"] { outline: 1px solid var(--t1); clip-path: none; }
+.dock-a { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* palette */
+#pal { position: fixed; inset: 0; z-index: 80; background: rgba(4, 4, 6, 0.66); display: grid; justify-items: center; align-items: start; padding: 14vh 16px 16px; }
+#pal[hidden] { display: none; }
+.pal-b { width: min(560px, 100%); background: var(--raised); border: 1px solid var(--line-3); display: flex; flex-direction: column; max-height: 66vh; }
+.pal-b input { width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--line-2); padding: 15px 16px; font-size: 16px; outline: 0; }
+.pal-l { overflow-y: auto; padding: 6px; }
+.pal-l button { display: flex; justify-content: space-between; gap: 16px; width: 100%; text-align: left; padding: 9px 10px; font-size: 14px; color: var(--t2); }
+.pal-l button span:last-child { font-family: var(--mono); font-size: 10.5px; color: var(--t3); letter-spacing: 0.04em; text-transform: uppercase; }
+.pal-l button.on { background: var(--surface-2); color: var(--t1); box-shadow: inset 2px 0 0 var(--accent); }
+.pal-e { padding: 16px; color: var(--t3); font-size: 14px; }
+
+/* toast */
+#toast { position: fixed; z-index: 90; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 16px); background: var(--t1); color: var(--bg); font-size: 13.5px; font-weight: 500; padding: 9px 14px; opacity: 0; pointer-events: none; transition: opacity 0.18s, transform 0.18s; max-width: calc(100vw - 32px); }
+#toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 1040px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .hero::before { background: rgba(8, 8, 10, 0.42); }
+  .case, .about, .skills { grid-template-columns: minmax(0, 1fr); }
+  .case-v { border-left: 0; border-top: 1px solid var(--line); }
+  .skills .toy { border-right: 0; border-bottom: 1px solid var(--line); --h: 400px; }
+  .sec-h { grid-template-columns: minmax(0, 1fr); }
+  .nav-links { display: none; }
+  .pidx { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .contact { grid-template-columns: minmax(0, 1fr); padding: 40px 28px; }
+  .foot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  :root { --nav: 60px; --gutter-l: max(16px, env(safe-area-inset-left, 0px)); --gutter-r: max(16px, env(safe-area-inset-right, 0px)); }
+  .hero { padding-top: calc(var(--nav) + env(safe-area-inset-top, 0px) + 40px); }
+  .grid2 { grid-template-columns: minmax(0, 1fr); }
+  .pidx { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 36px; }
+  .stat { padding: 16px; }
+  .stat:nth-child(2) { border-right: 0; }
+  .stat:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
+  .stat .num { font-size: 30px; }
+  .sec { padding-top: 76px; }
+  .case-t { padding: 22px 18px 24px; }
+  .btn { height: 48px; padding: 0 18px; }
+  .kbd-btn kbd { display: none; }
+  .dock-b { padding: 0; width: 38px; justify-content: center; }
+  .dock-b span { display: none; }
+  .eyebrow span { display: none; }
+  .tx-form { grid-template-columns: minmax(0, 1fr) 84px; }
+  .contact { padding: 32px 18px; margin-top: 76px; }
+  .side-l { grid-template-columns: minmax(0, 1fr); }
+  .foot { grid-template-columns: minmax(0, 1fr); }
+  .skills-l { padding: 20px 18px; }
+  .ana { grid-template-columns: 96px minmax(0, 1fr); }
+  .ana canvas { width: 96px; height: 96px; }
+  .factr { grid-template-columns: 92px minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .marq-t { animation: none; }
+  * { transition-duration: 0.01ms !important; }
+}
+</style>
+<canvas id="field" aria-hidden="true"></canvas>
+<div id="progress" aria-hidden="true"></div>
+<a class="skip" href="#work">Skip to projects</a>
+
+<div class="page">
+  <header class="nav">
+    <div class="wrap nav-in">
+      <a class="brand" href="#top" aria-label="Parthiban Ilango, back to top">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M1 1h30v30H1z" fill="none" stroke="#ededef" stroke-opacity=".5"/><path d="M6 26 16 6l10 20z" fill="none" stroke="#ededef" stroke-width="1.4"/><path d="M16 6v20L6 26z" fill="#ffb224" class="brand-f"/></svg>
+        <span>Parthiban<span>Ilango</span></span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="#experience">Experience</a>
+        <a href="#work">Projects</a>
+        <a href="#earlier">Earlier work</a>
+        <a href="#skills">Skills</a>
+        <a href="#about">About</a>
+      </nav>
+      <div class="nav-r">
+        <button class="kbd-btn" id="pal-open" type="button" aria-label="Open command menu">Menu <kbd id="pal-key">⌘K</kbd></button>
+        <a class="btn solid sm" href="https://github.com/parthi-bun" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="label eyebrow"><i class="dot"></i>Open to 2027 graduate software roles <span aria-hidden="true">/</span> VIT Vellore</p>
+            <h1 id="title" aria-label="Correct under pressure.">
+              <span class="ln" data-split aria-hidden="true">Correct under</span>
+              <span class="ln dim" data-split aria-hidden="true">pressure.</span>
+            </h1>
+            <p class="hero-sub">I'm Parthiban Ilango, a computer science student graduating in May 2027. I build distributed systems, secure retrieval and production mobile apps, and I test them against the failures that would break them.</p>
+            <div class="cta">
+              <a class="btn solid mag" href="#work">See the work <span class="arr" aria-hidden="true">→</span></a>
+              <a class="btn mag" href="#contact">Get in touch</a>
+            </div>
+            <div class="modes">
+              <span class="label">Background</span>
+              <div class="chips" id="mode-chips" role="group" aria-label="Background style"></div>
+            </div>
+            <p class="hint">The page behind this text is live. Move, click or hold anywhere, or press 1 to 5.</p>
+          </div>
+
+          <div class="forge" data-nofield>
+            <div class="forge-h"><span class="label">Solid bench</span><span class="label" style="color:var(--accent)">Drag to spin, click a facet</span></div>
+            <canvas id="forge" role="img" aria-label="A rotating sharp geometric solid you can drag and reshape"></canvas>
+            <div class="euler" id="euler" aria-hidden="true"></div>
+            <div class="forge-ctl" id="forge-ctl"></div>
+          </div>
+        </div>
+
+        <dl class="stats" id="stats" style="margin-block-end:0">
+          <div class="stat"><dt class="label">Verified benchmark runs</dt><dd class="num" style="margin:0" data-count="252">252</dd></div>
+          <div class="stat"><dt class="label">Updates lost or duplicated</dt><dd class="num" style="margin:0" data-count="0">0</dd></div>
+          <div class="stat"><dt class="label">Retrieval route outcomes</dt><dd class="num" style="margin:0" data-count="124">124</dd></div>
+          <div class="stat"><dt class="label">CGPA at VIT</dt><dd class="num" style="margin:0" data-count="8.11" data-dec="2">8.11</dd></div>
+        </dl>
+      </div>
+      <div class="marq" aria-hidden="true" style="margin-top:56px"><div class="marq-t" id="marq"></div></div>
+    </section>
+
+    <section class="sec" id="experience">
+      <div class="wrap">
+        <div class="sec-h">
+          <div>
+            <p class="label sec-tag"><b>[01]</b> Experience <i></i></p>
+            <h2>In production, <span>not just in a demo.</span></h2>
+          </div>
+          <p>My internship work runs in a mobile app used in production at the company, where it took manual steps out of taking attendance.</p>
+        </div>
+
+        <article class="panel case">
+          <div class="case-t">
+            <div class="meta-row"><span class="label">Dec 2025 – Feb 2026 / Bengaluru</span><span class="pill">In production</span></div>
+            <p class="kick">eValai Infotech Solutions</p>
+            <h3>Software Development Engineer Intern, App Development</h3>
+            <ul class="pts">
+              <li>Developed a Flutter mobile application now in production use at the company.</li>
+              <li>Integrated Google ML Kit smile detection to trigger automatic student photo capture, removing manual steps from the workflow.</li>
+              <li>Built a facial-recognition pipeline that matches captured photos against student records to mark attendance automatically.</li>
+            </ul>
+            <ul class="tags"><li>Flutter</li><li>Google ML Kit</li><li>Facial recognition</li></ul>
+            <div class="links"><span class="muted">valaischool.com</span></div>
+          </div>
+          <div class="case-v"><div class="toy" data-toy="capture"></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="sec" id="work">
+      <div class="wrap">
+        <div class="sec-h">
+          <div>
+            <p class="label sec-tag"><b>[02]</b> Projects <i></i></p>
+            <h2>Work you can <span>press on.</span></h2>
+          </div>
+          <p>Each project comes with a small working model of its core idea. The models are simplified illustrations. The figures in the write-ups come from the real projects.</p>
+        </div>
+
+        <nav class="pidx" aria-label="Project index">
+          <a href="#p-reshard"><span>01</span>Resharding</a>
+          <a href="#p-ahrag"><span>02</span>AHRAG</a>
+          <a href="#p-summary"><span>03</span>Doc Summary</a>
+          <a href="#p-http"><span>04</span>HTTP Server</a>
+          <a href="#p-analyzer"><span>05</span>Resume Analyzer</a>
+          <a href="#p-finance"><span>06</span>Finance Tracker</a>
+          <a href="#p-huffman"><span>07</span>Huffman</a>
+        </nav>
+
+        <article class="panel case" id="p-reshard">
+          <div class="case-t">
+            <div class="meta-row"><span class="label">Project 01 / 2026</span><span class="pill acc">Patent applied</span></div>
+            <p class="kick">Distributed systems</p>
+            <h3>Barrier-Free Resharding of Distributed Sparse Arrays</h3>
+            <p class="lede">A Go simulator that moves sparse-array tiles between nodes while updates keep flowing, so rebalancing doesn't have to stop the whole array.</p>
+            <div class="figs">
+              <div class="fig"><b>61.8%</b><span>lower median p95 update latency under frequent migration</span></div>
+              <div class="fig"><b>80.8%</b><span>lower with longer delays</span></div>
+              <div class="fig"><b>0</b><span>lost or duplicated updates across 252 runs in 9 scenarios</span></div>
+            </div>
+            <ul class="pts">
+              <li>Results are measured against a global-stop baseline in local benchmarks.</li>
+              <li>Correctness was checked by an independent serial oracle.</li>
+            </ul>
+            <ul class="tags"><li>Go</li><li>Concurrency</li><li>Distributed systems</li></ul>
+          </div>
+          <div class="case-v"><div class="toy" data-toy="reshard"></div></div>
+        </article>
+
+        <article class="panel case" id="p-ahrag">
+          <div class="case-t">
+            <div class="meta-row"><span class="label">Project 02 / 2026</span><span class="pill">45 tests passing</span></div>
+            <p class="kick">Secure retrieval</p>
+            <h3>AHRAG: Secure Hybrid Retrieval</h3>
+            <p class="lede">A framework that benchmarks BM25, dense, reciprocal-rank-fusion and multi-step retrieval over versioned enterprise documents.</p>
+            <ul class="pts">
+              <li>Enforces role- and effective-date-based eligibility before retrieval, generation and citation.</li>
+              <li>Tested against evidence substitution, revocation, retries and data leakage.</li>
+              <li>Reproducible evaluation with grouped splits, ablations, repeated timings and confidence intervals.</li>
+            </ul>
+            <div class="figs">
+              <div class="fig"><b>31</b><span>evaluation scenarios</span></div>
+              <div class="fig"><b>124</b><span>route outcomes</span></div>
+              <div class="fig"><b>45</b><span>passing tests</span></div>
+            </div>
+            <ul class="tags"><li>Python</li><li>Streamlit</li><li>scikit-learn</li><li>Pytest</li></ul>
+          </div>
+          <div class="case-v"><div class="toy" data-toy="ahrag"></div></div>
+        </article>
+
+        <div class="grid2">
+          <article class="panel card" id="p-summary">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">Project 03 / 2026</span><span class="pill">Live</span></div>
+              <p class="kick">Document AI</p>
+              <h3>Document Summary Assistant</h3>
+              <p class="lede">A responsive web app that takes PDFs and images and returns configurable summaries, key points and suggestions for improving the document.</p>
+              <ul class="pts">
+                <li>Extracts PDF text with pdf.js and runs Tesseract OCR on scans in the browser.</li>
+                <li>Uploaded files stay on the client. Only the extracted text is sent for summarising.</li>
+              </ul>
+              <ul class="tags"><li>React</li><li>TypeScript</li><li>pdf.js</li><li>Tesseract OCR</li></ul>
+              <div class="links">
+                <a class="tlink" href="https://document-summary-assistant-murex.vercel.app/" target="_blank" rel="noopener">Live demo <span aria-hidden="true">↗</span></a>
+                <a class="tlink" href="https://github.com/Parthi-bun/document-summary-assistant" target="_blank" rel="noopener">Code <span aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+            <div class="toy" data-toy="summary"></div>
+          </article>
+
+          <article class="panel card" id="p-http">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">Project 04 / 2024</span><span class="pill mute">Raw sockets</span></div>
+              <p class="kick">Networking</p>
+              <h3>Multithreaded Java HTTP Server</h3>
+              <p class="lede">An HTTP/1.1 server written over raw sockets, with request parsing, routing, status codes and response generation.</p>
+              <ul class="pts">
+                <li>Serves concurrent clients through a managed thread pool.</li>
+                <li>Synchronizes shared state to eliminate race conditions.</li>
+              </ul>
+              <ul class="tags"><li>Java</li><li>Sockets</li><li>Concurrency</li></ul>
+            </div>
+            <div class="toy" data-toy="http"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="earlier">
+      <div class="wrap">
+        <div class="sec-h">
+          <div>
+            <p class="label sec-tag"><b>[03]</b> Earlier work <i></i></p>
+            <h2>The builds <span>before those.</span></h2>
+          </div>
+          <p>Full-stack and algorithm projects from earlier in my degree, along with my current security research.</p>
+        </div>
+        <div class="grid2">
+          <article class="panel card" id="p-analyzer">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">Project 05 / 2025</span><span class="pill mute">On AWS</span></div>
+              <p class="kick">Applied NLP</p>
+              <h3>AI Resume Analyzer</h3>
+              <p class="lede">Scores a resume against a job description using skill extraction, keyword matching and semantic similarity, then returns a 0 to 100 score, missing skills and suggestions.</p>
+              <ul class="pts">
+                <li>Handles PDF and DOCX uploads, with storage in AWS S3.</li>
+                <li>Containerized with Docker and deployed on EC2 behind an Nginx reverse proxy.</li>
+              </ul>
+              <ul class="tags"><li>FastAPI</li><li>Streamlit</li><li>spaCy</li><li>scikit-learn</li><li>Docker</li><li>AWS EC2/S3</li><li>Nginx</li></ul>
+              <div class="links"><a class="tlink" href="https://github.com/Parthi-bun/resume-analyser" target="_blank" rel="noopener">Code <span aria-hidden="true">↗</span></a></div>
+            </div>
+            <div class="toy" data-toy="analyzer"></div>
+          </article>
+
+          <article class="panel card" id="p-finance">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">Project 06 / 2025</span><span class="pill mute">Full stack</span></div>
+              <p class="kick">Web application</p>
+              <h3>Finance Tracker</h3>
+              <p class="lede">A personal finance app with registration and login, income and expense tracking, sortable transactions and live balance totals.</p>
+              <ul class="pts">
+                <li>Secured with Spring Security, BCrypt password hashing, session authentication and CSRF protection.</li>
+                <li>Each user sees only their own transactions.</li>
+              </ul>
+              <ul class="tags"><li>Spring Boot</li><li>Spring Security</li><li>MySQL</li><li>Java</li></ul>
+              <div class="links"><a class="tlink" href="https://github.com/Parthi-bun/Finance-Tracker" target="_blank" rel="noopener">Code <span aria-hidden="true">↗</span></a></div>
+            </div>
+            <div class="toy" data-toy="finance"></div>
+          </article>
+
+          <article class="panel card" id="p-huffman">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">Project 07 / 2024</span><span class="pill mute">Lossless</span></div>
+              <p class="kick">Algorithms</p>
+              <h3>Huffman File Compressor</h3>
+              <p class="lede">Huffman coding from scratch, compressing and decompressing text files with a min-heap priority queue.</p>
+              <ul class="pts">
+                <li>Full binary I/O pipeline with bit padding, byte serialization and a JSON frequency-table header.</li>
+                <li>Round-trip decompression verified on arbitrary text.</li>
+              </ul>
+              <ul class="tags"><li>Python</li><li>Data structures</li></ul>
+              <div class="links"><a class="tlink" href="https://github.com/Parthi-bun/File_Compression_Tool" target="_blank" rel="noopener">Code <span aria-hidden="true">↗</span></a></div>
+            </div>
+            <div class="toy" data-toy="huffman"></div>
+          </article>
+
+          <article class="panel card" id="p-research">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">Research / 2026</span><span class="pill acc">In disclosure</span></div>
+              <p class="kick">Security research</p>
+              <h3>Secret exposure in deployed web apps</h3>
+              <p class="lede">A measurement study of how credentials end up exposed in shipped web applications. The paper is finished. Its findings stay private until coordinated disclosure is complete.</p>
+              <ul class="tags"><li>Python</li><li>Measurement</li><li>Coordinated disclosure</li></ul>
+            </div>
+            <div class="toy" data-toy="redact"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="skills">
+      <div class="wrap">
+        <div class="sec-h">
+          <div>
+            <p class="label sec-tag"><b>[04]</b> Skills <i></i></p>
+            <h2>The stack, <span>and where it was used.</span></h2>
+          </div>
+          <p>Every skill links to the projects that used it. Drag the nodes, or pick a skill from the list to light up its connections.</p>
+        </div>
+        <div class="panel skills">
+          <div class="toy" data-toy="skills"></div>
+          <div class="skills-l">
+            <div><h3>Languages</h3><div class="sk" data-sk="Python,Go,Java,JavaScript,TypeScript,C,C++"></div></div>
+            <div><h3>Frameworks and libraries</h3><div class="sk" data-sk="Flutter,FastAPI,Spring Boot,React,Streamlit,scikit-learn,spaCy"></div></div>
+            <div><h3>Tools and platforms</h3><div class="sk" data-sk="Git,Docker,MySQL,AWS EC2/S3,Nginx,Vercel,Pytest"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="about">
+      <div class="wrap">
+        <div class="sec-h">
+          <div>
+            <p class="label sec-tag"><b>[05]</b> About <i></i></p>
+            <h2>Away from <span>the keyboard.</span></h2>
+          </div>
+          <p>I'm a competitive powerlifter, which is good practice for the same habit: add load, find the weak point, fix it, repeat.</p>
+        </div>
+        <div class="panel about">
+          <div class="case-t">
+            <dl class="facts" style="margin:0">
+              <div class="factr"><dt class="label">Education</dt><dd style="margin:0"><b>Vellore Institute of Technology</b><br>B.Tech in Computer Science, CGPA 8.11/10<br>Aug 2023 – May 2027</dd></div>
+              <div class="factr"><dt class="label">Community</dt><dd style="margin:0">CodeChef Chapter member at VIT, with coding contests, peer learning and DSA practice on LeetCode</dd></div>
+              <div class="factr"><dt class="label">Sport</dt><dd style="margin:0">Competitive powerlifter</dd></div>
+              <div class="factr"><dt class="label">Languages</dt><dd style="margin:0">English, Tamil, Kannada</dd></div>
+              <div class="factr"><dt class="label">Based in</dt><dd style="margin:0">Kumbakonam, Tamil Nadu</dd></div>
+              <div class="factr"><dt class="label">Work rights</dt><dd style="margin:0">UK citizen, no sponsorship required for UK employment</dd></div>
+            </dl>
+          </div>
+          <div class="case-v"><div class="toy" data-toy="plates"></div></div>
+        </div>
+
+        <div class="panel contact" id="contact">
+          <div>
+            <p class="label sec-tag"><b>[06]</b> Contact <i></i></p>
+            <h2>Hiring for a hard <span>problem?</span></h2>
+            <p>I'm looking for a 2027 graduate software engineering role. Email is the quickest way to reach me.</p>
+          </div>
+          <div>
+            <button class="mail" id="mail" type="button" data-email="Parthiban.i2023@vitstudent.ac.in">
+              <span class="label">Copy email address</span>
+              <b>Parthiban.i2023@vitstudent.ac.in</b>
+              <span aria-hidden="true">⧉</span>
+            </button>
+            <div class="side-l">
+              <a class="btn" href="mailto:Parthiban.i2023@vitstudent.ac.in">Write an email</a>
+              <a class="btn" href="https://github.com/parthi-bun" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <div>
+          <a class="brand" href="#top"><span>Parthiban<span>Ilango</span></span></a>
+          <p>Computer science student and software engineer, graduating May 2027.</p>
+        </div>
+        <div><h4 class="label">Work</h4><ul>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#work">Projects</a></li>
+          <li><a href="#earlier">Earlier work</a></li>
+        </ul></div>
+        <div><h4 class="label">Profile</h4><ul>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul></div>
+        <div><h4 class="label">Elsewhere</h4><ul>
+          <li><a href="https://github.com/parthi-bun" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="https://document-summary-assistant-murex.vercel.app/" target="_blank" rel="noopener">Live demo</a></li>
+        </ul></div>
+      </div>
+      <div class="foot-b label">
+        <span>© 2026 Parthiban Ilango</span>
+        <span id="clock">Kumbakonam</span>
+      </div>
+    </div>
+    <div class="bigname" id="bigname" aria-hidden="true">PARTHIBAN</div>
+  </footer>
+</div>
+
+<div id="dock" data-nofield>
+  <div class="dock-p" id="dock-p" hidden></div>
+  <button class="dock-b" id="dock-b" type="button" aria-expanded="false" aria-controls="dock-p"><i></i><span id="dock-l">Field</span></button>
+</div>
+<div id="pal" hidden data-nofield>
+  <div class="pal-b" role="dialog" aria-modal="true" aria-label="Command menu">
+    <input id="pal-i" type="text" placeholder="Jump to a section or change the background" aria-label="Search commands" autocomplete="off">
+    <div class="pal-l" id="pal-l" role="listbox"></div>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const rand = (a = 1, b) => (b === undefined ? Math.random() * a : a + Math.random() * (b - a));
+const pick = (a) => a[Math.floor(Math.random() * a.length)];
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const store = {
+  get(k, d) {
+    try {
+      const v = localStorage.getItem("pi." + k);
+      return v === null ? d : JSON.parse(v);
+    } catch (e) {
+      return d;
+    }
+  },
+  set(k, v) {
+    try {
+      localStorage.setItem("pi." + k, JSON.stringify(v));
+    } catch (e) {}
+  },
+};
+
+const ACCENTS = [
+  ["Amber", "#ffb224"],
+  ["Mint", "#4ade80"],
+  ["Cyan", "#38d6e8"],
+  ["Coral", "#ff7a5c"],
+  ["Violet", "#b197fc"],
+];
+const Acc = { hex: "#ffb224", rgb: [255, 178, 36] };
+const rgba = (a) => `rgba(${Acc.rgb[0]},${Acc.rgb[1]},${Acc.rgb[2]},${a})`;
+
+function setAccent(hex, save = true) {
+  const n = parseInt(hex.slice(1), 16);
+  Acc.hex = hex;
+  Acc.rgb = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  document.documentElement.style.setProperty("--acc", Acc.rgb.join(" "));
+  $$(".brand-f").forEach((p) => p.setAttribute("fill", hex));
+  if (save) store.set("accent", hex);
+  document.dispatchEvent(new CustomEvent("accent"));
+}
+
+/* One animation loop. Each entry only runs while its element is on screen. */
+const tickers = new Set();
+function addTick(el, fn) {
+  const t = { fn, on: !el };
+  tickers.add(t);
+  if (el) new IntersectionObserver(([e]) => { t.on = e.isIntersecting; }, { rootMargin: "60px" }).observe(el);
+  return t;
+}
+let lastFrame = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - lastFrame) / 1000);
+  lastFrame = now;
+  if (!document.hidden) for (const t of tickers) if (t.on) t.fn(dt, now / 1000);
+  requestAnimationFrame(frame);
+}
+
+function fit(cv, onSize) {
+  const s = { w: 1, h: 1, dpr: 1, ctx: cv.getContext("2d") };
+  let ready = false;
+  const r = () => {
+    const b = cv.getBoundingClientRect();
+    if (!b.width || !b.height) return;
+    s.dpr = Math.min(devicePixelRatio || 1, 2);
+    s.w = b.width;
+    s.h = b.height;
+    cv.width = Math.round(s.w * s.dpr);
+    cv.height = Math.round(s.h * s.dpr);
+    s.ctx.setTransform(s.dpr, 0, 0, s.dpr, 0, 0);
+    if (ready && onSize) onSize(s);
+  };
+  r();
+  ready = true;
+  new ResizeObserver(r).observe(cv);
+  return s;
+}
+const evPos = (e, el) => {
+  const b = el.getBoundingClientRect();
+  return { x: e.clientX - b.left, y: e.clientY - b.top };
+};
+
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("on");
+  clearTimeout(toast.t);
+  toast.t = setTimeout(() => t.classList.remove("on"), 2000);
+}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (e) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.append(ta);
+    ta.select();
+    let ok = false;
+    try {
+      ok = document.execCommand("copy");
+    } catch (err) {}
+    ta.remove();
+    return ok;
+  }
+}
+
+/* Opt-in interface sounds, off until the visitor turns them on. */
+const Sound = {
+  on: false,
+  ctx: null,
+  toggle(v) {
+    this.on = v;
+    if (v && !this.ctx) {
+      const C = window.AudioContext || window.webkitAudioContext;
+      if (C) this.ctx = new C();
+    }
+  },
+  blip(f = 660, d = 0.04, g = 0.03, type = "square") {
+    if (!this.on || !this.ctx) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator();
+    const a = this.ctx.createGain();
+    o.type = type;
+    o.frequency.value = f;
+    a.gain.setValueAtTime(g, t);
+    a.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(a).connect(this.ctx.destination);
+    o.start(t);
+    o.stop(t + d);
+  },
+};
+
+/* Small control builders shared by the working models. */
+function shell(el, title, tag) {
+  el.innerHTML = `<div class="toy-h"><span class="label">${title}</span><span class="label">${tag}</span></div><div class="toy-b"></div>`;
+  return $(".toy-b", el);
+}
+function seg(options, value, onChange, label) {
+  const w = document.createElement("div");
+  w.className = "seg";
+  w.setAttribute("role", "group");
+  if (label) w.setAttribute("aria-label", label);
+  const set = (v, fire) => {
+    value = v;
+    $$("button", w).forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === String(v)));
+    if (fire) onChange(v);
+  };
+  for (const o of options) {
+    const [v, t] = Array.isArray(o) ? o : [o, o];
+    const b = document.createElement("button");
+    b.type = "button";
+    b.dataset.v = v;
+    b.textContent = t;
+    b.addEventListener("click", () => {
+      Sound.blip(520);
+      set(v, true);
+    });
+    w.append(b);
+  }
+  set(value, false);
+  w.set = set;
+  return w;
+}
+let rngId = 0;
+function slider(label, min, max, step, val, fmt, onInput) {
+  const w = document.createElement("div");
+  const id = "r" + ++rngId;
+  w.className = "rng";
+  w.innerHTML = `<label class="rng-h" for="${id}"><span>${label}</span><output></output></label><input id="${id}" type="range" min="${min}" max="${max}" step="${step}" value="${val}">`;
+  const i = $("input", w);
+  const o = $("output", w);
+  const show = () => (o.textContent = fmt(+i.value));
+  i.addEventListener("input", () => {
+    show();
+    onInput(+i.value);
+  });
+  show();
+  w.input = i;
+  w.setValue = (v) => {
+    i.value = v;
+    show();
+  };
+  return w;
+}
+function btn(text, onClick, cls = "") {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "btn sm " + cls;
+  b.textContent = text;
+  b.addEventListener("click", (e) => {
+    Sound.blip(740);
+    onClick(e);
+  });
+  return b;
+}
+function meters(list) {
+  const w = document.createElement("div");
+  w.className = "meters";
+  w.innerHTML = list.map(([k, l]) => `<div class="meter"><span>${l}</span><b data-m="${k}">0</b></div>`).join("");
+  const map = {};
+  $$("[data-m]", w).forEach((b) => (map[b.dataset.m] = b));
+  w.set = (k, v, bad) => {
+    const s = String(v);
+    if (map[k].textContent !== s) map[k].textContent = s;
+    map[k].classList.toggle("bad", !!bad);
+  };
+  return w;
+}
+function roundRectless(ctx, x, y, w, h) {
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+}
+
+/* The live background: one fragment shader with five scenes, plus a CPU Game of Life grid. */
+const VERT = `#version 300 es
+in vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
+
+const FRAG = `#version 300 es
+precision highp float;
+out vec4 fragColor;
+uniform vec2 uRes,uM,uV,uLifeSize;
+uniform float uDpr,uT,uScroll,uDim,uDensity,uForce,uHold,uMix,uLifeCell;
+uniform vec3 uAcc;
+uniform int uMode,uPrev;
+uniform vec3 uR[6];
+uniform sampler2D uLife;
+const vec3 BG=vec3(.031,.031,.039);
+
+float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+ return mix(mix(h21(i),h21(i+vec2(1,0)),f.x),mix(h21(i+vec2(0,1)),h21(i+vec2(1,1)),f.x),f.y);}
+float spot(vec2 p,float R){vec2 d=p-uM;return exp(-dot(d,d)/(R*R));}
+float ripple(vec2 p){float s=0.;for(int i=0;i<6;i++){float a=uR[i].z;if(a<0.)continue;
+ float e=(length(p-uR[i].xy)-a*560.)/64.;s+=exp(-e*e)*exp(-a*1.5);}return s;}
+vec2 warp(vec2 p){
+ vec2 d=p-uM;float R=230.+60.*uForce;float f=exp(-dot(d,d)/(R*R));
+ vec2 q=p-d*f*mix(.3,-.6,uHold)*uForce+uV*f*.9;
+ for(int i=0;i<6;i++){float a=uR[i].z;if(a<0.)continue;vec2 e=p-uR[i].xy;float r=length(e)+.001;
+  float k=(r-a*560.)/64.;q-=e/r*exp(-k*k)*exp(-a*1.5)*30.*uForce;}
+ return q;}
+
+vec3 lattice(vec2 p){
+ float cell=48./uDensity;
+ vec2 g=(warp(p)+vec2(0.,uScroll*.4))/cell;
+ vec2 a=abs(fract(g-.5)-.5)/fwidth(g);float l=1.-min(min(a.x,a.y),1.);
+ vec2 g5=g/5.;vec2 b=abs(fract(g5-.5)-.5)/fwidth(g5);float L=1.-min(min(b.x,b.y),1.);
+ float sp=spot(p,250.),rp=ripple(p);
+ vec2 id=floor(g);float hs=h21(id);
+ float tile=step(.84,hs)*(.5+.5*sin(uT*1.4+hs*50.));
+ vec2 nd=abs(fract(g+.5)-.5)*cell;float node=step(max(nd.x,nd.y),1.7);
+ vec3 c=BG+vec3(.05)*l+vec3(.055)*L;
+ c+=uAcc*(l*.5+L*.34)*(sp+rp*.9);
+ c+=uAcc*tile*(.012+sp*.13+rp*.1);
+ c+=uAcc*node*(sp*.85+rp*.6);
+ return c;}
+
+vec2 toW(vec2 v,float c){return vec2(v.x+v.y*.5,v.y*.8660254)*c;}
+float terrain(vec2 v,float c,vec2 off){
+ vec2 w=toW(v,c)-off;
+ float n=vn(v*.16+uT*.04)*1.1+vn(v*.41-uT*.06)*.45+h21(v)*.2;
+ n+=spot(w,210.)*mix(1.5,-1.8,uHold)*uForce+ripple(w)*1.3*uForce;
+ return n;}
+vec3 shards(vec2 p){
+ float c=74./uDensity;vec2 off=vec2(0.,uScroll*.4),P=p+off;
+ vec2 v=vec2(P.x/c-P.y/(c*1.7320508),P.y/(c*.8660254));
+ vec2 i=floor(v),f=fract(v);bool up=f.x+f.y<1.;
+ vec2 A=up?i:i+vec2(1.),B=up?i+vec2(1,0):i+vec2(0,1),C=up?i+vec2(0,1):i+vec2(1,0);
+ float z=c*.85;
+ vec3 a=vec3(toW(A,c)-off,terrain(A,c,off)*z),b=vec3(toW(B,c)-off,terrain(B,c,off)*z),d=vec3(toW(C,c)-off,terrain(C,c,off)*z);
+ vec3 n=normalize(cross(b-a,d-a));
+ vec2 ctr=(a.xy+b.xy+d.xy)/3.;
+ vec3 lg=normalize(vec3(uM-ctr,190.));
+ float k=max(dot(n,lg),0.);
+ vec2 e=up?f:1.-f;float bar=min(min(e.x,e.y),1.-e.x-e.y);
+ float edge=1.-smoothstep(0.,fwidth(bar)*1.25,bar);
+ float sp=spot(ctr,320.);
+ vec3 col=BG+vec3(.021,.021,.026)*(.3+k*1.5)+h21(i+(up?.3:.7))*.006;
+ col+=uAcc*(pow(k,3.)*.2*sp+pow(k,26.)*.55*sp+ripple(ctr)*.06);
+ col+=vec3(.06)*edge*(.22+.78*k)+uAcc*edge*sp*.34;
+ return col;}
+
+float height(vec2 p){
+ vec2 q=(p+vec2(0.,uScroll*.4))*.0032*uDensity;
+ float h=vn(q+uT*.025)+.5*vn(q*2.1-uT*.03)+.25*vn(q*4.3);
+ return h+spot(p,200.)*mix(.7,-.85,uHold)*uForce+ripple(p)*.35*uForce;}
+vec3 contour(vec2 p){
+ float h=height(p)*11.;
+ float l=1.-smoothstep(0.,1.3,abs(fract(h-.5)-.5)/fwidth(h));
+ float h5=h/5.;float L=1.-smoothstep(0.,1.5,abs(fract(h5-.5)-.5)/fwidth(h5));
+ float sp=spot(p,290.),rp=ripple(p);
+ vec3 c=BG+vec3(.046)*l+vec3(.075)*L;
+ c+=uAcc*(l*.38+L*.5)*(sp+rp*.8);
+ return c;}
+
+vec3 prism(vec2 p){
+ vec2 ctr=uRes/uDpr*vec2(.73,.42),c=p-ctr;
+ float r=length(c),n=floor(5.+uDensity*3.);
+ float ang=atan(c.y,c.x)+uT*.035+(uM.x/(uRes.x/uDpr)-.5)*.7*uForce;
+ float sec=6.2831853/n;float a=abs(mod(ang,sec)-sec*.5);
+ vec2 u=r*vec2(cos(a),sin(a))+(uM-ctr)*.2*uForce;
+ u+=vec2(ripple(p)*34.*uForce,0.);
+ float s=120./uDensity;
+ vec3 k=vec3(u.y,u.x*.8660254+u.y*.5,u.x*.8660254-u.y*.5)/s;
+ k+=uT*.03*vec3(0.,1.,-1.);
+ vec3 fl=floor(k);
+ vec3 fw=max(fwidth(k),vec3(.002));
+ vec3 dd=abs(fract(k-.5)-.5)/fw;
+ float l=1.-min(min(min(dd.x,dd.y),dd.z),1.);
+ float h=h21(fl.xy+fl.z*7.31);
+ float sp=spot(p,330.);
+ float rad=exp(-r*r/(560.*560.));
+ vec3 col=BG+vec3(.05)*l;
+ col+=uAcc*l*(sp*.5+rad*.05);
+ col+=uAcc*step(.7,h)*(.018+.09*sp)*(.5+rad);
+ col+=vec3(1.)*step(.9,h)*.012*rad;
+ return col;}
+
+vec3 lifeScene(vec2 p){
+ vec2 g=p/uLifeCell,id=floor(g);
+ float v=texture(uLife,(id+.5)/uLifeSize).r;
+ vec2 f=fract(g);float sq=step(max(abs(f.x-.5),abs(f.y-.5)),.44);
+ vec2 a=abs(fract(g-.5)-.5)/fwidth(g);float l=1.-min(min(a.x,a.y),1.);
+ float sp=spot(p,270.);
+ return BG+vec3(.04)*l+uAcc*sq*v*(.34+.55*sp)+vec3(1.)*sq*step(.98,v)*.03;}
+
+vec3 scene(int m,vec2 p){
+ if(m==0)return lattice(p);if(m==1)return shards(p);if(m==2)return contour(p);if(m==3)return prism(p);return lifeScene(p);}
+
+void main(){
+ vec2 p=vec2(gl_FragCoord.x,uRes.y-gl_FragCoord.y)/uDpr;
+ vec3 c=scene(uMode,p);
+ if(uMix<.999)c=mix(scene(uPrev,p),c,uMix);
+ float keep=max(uDim,spot(p,300.)*.92);
+ fragColor=vec4(mix(BG,c,keep),1.);
+}`;
+
+const MODES = ["Lattice", "Shards", "Contour", "Prism", "Life"];
+
+const Field = {
+  mode: store.get("mode", 0) % MODES.length,
+  density: 1,
+  force: 1,
+  paused: false,
+  listeners: [],
+  onMode(fn) { this.listeners.push(fn); },
+  pulse() {},
+  setMode() {},
+  reset() {},
+  gun() {},
+  fps: 60,
+};
+
+function initField() {
+  const cv = $("#field");
+  const gl = cv.getContext("webgl2", { antialias: false, alpha: false, powerPreference: "low-power" });
+  if (!gl) {
+    document.documentElement.classList.add("no-webgl");
+    return;
+  }
+  const sh = (type, src) => {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
+    return s;
+  };
+  const prog = gl.createProgram();
+  gl.attachShader(prog, sh(gl.VERTEX_SHADER, VERT));
+  gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FRAG));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    console.error(gl.getProgramInfoLog(prog));
+    document.documentElement.classList.add("no-webgl");
+    return;
+  }
+  gl.useProgram(prog);
+  const vb = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vb);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, "p");
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = {};
+  for (const n of ["uRes", "uM", "uV", "uLifeSize", "uDpr", "uT", "uScroll", "uDim", "uDensity", "uForce", "uHold", "uMix", "uLifeCell", "uAcc", "uMode", "uPrev", "uR", "uLife"]) {
+    U[n] = gl.getUniformLocation(prog, n);
+  }
+
+  let scale = 1;
+  let W = 1, H = 1, dpr = 1;
+  const resize = () => {
+    W = innerWidth;
+    H = innerHeight;
+    dpr = Math.min(devicePixelRatio || 1, 1.5) * scale;
+    cv.width = Math.max(1, Math.round(W * dpr));
+    cv.height = Math.max(1, Math.round(H * dpr));
+    gl.viewport(0, 0, cv.width, cv.height);
+    lifeInit();
+    dirty = true;
+  };
+
+  /* Game of Life state lives on the CPU and is uploaded as a small texture. */
+  const LIFE_CELL = 22;
+  let lc = 0, lr = 0, life = null, next = null, tex8 = null, lifeAcc = 0;
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+  const tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  function lifeInit() {
+    const c = Math.ceil(W / LIFE_CELL) + 1, r = Math.ceil(H / LIFE_CELL) + 1;
+    if (c === lc && r === lr) return;
+    lc = c;
+    lr = r;
+    life = new Uint8Array(c * r);
+    next = new Uint8Array(c * r);
+    tex8 = new Uint8Array(c * r);
+    lifeSeed();
+  }
+  function lifeSeed() {
+    for (let i = 0; i < life.length; i++) {
+      life[i] = Math.random() < 0.13 ? 1 : 0;
+      tex8[i] = life[i] ? 255 : 0;
+    }
+    lifeUpload();
+  }
+  function lifeUpload() {
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, lc, lr, 0, gl.RED, gl.UNSIGNED_BYTE, tex8);
+  }
+  function lifeStep() {
+    for (let y = 0; y < lr; y++) {
+      const ym = ((y + lr - 1) % lr) * lc, y0 = y * lc, yp = ((y + 1) % lr) * lc;
+      for (let x = 0; x < lc; x++) {
+        const xm = (x + lc - 1) % lc, xp = (x + 1) % lc;
+        const n = life[ym + xm] + life[ym + x] + life[ym + xp] + life[y0 + xm] + life[y0 + xp] + life[yp + xm] + life[yp + x] + life[yp + xp];
+        const a = life[y0 + x];
+        const v = n === 3 || (a && n === 2) ? 1 : 0;
+        next[y0 + x] = v;
+        tex8[y0 + x] = v ? 255 : Math.floor(tex8[y0 + x] * 0.72);
+      }
+    }
+    [life, next] = [next, life];
+  }
+  function lifePaint(px, py, r = 1) {
+    const cx = Math.floor(px / LIFE_CELL), cy = Math.floor(py / LIFE_CELL);
+    for (let dy = -r; dy <= r; dy++) {
+      for (let dx = -r; dx <= r; dx++) {
+        if (Math.random() < 0.62) {
+          const i = ((cy + dy + lr) % lr) * lc + ((cx + dx + lc) % lc);
+          life[i] = 1;
+          tex8[i] = 255;
+        }
+      }
+    }
+  }
+  const GUN = [[24,0],[22,1],[24,1],[12,2],[13,2],[20,2],[21,2],[34,2],[35,2],[11,3],[15,3],[20,3],[21,3],[34,3],[35,3],[0,4],[1,4],[10,4],[16,4],[20,4],[21,4],[0,5],[1,5],[10,5],[14,5],[16,5],[17,5],[22,5],[24,5],[10,6],[16,6],[24,6],[11,7],[15,7],[12,8],[13,8]];
+  Field.gun = () => {
+    Field.setMode(4);
+    life.fill(0);
+    tex8.fill(0);
+    const ox = Math.max(1, (lc >> 1) - 18), oy = Math.max(1, (lr >> 1) - 8);
+    for (const [x, y] of GUN) {
+      const i = (y + oy) * lc + x + ox;
+      if (i < life.length) {
+        life[i] = 1;
+        tex8[i] = 255;
+      }
+    }
+  };
+
+  /* Pointer state */
+  const M = { x: innerWidth * 0.72, y: innerHeight * 0.4, tx: innerWidth * 0.72, ty: innerHeight * 0.4, vx: 0, vy: 0, hold: 0, down: false };
+  const ripples = Array.from({ length: 6 }, () => ({ x: 0, y: 0, t0: -99 }));
+  let rippleI = 0, dirty = true, t = 0, mix = 1, prev = Field.mode, frames = 0, fpsT = 0, slow = 0, fast = 0;
+
+  Field.pulse = (x = M.x, y = M.y) => {
+    const r = ripples[rippleI++ % 6];
+    r.x = x;
+    r.y = y;
+    r.t0 = t;
+    dirty = true;
+    if (Field.mode === 4) lifePaint(x, y, 2);
+  };
+  Field.setMode = (m) => {
+    if (m === Field.mode) return;
+    prev = Field.mode;
+    Field.mode = m;
+    mix = 0;
+    dirty = true;
+    store.set("mode", m);
+    Field.listeners.forEach((f) => f(m));
+  };
+  Field.reset = () => {
+    Field.density = 1;
+    Field.force = 1;
+    Field.paused = false;
+    Field.setMode(0);
+    if (life) lifeSeed();
+    dirty = true;
+  };
+  Field.seed = () => life && lifeSeed();
+  Field.touch = () => (dirty = true);
+
+  const blocked = (e) => e.target && e.target.closest && e.target.closest("a,button,input,textarea,label,canvas,[data-nofield]");
+  addEventListener("pointermove", (e) => {
+    M.tx = e.clientX;
+    M.ty = e.clientY;
+    dirty = true;
+    if (Field.mode === 4 && e.pointerType === "mouse" && !blocked(e)) lifePaint(e.clientX, e.clientY, M.down ? 2 : 0);
+  }, { passive: true });
+  addEventListener("pointerdown", (e) => {
+    if (blocked(e)) return;
+    M.tx = e.clientX;
+    M.ty = e.clientY;
+    Field.pulse(e.clientX, e.clientY);
+    Sound.blip(180, 0.09, 0.03, "triangle");
+    if (e.pointerType === "mouse") M.down = true;
+  }, { passive: true });
+  addEventListener("pointerup", () => (M.down = false), { passive: true });
+  addEventListener("pointercancel", () => (M.down = false), { passive: true });
+  addEventListener("blur", () => (M.down = false));
+  addEventListener("resize", resize);
+  addEventListener("scroll", () => (dirty = true), { passive: true });
+  cv.addEventListener("webglcontextlost", (e) => {
+    e.preventDefault();
+    document.documentElement.classList.add("no-webgl");
+  });
+  document.addEventListener("accent", () => (dirty = true));
+
+  resize();
+  gl.uniform1i(U.uLife, 0);
+
+  const render = (dt) => {
+    const y = scrollY;
+    const heroEnd = Math.max(1, H * 0.95);
+    const dim = lerp(1, 0.5, clamp(y / heroEnd, 0, 1));
+    gl.uniform2f(U.uRes, cv.width, cv.height);
+    gl.uniform1f(U.uDpr, dpr);
+    gl.uniform1f(U.uT, t);
+    gl.uniform2f(U.uM, M.x, M.y);
+    gl.uniform2f(U.uV, M.vx, M.vy);
+    gl.uniform1f(U.uScroll, y);
+    gl.uniform1f(U.uDim, dim);
+    gl.uniform1f(U.uDensity, Field.density);
+    gl.uniform1f(U.uForce, Field.force);
+    gl.uniform1f(U.uHold, M.hold);
+    gl.uniform1f(U.uMix, mix);
+    gl.uniform1i(U.uMode, Field.mode);
+    gl.uniform1i(U.uPrev, prev);
+    gl.uniform3f(U.uAcc, Acc.rgb[0] / 255, Acc.rgb[1] / 255, Acc.rgb[2] / 255);
+    gl.uniform2f(U.uLifeSize, lc, lr);
+    gl.uniform1f(U.uLifeCell, LIFE_CELL);
+    const arr = new Float32Array(18);
+    ripples.forEach((r, i) => {
+      const age = t - r.t0;
+      arr[i * 3] = r.x;
+      arr[i * 3 + 1] = r.y;
+      arr[i * 3 + 2] = age < 3.2 ? age : -1;
+    });
+    gl.uniform3fv(U.uR, arr);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  };
+
+  addTick(null, (dt) => {
+    const moving = !REDUCED && !Field.paused;
+    if (moving) t += dt;
+    else if (ripples.some((r) => t - r.t0 < 3.2)) t += dt;
+    const k = 1 - Math.pow(0.0008, dt);
+    const ox = M.x, oy = M.y;
+    M.x += (M.tx - M.x) * k;
+    M.y += (M.ty - M.y) * k;
+    M.vx = lerp(M.vx, clamp((M.x - ox) * 3, -90, 90), 0.2);
+    M.vy = lerp(M.vy, clamp((M.y - oy) * 3, -90, 90), 0.2);
+    M.hold = lerp(M.hold, M.down ? 1 : 0, 1 - Math.pow(0.002, dt));
+    if (mix < 1) mix = Math.min(1, mix + dt * 2.4);
+    if (Field.mode === 4 && moving) {
+      lifeAcc += dt;
+      if (lifeAcc > 0.11) {
+        lifeAcc = 0;
+        lifeStep();
+      }
+    }
+    if (Field.mode === 4 || prev === 4) lifeUpload();
+    const settling = Math.abs(M.tx - M.x) + Math.abs(M.ty - M.y) > 0.2 || mix < 1 || ripples.some((r) => t - r.t0 < 3.2);
+    if (moving || settling || dirty) {
+      render(dt);
+      dirty = false;
+    }
+    /* Trade resolution for smoothness on slower machines. */
+    frames++;
+    fpsT += dt;
+    if (fpsT >= 1) {
+      Field.fps = Math.round(frames / fpsT);
+      frames = 0;
+      fpsT = 0;
+      if (Field.fps < 34) slow++, (fast = 0);
+      else if (Field.fps > 54) fast++, (slow = 0);
+      else slow = fast = 0;
+      if (slow >= 2 && scale > 0.5) {
+        scale = Math.max(0.5, scale - 0.2);
+        slow = 0;
+        resize();
+      } else if (fast >= 12 && scale < 1) {
+        scale = Math.min(1, scale + 0.1);
+        fast = 0;
+        resize();
+      }
+    }
+  });
+}
+
+/* Hero solid: real polyhedra built from vertex data, with spikes, shatter and clickable facets. */
+const V3 = {
+  sub: (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]],
+  add: (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]],
+  mul: (a, s) => [a[0] * s, a[1] * s, a[2] * s],
+  dot: (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2],
+  cross: (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]],
+  norm(a) {
+    const l = Math.hypot(a[0], a[1], a[2]) || 1;
+    return [a[0] / l, a[1] / l, a[2] / l];
+  },
+  avg(list) {
+    const s = list.reduce((m, v) => V3.add(m, v), [0, 0, 0]);
+    return V3.mul(s, 1 / list.length);
+  },
+};
+
+function outward(verts, f) {
+  const c = V3.avg(f.map((i) => verts[i]));
+  const n = V3.cross(V3.sub(verts[f[1]], verts[f[0]]), V3.sub(verts[f[2]], verts[f[0]]));
+  return V3.dot(n, c) < 0 ? [...f].reverse() : f;
+}
+function triFaces(raw) {
+  const v = raw.map(V3.norm);
+  let min = Infinity;
+  for (let i = 0; i < v.length; i++) for (let j = i + 1; j < v.length; j++) min = Math.min(min, Math.hypot(...V3.sub(v[i], v[j])));
+  const adj = (i, j) => Math.abs(Math.hypot(...V3.sub(v[i], v[j])) - min) < 1e-6;
+  const f = [];
+  for (let i = 0; i < v.length; i++)
+    for (let j = i + 1; j < v.length; j++)
+      for (let k = j + 1; k < v.length; k++) if (adj(i, j) && adj(j, k) && adj(i, k)) f.push(outward(v, [i, j, k]));
+  return { v, f };
+}
+function dual(p) {
+  const v = p.f.map((f) => V3.norm(V3.avg(f.map((i) => p.v[i]))));
+  const f = p.v.map((axis, i) => {
+    const around = p.f.map((_, k) => k).filter((k) => p.f[k].includes(i));
+    const u = V3.norm(V3.sub(v[around[0]], V3.mul(axis, V3.dot(v[around[0]], axis))));
+    const w = V3.cross(axis, u);
+    around.sort((a, b) => Math.atan2(V3.dot(v[a], w), V3.dot(v[a], u)) - Math.atan2(V3.dot(v[b], w), V3.dot(v[b], u)));
+    return outward(v, around);
+  });
+  return { v, f };
+}
+const PHI = (1 + Math.sqrt(5)) / 2;
+const ICO = triFaces([[0, 1, PHI], [0, -1, PHI], [0, 1, -PHI], [0, -1, -PHI], [1, PHI, 0], [-1, PHI, 0], [1, -PHI, 0], [-1, -PHI, 0], [PHI, 0, 1], [-PHI, 0, 1], [PHI, 0, -1], [-PHI, 0, -1]]);
+const OCT = triFaces([[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]]);
+const TET = triFaces([[1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]]);
+const SOLIDS = { TET: TET, CUB: dual(OCT), OCT: OCT, DOD: dual(ICO), ICO: ICO };
+
+function mmul(a, b) {
+  const r = new Array(9);
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) r[i * 3 + j] = a[i * 3] * b[j] + a[i * 3 + 1] * b[3 + j] + a[i * 3 + 2] * b[6 + j];
+  return r;
+}
+const rotY = (t) => [Math.cos(t), 0, Math.sin(t), 0, 1, 0, -Math.sin(t), 0, Math.cos(t)];
+const rotX = (t) => [1, 0, 0, 0, Math.cos(t), -Math.sin(t), 0, Math.sin(t), Math.cos(t)];
+const apply = (m, v) => [m[0] * v[0] + m[1] * v[1] + m[2] * v[2], m[3] * v[0] + m[4] * v[1] + m[5] * v[2], m[6] * v[0] + m[7] * v[1] + m[8] * v[2]];
+
+function initForge() {
+  const cv = $("#forge");
+  const s = fit(cv);
+  const ctx = s.ctx;
+  let name = store.get("solid", "ICO");
+  if (!SOLIDS[name]) name = "ICO";
+  let R = mmul(rotX(-0.35), rotY(0.5));
+  let vx = REDUCED ? 0 : 0.18, vy = REDUCED ? 0 : 0.34, spike = store.get("spike", 0.55), shatter = 0, spin = !REDUCED;
+  let pop = [], popV = [], hover = -1;
+  let drag = null, moved = 0;
+  let light = [-0.55, -0.6, 0.6];
+  let frameTris = [];
+
+  function resetPop() {
+    const n = SOLIDS[name].f.length;
+    pop = new Array(n).fill(0);
+    popV = new Array(n).fill(0);
+  }
+  resetPop();
+
+  const euler = $("#euler");
+  function showEuler() {
+    const p = SOLIDS[name];
+    const stel = spike > 0.001;
+    const V = p.v.length + (stel ? p.f.length : 0);
+    const F = stel ? p.f.reduce((m, f) => m + f.length, 0) : p.f.length;
+    const E = V + F - 2;
+    euler.innerHTML = `V <b>${V}</b> &nbsp; E <b>${E}</b> &nbsp; F <b>${F}</b><br>V − E + F = <b>2</b>`;
+  }
+  showEuler();
+
+  const ctl = $("#forge-ctl");
+  const shapes = seg(Object.keys(SOLIDS), name, (v) => {
+    name = v;
+    store.set("solid", v);
+    resetPop();
+    showEuler();
+    vx += 1.3;
+    vy += 1.9;
+  }, "Solid");
+  const row = document.createElement("div");
+  row.className = "forge-row";
+  row.append(
+    slider("Spike", 0, 1.4, 0.01, spike, (v) => v.toFixed(2), (v) => {
+      spike = v;
+      store.set("spike", v);
+      showEuler();
+    }),
+    slider("Shatter", 0, 1, 0.01, 0, (v) => v.toFixed(2), (v) => (shatter = v))
+  );
+  ctl.append(shapes, row);
+
+  function tris() {
+    const p = SOLIDS[name];
+    const out = [];
+    p.f.forEach((f, fi) => {
+      const pts = f.map((i) => p.v[i]);
+      const c = V3.avg(pts);
+      const n = V3.norm(c);
+      const off = V3.mul(n, shatter * 0.7 + pop[fi]);
+      if (spike > 0.001) {
+        const apex = V3.add(c, V3.mul(n, spike));
+        pts.forEach((a, i) => {
+          const b = pts[(i + 1) % pts.length];
+          out.push({ pts: [a, b, apex].map((q) => V3.add(q, off)), fi });
+        });
+      } else {
+        out.push({ pts: pts.map((q) => V3.add(q, off)), fi });
+      }
+    });
+    return out;
+  }
+
+  function draw() {
+    const { w, h } = s;
+    ctx.clearRect(0, 0, w, h);
+    const scale = Math.min(w, h) * 0.27 / (1 + Math.min(spike, 1) * 0.28 + shatter * 0.12);
+    const cx = w / 2, cy = h / 2;
+    const proj = (v) => {
+      const k = 4.2 / (4.2 - v[2]);
+      return [cx + v[0] * scale * k, cy + v[1] * scale * k, v[2]];
+    };
+    const L = V3.norm(light);
+    frameTris = tris().map((t) => {
+      const w3 = t.pts.map((q) => apply(R, q));
+      const n = V3.norm(V3.cross(V3.sub(w3[1], w3[0]), V3.sub(w3[2], w3[0])));
+      const scr = w3.map(proj);
+      return { fi: t.fi, n, scr, z: w3.reduce((m, q) => m + q[2], 0) / w3.length };
+    });
+    frameTris.sort((a, b) => a.z - b.z);
+    for (const t of frameTris) {
+      const facing = t.n[2] > 0;
+      const k = Math.max(0, V3.dot(t.n, L));
+      ctx.beginPath();
+      t.scr.forEach((q, i) => (i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])));
+      ctx.closePath();
+      if (facing) {
+        const g = Math.round(13 + 44 * k);
+        ctx.fillStyle = `rgba(${g},${g},${g + 4},.96)`;
+        ctx.fill();
+        const hot = Math.pow(k, 9);
+        if (hot > 0.015) {
+          ctx.fillStyle = rgba(hot * 0.85);
+          ctx.fill();
+        }
+        if (t.fi === hover) {
+          ctx.fillStyle = rgba(0.16);
+          ctx.fill();
+        }
+        ctx.strokeStyle = t.fi === hover ? rgba(0.95) : `rgba(255,255,255,${0.1 + 0.26 * k})`;
+      } else {
+        ctx.fillStyle = "rgba(10,10,13,.55)";
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,.07)";
+      }
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    /* orbit ticks */
+    ctx.strokeStyle = "rgba(255,255,255,.1)";
+    ctx.beginPath();
+    for (let i = 0; i < 48; i++) {
+      const a = (i / 48) * Math.PI * 2;
+      const r = Math.min(w, h) * 0.47, r2 = r - (i % 4 ? 3 : 8);
+      ctx.moveTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      ctx.lineTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2);
+    }
+    ctx.stroke();
+  }
+
+  function hit(p) {
+    for (let i = frameTris.length - 1; i >= 0; i--) {
+      const t = frameTris[i];
+      if (t.n[2] <= 0) continue;
+      let inside = false;
+      const q = t.scr;
+      for (let a = 0, b = q.length - 1; a < q.length; b = a++) {
+        if (q[a][1] > p.y !== q[b][1] > p.y && p.x < ((q[b][0] - q[a][0]) * (p.y - q[a][1])) / (q[b][1] - q[a][1]) + q[a][0]) inside = !inside;
+      }
+      if (inside) return t.fi;
+    }
+    return -1;
+  }
+
+  cv.addEventListener("pointerdown", (e) => {
+    drag = evPos(e, cv);
+    moved = 0;
+    cv.setPointerCapture(e.pointerId);
+  });
+  cv.addEventListener("pointermove", (e) => {
+    const p = evPos(e, cv);
+    if (drag) {
+      const dx = p.x - drag.x, dy = p.y - drag.y;
+      moved += Math.abs(dx) + Math.abs(dy);
+      R = mmul(mmul(rotX(-dy * 0.008), rotY(dx * 0.008)), R);
+      vx = -dy * 0.5;
+      vy = dx * 0.5;
+      drag = p;
+    } else {
+      hover = hit(p);
+      light = [(p.x - s.w / 2) / (s.w / 2), (p.y - s.h / 2) / (s.h / 2), 0.7];
+    }
+  });
+  const up = (e) => {
+    if (drag && moved < 6) {
+      const f = hit(evPos(e, cv));
+      if (f >= 0) {
+        popV[f] = 2.8;
+        Sound.blip(880 - f * 12, 0.05);
+      }
+    }
+    drag = null;
+  };
+  cv.addEventListener("pointerup", up);
+  cv.addEventListener("pointercancel", () => (drag = null));
+  cv.addEventListener("pointerleave", () => (hover = -1));
+  cv.addEventListener("dblclick", () => {
+    const k = Object.keys(SOLIDS);
+    shapes.set(k[(k.indexOf(name) + 1) % k.length], true);
+  });
+
+  addTick(cv, (dt) => {
+    if (!drag) {
+      R = mmul(mmul(rotX(-vx * dt), rotY(vy * dt)), R);
+      const f = Math.pow(0.28, dt);
+      const tx = spin ? 0.1 : 0, ty = spin ? 0.3 : 0;
+      vx = tx + (vx - tx) * f;
+      vy = ty + (vy - ty) * f;
+    }
+    for (let i = 0; i < pop.length; i++) {
+      popV[i] += -pop[i] * 34 * dt;
+      popV[i] *= Math.pow(0.03, dt);
+      pop[i] += popV[i] * dt;
+    }
+    draw();
+  });
+  draw();
+  document.addEventListener("accent", draw);
+  return { draw };
+}
+
+/* Page furniture: mode chips, control dock, command menu, headline, stats and footer. */
+
+function initChips() {
+  const w = $("#mode-chips");
+  MODES.forEach((name, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip";
+    b.textContent = name;
+    b.setAttribute("aria-pressed", i === Field.mode);
+    b.addEventListener("click", () => {
+      Sound.blip(420 + i * 90);
+      Field.setMode(i);
+    });
+    w.append(b);
+  });
+  Field.onMode((m) => {
+    $$(".chip", w).forEach((b, i) => b.setAttribute("aria-pressed", i === m));
+    $("#dock-l").textContent = "Field / " + MODES[m];
+  });
+  $("#dock-l").textContent = "Field / " + MODES[Field.mode];
+}
+
+function initDock() {
+  const dock = $("#dock"), p = $("#dock-p"), b = $("#dock-b");
+  const setOpen = (v) => {
+    p.hidden = !v;
+    dock.classList.toggle("open", v);
+    b.setAttribute("aria-expanded", v);
+  };
+  b.addEventListener("click", () => setOpen(p.hidden));
+
+  const modeSeg = seg(MODES.map((n, i) => [i, n]), Field.mode, (v) => Field.setMode(+v), "Background style");
+  Field.onMode((m) => modeSeg.set(m));
+  const density = slider("Density", 0.6, 2, 0.05, 1, (v) => v.toFixed(2), (v) => {
+    Field.density = v;
+    Field.touch();
+  });
+  const force = slider("Force", 0.2, 2.4, 0.05, 1, (v) => v.toFixed(2), (v) => {
+    Field.force = v;
+    Field.touch();
+  });
+  const sw = document.createElement("div");
+  sw.className = "sw";
+  sw.setAttribute("role", "group");
+  sw.setAttribute("aria-label", "Accent colour");
+  const current = store.get("accent", ACCENTS[0][1]);
+  ACCENTS.forEach(([n, hex]) => {
+    const c = document.createElement("button");
+    c.type = "button";
+    c.style.setProperty("--c", hex);
+    c.setAttribute("aria-label", n);
+    c.setAttribute("aria-pressed", hex === current);
+    c.addEventListener("click", () => applyAccent(hex));
+    sw.append(c);
+  });
+  const acts = document.createElement("div");
+  acts.className = "dock-a";
+  const pause = btn("Pause", () => {
+    Field.paused = !Field.paused;
+    pause.textContent = Field.paused ? "Resume" : "Pause";
+  });
+  const sound = btn("Sound off", () => {
+    Sound.toggle(!Sound.on);
+    sound.textContent = Sound.on ? "Sound on" : "Sound off";
+    Sound.blip(880);
+  });
+  const reset = btn("Reset", () => {
+    Field.reset();
+    density.setValue(1);
+    force.setValue(1);
+    applyAccent(ACCENTS[0][1]);
+    pause.textContent = "Pause";
+    toast("Background reset.");
+  });
+  acts.append(pause, sound, reset);
+  const lab = (t) => {
+    const l = document.createElement("span");
+    l.className = "label";
+    l.textContent = t;
+    return l;
+  };
+  const fps = lab("");
+  addTick(p, () => (fps.textContent = `${Field.fps} fps`));
+  const head = document.createElement("div");
+  head.style.cssText = "display:flex;justify-content:space-between;gap:8px";
+  head.append(lab("Background field"), fps);
+  p.append(head, modeSeg, density, force, sw, acts);
+  Dock.density = density;
+  Dock.force = force;
+  Dock.open = setOpen;
+}
+const Dock = {};
+
+function applyAccent(hex) {
+  setAccent(hex);
+  $$(".sw button").forEach((b) => b.setAttribute("aria-pressed", getComputedStyle(b).getPropertyValue("--c").trim() === hex));
+}
+
+function initPalette() {
+  const pal = $("#pal"), input = $("#pal-i"), list = $("#pal-l");
+  const go = (id) => () => $(id).scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+  const items = [
+    ["Experience", "Section", go("#experience")],
+    ["Projects", "Section", go("#work")],
+    ["Earlier work", "Section", go("#earlier")],
+    ["Skills", "Section", go("#skills")],
+    ["About", "Section", go("#about")],
+    ["Contact", "Section", go("#contact")],
+    ["Barrier-Free Resharding", "Project", go("#p-reshard")],
+    ["AHRAG: Secure Hybrid Retrieval", "Project", go("#p-ahrag")],
+    ["Document Summary Assistant", "Project", go("#p-summary")],
+    ["Multithreaded Java HTTP Server", "Project", go("#p-http")],
+    ["AI Resume Analyzer", "Project", go("#p-analyzer")],
+    ["Finance Tracker", "Project", go("#p-finance")],
+    ["Huffman File Compressor", "Project", go("#p-huffman")],
+    ...MODES.map((m, i) => [`Background: ${m}`, "Field", () => Field.setMode(i)]),
+    ...ACCENTS.map(([n, hex]) => [`Accent: ${n}`, "Colour", () => applyAccent(hex)]),
+    ["Send a pulse across the page", "Field", () => Field.pulse(innerWidth / 2, innerHeight / 2)],
+    ["Start a glider gun", "Field", () => Field.gun()],
+    ["Copy email address", "Contact", () => copyEmail()],
+    ["Open GitHub", "Link", () => window.open("https://github.com/parthi-bun", "_blank", "noopener")],
+    ["Open the Field controls", "Field", () => Dock.open(true)],
+  ];
+  let view = items, on = 0;
+  const render = () => {
+    if (!view.length) {
+      list.innerHTML = `<p class="pal-e">Nothing matches that. Try "projects" or "background".</p>`;
+      return;
+    }
+    list.innerHTML = view.map(([t, k], i) => `<button type="button" role="option" aria-selected="${i === on}" class="${i === on ? "on" : ""}" data-i="${i}"><span>${esc(t)}</span><span>${k}</span></button>`).join("");
+    const a = $(".on", list);
+    if (a) a.scrollIntoView({ block: "nearest" });
+  };
+  const open = () => {
+    pal.hidden = false;
+    input.value = "";
+    view = items;
+    on = 0;
+    render();
+    input.focus();
+  };
+  const close = () => {
+    pal.hidden = true;
+    $("#pal-open").focus();
+  };
+  const run = (i) => {
+    const it = view[i];
+    if (!it) return;
+    close();
+    it[2]();
+    Sound.blip(700);
+  };
+  $("#pal-open").addEventListener("click", open);
+  $("#pal-key").textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
+  pal.addEventListener("click", (e) => {
+    if (e.target === pal) close();
+    const b = e.target.closest("button[data-i]");
+    if (b) run(+b.dataset.i);
+  });
+  input.addEventListener("input", () => {
+    const q = input.value.toLowerCase().trim();
+    view = items.filter(([t, k]) => (t + " " + k).toLowerCase().includes(q));
+    on = 0;
+    render();
+  });
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      if (view.length) on = (on + (e.key === "ArrowDown" ? 1 : view.length - 1)) % view.length;
+      render();
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      run(on);
+    }
+  });
+  const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+  let kon = 0;
+  addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      pal.hidden ? open() : close();
+      return;
+    }
+    if (e.key === "Escape" && !pal.hidden) return close();
+    const typing = /INPUT|TEXTAREA/.test(document.activeElement.tagName);
+    if (typing || !pal.hidden) return;
+    if (e.key === KONAMI[kon]) {
+      kon++;
+      if (kon === KONAMI.length) {
+        kon = 0;
+        Field.gun();
+        toast("Glider gun armed.");
+      }
+    } else kon = e.key === KONAMI[0] ? 1 : 0;
+    if (/^[1-5]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey) Field.setMode(+e.key - 1);
+    if (e.key === "/") {
+      e.preventDefault();
+      open();
+    }
+  });
+}
+
+function copyEmail() {
+  const email = $("#mail").dataset.email;
+  copyText(email).then((ok) => toast(ok ? "Email address copied." : "Select the address on the page to copy it."));
+}
+
+function initHeadline() {
+  const h = $("#title");
+  const chars = [];
+  $$("[data-split]", h).forEach((ln) => {
+    const t = ln.textContent;
+    ln.textContent = "";
+    for (const c of t) {
+      const s = document.createElement("span");
+      s.className = "ch";
+      s.textContent = c === " " ? " " : c;
+      ln.append(s);
+      chars.push({ s, w: 600 });
+    }
+  });
+  if (REDUCED || !matchMedia("(hover: hover)").matches) return;
+  let px = -9999, py = -9999;
+  const measure = () => chars.forEach((c) => {
+    const r = c.s.getBoundingClientRect();
+    c.x = r.left + r.width / 2;
+    c.y = r.top + r.height / 2;
+  });
+  addEventListener("pointermove", (e) => {
+    px = e.clientX;
+    py = e.clientY;
+  }, { passive: true });
+  let t = 0;
+  addTick(h, (dt) => {
+    t += dt;
+    if (t > 0.25) {
+      t = 0;
+      measure();
+    }
+    for (const c of chars) {
+      if (c.x === undefined) continue;
+      const d = Math.hypot(px - c.x, py - c.y);
+      const target = 600 + 300 * Math.exp(-(d * d) / 12000) - 420 * Math.exp(-((d - 150) * (d - 150)) / 5200);
+      c.w += (target - c.w) * 0.16;
+      const v = clamp(Math.round(c.w / 10) * 10, 100, 900);
+      if (v !== c.v) {
+        c.v = v;
+        c.s.style.fontWeight = v;
+      }
+    }
+  });
+}
+
+function initStats() {
+  const nums = $$("[data-count]");
+  const play = (el) => {
+    if (REDUCED) return;
+    const end = +el.dataset.count, dec = +(el.dataset.dec || 0), t0 = performance.now();
+    if (!end) {
+      el.textContent = end.toFixed(dec);
+      return;
+    }
+    const f = (n) => {
+      const k = clamp((n - t0) / 900, 0, 1);
+      el.textContent = (end * (1 - Math.pow(1 - k, 3))).toFixed(dec);
+      if (k < 1) requestAnimationFrame(f);
+    };
+    requestAnimationFrame(f);
+  };
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) {
+      play(e.target);
+      io.unobserve(e.target);
+    }
+  }), { threshold: 0.6 });
+  nums.forEach((n) => {
+    io.observe(n);
+    n.parentElement.addEventListener("pointerenter", () => play(n));
+  });
+}
+
+function initMarquee() {
+  const stack = ["Go", "Python", "Java", "TypeScript", "C++", "Flutter", "FastAPI", "Spring Boot", "React", "scikit-learn", "Docker", "AWS EC2/S3", "Nginx", "MySQL", "Pytest"];
+  const row = stack.map((s) => `<span>${s}</span>`).join("");
+  $("#marq").innerHTML = row + row + row + row;
+}
+
+function initScroll() {
+  const bar = $("#progress");
+  const links = $$(".nav-links a");
+  const secs = links.map((a) => $(a.getAttribute("href")));
+  const on = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    bar.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
+    let cur = -1;
+    secs.forEach((s, i) => {
+      if (s.getBoundingClientRect().top < innerHeight * 0.4) cur = i;
+    });
+    links.forEach((a, i) => a.classList.toggle("on", i === cur));
+  };
+  addEventListener("scroll", on, { passive: true });
+  addEventListener("resize", on);
+  on();
+}
+
+function initMagnets() {
+  if (REDUCED || !matchMedia("(hover: hover)").matches) return;
+  $$(".mag").forEach((b) => {
+    b.addEventListener("pointermove", (e) => {
+      const r = b.getBoundingClientRect();
+      b.style.transform = `translate(${((e.clientX - r.left) / r.width - 0.5) * 8}px,${((e.clientY - r.top) / r.height - 0.5) * 6}px)`;
+    });
+    b.addEventListener("pointerleave", () => (b.style.transform = ""));
+  });
+}
+
+function initFooter() {
+  const clock = $("#clock");
+  const fmt = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  const tick = () => (clock.textContent = `Kumbakonam ${fmt.format(new Date())} IST`);
+  tick();
+  setInterval(tick, 1000);
+
+  const big = $("#bigname");
+  const text = big.textContent;
+  big.textContent = "";
+  const letters = [...text].map((c) => {
+    const s = document.createElement("span");
+    s.textContent = c;
+    big.append(s);
+    return { s, y: 0, r: 0 };
+  });
+  if (REDUCED) return;
+  let px = -9999, py = -9999;
+  addEventListener("pointermove", (e) => {
+    px = e.clientX;
+    py = e.clientY;
+  }, { passive: true });
+  addTick(big, () => {
+    for (const l of letters) {
+      const b = l.s.getBoundingClientRect();
+      const dx = px - (b.left + b.width / 2), dy = py - (b.top + b.height / 2);
+      const f = Math.exp(-(dx * dx + dy * dy) / 26000);
+      l.y += (-f * 28 - l.y) * 0.14;
+      l.r += (-Math.sign(dx) * f * 9 - l.r) * 0.14;
+      l.s.style.transform = `translateY(${l.y.toFixed(1)}px) rotate(${l.r.toFixed(2)}deg)`;
+      l.s.style.webkitTextStrokeColor = f > 0.2 ? Acc.hex : "";
+    }
+  });
+}
+
+function initSkillList() {
+  $$("[data-sk]").forEach((w) => {
+    w.dataset.sk.split(",").forEach((name) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = name;
+      b.dataset.name = name;
+      b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", () => document.dispatchEvent(new CustomEvent("skill", { detail: name })));
+      w.append(b);
+    });
+  });
+  document.addEventListener("skillstate", (e) => {
+    $$(".sk button").forEach((b) => {
+      const on = b.dataset.name === e.detail;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-pressed", on);
+    });
+  });
+}
+
+/* Working models for the internship, resharding, retrieval and summary projects. */
+
+function toyCapture(el) {
+  const b = shell(el, "Attendance capture model", "Drag the face to smile");
+  b.innerHTML = `<canvas class="cv" style="--h:290px" role="img" aria-label="A drawn face. When it smiles past the trigger, a photo is taken and a student is marked present."></canvas><div class="ctl"></div>`;
+  const cv = $("canvas", b);
+  const ctl = $(".ctl", b);
+  const s = fit(cv);
+  const ctx = s.ctx;
+  const m = meters([["p", "Smile score"], ["c", "Captures"], ["k", "Marked"]]);
+  let smile = 0.1, target = 0.1, thr = 0.7, touched = false, armed = true, hold = 0;
+  let flash = 0, scan = 0, captures = 0, phase = 0, drag = null;
+  const eye = { x: 0, y: 0 };
+  const roster = Array.from({ length: 12 }, (_, i) => ({ id: "S" + String(i + 1).padStart(2, "0"), on: 0 }));
+  const sSmile = slider("Smile", 0, 1, 0.01, smile, (v) => v.toFixed(2), (v) => {
+    target = v;
+    touched = true;
+  });
+  const sThr = slider("Trigger", 0.3, 0.95, 0.01, thr, (v) => v.toFixed(2), (v) => (thr = v));
+  sSmile.classList.add("grow");
+  sThr.classList.add("grow");
+  ctl.append(sSmile, sThr, btn("Reset", () => {
+    roster.forEach((r) => (r.on = 0));
+    captures = 0;
+    armed = true;
+  }));
+  b.append(m);
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "No camera is used here. The face is drawn and the roster is made up.";
+  b.append(note);
+
+  cv.addEventListener("pointerdown", (e) => {
+    drag = evPos(e, cv).y;
+    touched = true;
+    cv.setPointerCapture(e.pointerId);
+  });
+  cv.addEventListener("pointermove", (e) => {
+    const p = evPos(e, cv);
+    const faceX = s.w * 0.31, faceY = s.h * 0.5;
+    eye.x = clamp((p.x - faceX) / 90, -1, 1);
+    eye.y = clamp((p.y - faceY) / 90, -1, 1);
+    if (drag !== null) {
+      target = clamp(target + (drag - p.y) / 150, 0, 1);
+      drag = p.y;
+      sSmile.setValue(target);
+    }
+  });
+  cv.addEventListener("pointerup", () => (drag = null));
+  cv.addEventListener("pointercancel", () => (drag = null));
+
+  function draw() {
+    const { w, h } = s;
+    ctx.clearRect(0, 0, w, h);
+    const narrow = w < 430;
+    const cx = w * (narrow ? 0.3 : 0.31), cy = h * 0.5, r = Math.min(h * 0.34, w * 0.23);
+    const on = smile >= thr;
+    /* detection box */
+    const bx = cx - r * 1.28, by = cy - r * 1.32, bw = r * 2.56, bh = r * 2.64, c = 14;
+    ctx.strokeStyle = on ? rgba(1) : "rgba(255,255,255,.34)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (const [x, y, dx, dy] of [[bx, by, 1, 1], [bx + bw, by, -1, 1], [bx, by + bh, 1, -1], [bx + bw, by + bh, -1, -1]]) {
+      ctx.moveTo(x + c * dx, y);
+      ctx.lineTo(x, y);
+      ctx.lineTo(x, y + c * dy);
+    }
+    ctx.stroke();
+    /* faceted head */
+    const head = [[-0.52, -1.02], [0.52, -1.02], [0.98, -0.42], [0.92, 0.32], [0.46, 1.04], [-0.46, 1.04], [-0.92, 0.32], [-0.98, -0.42]].map(([x, y]) => [cx + x * r, cy + y * r]);
+    const centre = [cx, cy - r * 0.08];
+    head.forEach((p, i) => {
+      const q = head[(i + 1) % head.length];
+      const v = 15 + ((i * 7) % 5) * 5;
+      ctx.fillStyle = `rgb(${v},${v},${v + 4})`;
+      ctx.beginPath();
+      ctx.moveTo(centre[0], centre[1]);
+      ctx.lineTo(p[0], p[1]);
+      ctx.lineTo(q[0], q[1]);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,.1)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+    ctx.strokeStyle = "rgba(255,255,255,.34)";
+    ctx.beginPath();
+    head.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
+    ctx.closePath();
+    ctx.stroke();
+    /* eyes */
+    for (const sx of [-1, 1]) {
+      const ex = cx + sx * r * 0.4, ey = cy - r * 0.26, ew = r * 0.25, squint = smile * 0.45;
+      ctx.fillStyle = "#ededef";
+      ctx.beginPath();
+      ctx.moveTo(ex - ew, ey);
+      ctx.lineTo(ex, ey - ew * (0.62 - squint * 0.4));
+      ctx.lineTo(ex + ew, ey);
+      ctx.lineTo(ex, ey + ew * (0.5 - squint));
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#08080a";
+      const ps = r * 0.075;
+      ctx.fillRect(ex + eye.x * ew * 0.5 - ps, ey + eye.y * ew * 0.1 - ps, ps * 2, ps * 1.7);
+    }
+    /* mouth */
+    const my = cy + r * 0.48, mw = r * 0.54, curve = (smile - 0.28) * r * 0.62;
+    const mouth = [[-1, -1], [-0.55, -0.02], [0, 0.62], [0.55, -0.02], [1, -1]].map(([x, y]) => [cx + x * mw, my + y * curve * 0.58 + (Math.abs(x) === 1 ? 0 : 0)]);
+    ctx.strokeStyle = on ? rgba(1) : "#ededef";
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    mouth.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
+    ctx.stroke();
+    ctx.lineWidth = 1;
+    /* landmarks */
+    ctx.fillStyle = rgba(0.95);
+    const marks = [...mouth, [cx - r * 0.4, cy - r * 0.26], [cx + r * 0.4, cy - r * 0.26], [cx, cy + r * 0.1], ...head];
+    for (const p of marks) ctx.fillRect(p[0] - 1.5, p[1] - 1.5, 3, 3);
+    if (scan > 0) {
+      const y = by + bh * (1 - scan);
+      ctx.fillStyle = rgba(0.85);
+      ctx.fillRect(bx, y, bw, 2);
+      ctx.fillStyle = rgba(0.08);
+      ctx.fillRect(bx, y, bw, bh - (y - by));
+    }
+    ctx.font = '500 10px "Geist Mono", ui-monospace, monospace';
+    ctx.fillStyle = on ? rgba(1) : "#8b8b95";
+    ctx.fillText(`smile ${smile.toFixed(2)} / trigger ${thr.toFixed(2)}`, bx, Math.max(12, by - 7));
+    /* roster */
+    const rx = w * (narrow ? 0.62 : 0.65), rw = w - rx - 14, cols = 3, gap = 5;
+    const tw = (rw - gap * (cols - 1)) / cols, th = Math.min(tw * 0.72, (h - 58) / 4 - gap);
+    ctx.fillStyle = "#8b8b95";
+    ctx.fillText("ROSTER", rx, 26);
+    roster.forEach((t, i) => {
+      const x = rx + (i % cols) * (tw + gap), y = 36 + Math.floor(i / cols) * (th + gap);
+      ctx.fillStyle = t.on ? rgba(0.2 + 0.72 * t.on) : "#131317";
+      ctx.fillRect(x, y, tw, th);
+      ctx.strokeStyle = t.on ? rgba(0.9) : "rgba(255,255,255,.14)";
+      ctx.strokeRect(x + 0.5, y + 0.5, tw - 1, th - 1);
+      ctx.fillStyle = t.on > 0.5 ? "#08080a" : "#adadb6";
+      ctx.fillText(t.id, x + 6, y + th / 2 + 3.5);
+    });
+    if (flash > 0) {
+      ctx.fillStyle = `rgba(255,255,255,${flash * 0.6})`;
+      ctx.fillRect(0, 0, w, h);
+    }
+    m.set("p", smile.toFixed(2));
+    m.set("c", captures);
+    m.set("k", `${roster.filter((t) => t.on).length}/12`);
+  }
+
+  addTick(cv, (dt) => {
+    phase += dt;
+    if (!touched && !REDUCED) {
+      target = 0.46 + 0.42 * Math.sin(phase * 0.8);
+      sSmile.setValue(+target.toFixed(2));
+    }
+    smile = lerp(smile, target, 1 - Math.pow(0.002, dt));
+    flash = Math.max(0, flash - dt * 3.4);
+    if (smile >= thr && armed) {
+      hold += dt;
+      if (hold > 0.4) {
+        armed = false;
+        hold = 0;
+        flash = 1;
+        scan = 1;
+        captures++;
+        Sound.blip(1200, 0.06, 0.04);
+      }
+    } else if (smile < thr - 0.06) {
+      armed = true;
+      hold = 0;
+    }
+    if (scan > 0) {
+      scan -= dt / 0.65;
+      if (scan <= 0) {
+        scan = 0;
+        const t = roster.find((r) => !r.on);
+        if (t) t.on = 0.001;
+        else roster.forEach((r) => (r.on = 0));
+        Sound.blip(990, 0.05);
+      }
+    }
+    roster.forEach((t) => {
+      if (t.on) t.on = Math.min(1, t.on + dt * 3);
+    });
+    draw();
+  });
+  draw();
+}
+
+/* Two computers trade blocks over a cable while updates keep landing on them. */
+function toyReshard(el) {
+  const b = shell(el, "Block transfer model", "Click a block to send it");
+  b.innerHTML = `<canvas class="cv" style="--h:336px;cursor:pointer" role="img" aria-label="Two computers passing blocks of data along a cable. Updates keep landing in live mode and stop in global-stop mode."></canvas><div class="ctl"></div>`;
+  const cv = $("canvas", b);
+  const ctl = $(".ctl", b);
+  const s = fit(cv);
+  const ctx = s.ctx;
+  const m = meters([["a", "Updates applied"], ["q", "Waiting now"], ["w", "Worst wait"], ["b", "Blocks moved"]]);
+  const SIDE = 4, MOVE = 1.5;
+  const slots = [Array(SIDE * SIDE).fill(null), Array(SIDE * SIDE).fill(null)];
+  let id = 0, mode = "live", auto = !REDUCED, autoT = 0.5, spawnT = 0, applied = 0, worst = 0, moved = 0, now = 0, cable = 0;
+  const flights = [], packets = [];
+  const newTile = () => ({ id: ++id, flash: 0 });
+  for (let i = 0; i < 11; i++) slots[0][i] = newTile();
+  for (let i = 0; i < 5; i++) slots[1][i] = newTile();
+
+  const modeSeg = seg([["live", "Live transfer"], ["stop", "Global stop"]], mode, (v) => {
+    mode = v;
+    applied = 0;
+    worst = 0;
+    moved = 0;
+    packets.forEach((p) => (p.born = now - p.t / 1.8));
+  }, "Transfer mode");
+  const autoSeg = seg([["on", "Auto on"], ["off", "Auto off"]], auto ? "on" : "off", (v) => (auto = v === "on"), "Automatic transfers");
+  ctl.append(modeSeg, btn("Send a block", () => sendAny()), autoSeg);
+  b.append(m);
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "An illustration of the behaviour, with made-up timing. In global stop, every update waits for the transfer to finish. The measured results are in the write-up.";
+  b.append(note);
+
+  function layout() {
+    const { w, h } = s;
+    const mw = Math.min(w * 0.36, 214), pad = 9, tile = (mw - pad * 2 - (SIDE - 1) * 4) / SIDE;
+    const sh = tile * SIDE + (SIDE - 1) * 4 + pad * 2;
+    const my = Math.max(44, (h - sh - 62) / 2 + 12);
+    const box = (i) => {
+      const x = i ? w - 14 - mw : 14;
+      return { x, y: my, w: mw, h: sh + 22 };
+    };
+    return { mw, pad, tile, sh, my, box };
+  }
+  function slotXY(L, n, i) {
+    const B = L.box(n);
+    return { x: B.x + L.pad + (i % SIDE) * (L.tile + 4), y: B.y + 22 + L.pad - 4 + Math.floor(i / SIDE) * (L.tile + 4) };
+  }
+  function route(L, from, to, a, c) {
+    const A = L.box(0), B = L.box(1);
+    const baseY = A.y + A.h + 30;
+    const portA = [A.x + A.w, A.y + A.h - 16], portB = [B.x, B.y + B.h - 16];
+    const midA = (portA[0] + portB[0]) / 2 - 12, midB = midA + 24;
+    const cableP = [portA, [midA, portA[1]], [midA, baseY - 12], [midB, baseY - 12], [midB, portB[1]], portB];
+    const seq = from === 0 ? cableP : [...cableP].reverse();
+    const off = L.tile / 2 + 2;
+    const tube = seq.map(([x, y]) => [x - off, y - off]);
+    return [[a.x, a.y], [a.x, tube[0][1]], ...tube, [c.x, tube[tube.length - 1][1]], [c.x, c.y]];
+  }
+  function along(pts, t) {
+    let len = 0;
+    const seg = pts.slice(1).map((p, i) => {
+      const l = Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]);
+      len += l;
+      return l;
+    });
+    let d = t * len;
+    for (let i = 0; i < seg.length; i++) {
+      if (d <= seg[i] || i === seg.length - 1) {
+        const k = seg[i] ? d / seg[i] : 0;
+        return [lerp(pts[i][0], pts[i + 1][0], k), lerp(pts[i][1], pts[i + 1][1], k)];
+      }
+      d -= seg[i];
+    }
+    return pts[pts.length - 1];
+  }
+  const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+
+  function send(n, i) {
+    const to = 1 - n, dest = slots[to].indexOf(null);
+    if (dest < 0) return toast("That computer is full. Send a block the other way.");
+    const tile = slots[n][i];
+    if (!tile) return;
+    slots[n][i] = null;
+    slots[to][dest] = { reserved: true };
+    flights.push({ tile, from: n, to, si: i, di: dest, t: 0 });
+    Sound.blip(n ? 440 : 560, 0.07);
+  }
+  function sendAny() {
+    const count = (n) => slots[n].filter((t) => t && !t.reserved).length;
+    const n = count(0) >= count(1) ? 0 : 1;
+    const opts = slots[n].map((t, i) => (t && !t.reserved ? i : -1)).filter((i) => i >= 0);
+    if (opts.length) send(n, pick(opts));
+  }
+  function spawn() {
+    const n = Math.random() < 0.5 ? 0 : 1;
+    const opts = slots[n].map((t, i) => (t && !t.reserved ? i : -1)).filter((i) => i >= 0);
+    if (!opts.length) return;
+    packets.push({ n, i: pick(opts), t: 0, born: now, sx: rand(0.1, 0.9) });
+  }
+  const stopped = () => mode === "stop" && flights.length > 0;
+
+  cv.addEventListener("click", (e) => {
+    const p = evPos(e, cv), L = layout();
+    for (let n = 0; n < 2; n++) {
+      for (let i = 0; i < slots[n].length; i++) {
+        const t = slots[n][i];
+        if (!t || t.reserved) continue;
+        const q = slotXY(L, n, i);
+        if (p.x >= q.x && p.x <= q.x + L.tile && p.y >= q.y && p.y <= q.y + L.tile) {
+          auto = false;
+          autoSeg.set("off");
+          return send(n, i);
+        }
+      }
+    }
+  });
+
+  function draw() {
+    const { w, h } = s, L = layout();
+    ctx.clearRect(0, 0, w, h);
+    const frozen = stopped();
+    ctx.font = '500 10px "Geist Mono", ui-monospace, monospace';
+    /* cable */
+    const A = L.box(0), B = L.box(1);
+    const cableR = route(L, 0, 1, { x: 0, y: 0 }, { x: 0, y: 0 }).slice(2, -2).map(([x, y]) => [x + L.tile / 2 + 2, y + L.tile / 2 + 2]);
+    ctx.strokeStyle = "rgba(255,255,255,.2)";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    cableR.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
+    ctx.stroke();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = flights.length ? rgba(0.95) : "rgba(255,255,255,.28)";
+    ctx.setLineDash([5, 7]);
+    ctx.lineDashOffset = -cable;
+    ctx.beginPath();
+    cableR.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    /* computers */
+    [0, 1].forEach((n) => {
+      const Bx = L.box(n);
+      ctx.fillStyle = "#0d0d10";
+      ctx.fillRect(Bx.x, Bx.y, Bx.w, Bx.h);
+      ctx.strokeStyle = frozen ? rgba(0.75) : "rgba(255,255,255,.3)";
+      ctx.strokeRect(Bx.x + 0.5, Bx.y + 0.5, Bx.w - 1, Bx.h - 1);
+      ctx.fillStyle = "#8b8b95";
+      ctx.fillText(n ? "COMPUTER B" : "COMPUTER A", Bx.x + 9, Bx.y + 15);
+      ctx.fillStyle = frozen ? rgba(1) : "#4ade80";
+      ctx.fillRect(Bx.x + Bx.w - 15, Bx.y + 8, 6, 6);
+      /* stand */
+      const cx = Bx.x + Bx.w / 2, by = Bx.y + Bx.h;
+      ctx.fillStyle = "#17171b";
+      ctx.beginPath();
+      ctx.moveTo(cx - 13, by);
+      ctx.lineTo(cx + 13, by);
+      ctx.lineTo(cx + 19, by + 16);
+      ctx.lineTo(cx - 19, by + 16);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#26262c";
+      ctx.fillRect(cx - 38, by + 16, 76, 4);
+      /* port */
+      const px = n ? Bx.x - 3 : Bx.x + Bx.w - 3;
+      ctx.fillStyle = flights.length ? rgba(1) : "#5c5c66";
+      ctx.fillRect(px, Bx.y + Bx.h - 19, 6, 6);
+      /* slots */
+      slots[n].forEach((t, i) => {
+        const q = slotXY(L, n, i);
+        ctx.strokeStyle = "rgba(255,255,255,.08)";
+        ctx.strokeRect(q.x + 0.5, q.y + 0.5, L.tile - 1, L.tile - 1);
+        if (!t || t.reserved) return;
+        const v = Math.round(lerp(50, 112, 0.25 + (t.id % 4) / 5));
+        ctx.fillStyle = frozen ? `rgb(${v * 0.6},${v * 0.6},${v * 0.65})` : `rgb(${v},${v},${v + 6})`;
+        ctx.fillRect(q.x + 2, q.y + 2, L.tile - 4, L.tile - 4);
+        if (t.flash > 0) {
+          ctx.fillStyle = rgba(t.flash);
+          ctx.fillRect(q.x + 2, q.y + 2, L.tile - 4, L.tile - 4);
+        }
+      });
+    });
+    /* updates dropping onto blocks */
+    let waiting = 0;
+    for (const p of packets) {
+      const Bx = L.box(p.n), q = slotXY(L, p.n, p.i);
+      const sx = Bx.x + Bx.w * p.sx, sy = 8;
+      const hold = frozen ? 0.42 : 1;
+      const k = Math.min(p.t, hold);
+      if (frozen) waiting++;
+      const x = lerp(sx, q.x + L.tile / 2, k), y = lerp(sy, q.y + L.tile / 2, k);
+      ctx.fillStyle = frozen ? "#ff6b57" : rgba(0.95);
+      ctx.fillRect(x - 2, y - 2, 4, 4);
+    }
+    /* blocks on the wire */
+    for (const f of flights) {
+      const a = slotXY(L, f.from, f.si), c = slotXY(L, f.to, f.di);
+      const pts = route(L, f.from, f.to, a, c);
+      const full = L.tile - 4;
+      /* Blocks shrink to fit the cable, then grow back into their new slot. */
+      const sizeAt = (k) => lerp(full, Math.min(full, 14), clamp(Math.min(k, 1 - k) / 0.18, 0, 1));
+      const at = ease(f.t);
+      for (let g = 5; g >= 1; g--) {
+        const k = Math.max(0, at - g * 0.022), sz = sizeAt(k), [gx, gy] = along(pts, k);
+        ctx.fillStyle = rgba(0.06 * (6 - g));
+        ctx.fillRect(gx + full / 2 + 2 - sz / 2, gy + full / 2 + 2 - sz / 2, sz, sz);
+      }
+      const sz = sizeAt(at), [x, y] = along(pts, at);
+      const px = x + full / 2 + 2 - sz / 2, py = y + full / 2 + 2 - sz / 2;
+      ctx.fillStyle = Acc.hex;
+      ctx.fillRect(px, py, sz, sz);
+      ctx.strokeStyle = "#ededef";
+      ctx.strokeRect(px - 0.5, py - 0.5, sz + 1, sz + 1);
+    }
+    if (frozen) {
+      ctx.fillStyle = "#ff6b57";
+      const t = "ALL UPDATES PAUSED";
+      ctx.fillText(t, w / 2 - ctx.measureText(t).width / 2, h - 8);
+    } else {
+      ctx.fillStyle = "#8b8b95";
+      const t = flights.length ? "BLOCK IN TRANSIT / UPDATES RUNNING" : "UPDATES RUNNING";
+      ctx.fillText(t, w / 2 - ctx.measureText(t).width / 2, h - 8);
+    }
+    m.set("a", applied.toLocaleString("en-GB"));
+    m.set("q", waiting, waiting > 0);
+    m.set("w", Math.round(worst * 1000) + " ms");
+    m.set("b", moved);
+  }
+
+  addTick(cv, (dt) => {
+    now += dt;
+    cable += dt * (flights.length ? 34 : 8);
+    if (auto) {
+      autoT -= dt;
+      if (autoT <= 0) {
+        autoT = rand(2.1, 3);
+        sendAny();
+      }
+    }
+    if (!REDUCED || flights.length) {
+      spawnT += dt * 26;
+      while (spawnT > 1) {
+        spawnT -= 1;
+        spawn();
+      }
+    }
+    const frozen = stopped();
+    for (let i = packets.length - 1; i >= 0; i--) {
+      const p = packets[i];
+      if (frozen) {
+        p.t = Math.min(0.42, p.t + dt * 1.8);
+        continue;
+      }
+      p.t += dt * 1.8;
+      if (p.t >= 1) {
+        const t = slots[p.n][p.i];
+        if (t && !t.reserved) {
+          t.flash = 1;
+          applied++;
+          worst = Math.max(worst, now - p.born - 0.56);
+        } else {
+          p.t = 0.6;
+          p.born += 0.4 / 1.8;
+          const opts = slots[p.n].map((x, k) => (x && !x.reserved ? k : -1)).filter((k) => k >= 0);
+          if (opts.length) {
+            p.i = pick(opts);
+            continue;
+          }
+        }
+        packets.splice(i, 1);
+      }
+    }
+    for (let i = flights.length - 1; i >= 0; i--) {
+      const f = flights[i];
+      f.t += dt / MOVE;
+      if (f.t >= 1) {
+        slots[f.to][f.di] = f.tile;
+        f.tile.flash = 1;
+        moved++;
+        flights.splice(i, 1);
+        Sound.blip(f.to ? 660 : 500, 0.06);
+      }
+    }
+    for (const n of [0, 1]) for (const t of slots[n]) if (t && t.flash) t.flash = Math.max(0, t.flash - dt * 3.2);
+    draw();
+  });
+  draw();
+  document.addEventListener("accent", draw);
+}
+
+/* Small real BM25, a character n-gram stand-in for dense retrieval, and rank fusion. */
+function toyAhrag(el) {
+  const b = shell(el, "Eligibility-first retrieval", "Change the role or date");
+  const ALL = ["Intern", "Engineer", "Finance", "HR"];
+  const Y = 9999;
+  const DOCS = [
+    { id: "TRV-7 v2", t: "Travel reimbursement policy", roles: ALL, from: 0, to: 8, x: "Claim travel expenses within 60 days of the trip. Economy fares only. Receipts are required for meals." },
+    { id: "TRV-7 v3", t: "Travel reimbursement policy", roles: ALL, from: 8, to: Y, x: "Claim travel expenses within 30 days through the finance portal. Premium economy is allowed on long flights." },
+    { id: "ACC-3 v1", t: "Production access policy", roles: ["Engineer"], from: 0, to: 9, x: "Engineers may request standing production access from their manager." },
+    { id: "ACC-3 v2", t: "Production access policy", roles: ["Engineer"], from: 9, to: Y, x: "Production access is temporary, expires after four hours and needs a second approver." },
+    { id: "SEC-2", t: "Incident response runbook", roles: ["Engineer"], from: 2, to: Y, x: "Page the on-call engineer, freeze deployments and rotate exposed credentials." },
+    { id: "FIN-4", t: "Quarterly revenue forecast", roles: ["Finance"], from: 4, to: Y, x: "Revenue forecast for the coming quarter by region, with margin assumptions and budget notes." },
+    { id: "HR-9", t: "Salary bands", roles: ["HR"], from: 0, to: Y, x: "Salary bands by level, with pay ranges and bonus targets for each band." },
+    { id: "HR-2", t: "Leave policy", roles: ALL, from: 0, to: Y, x: "Staff get 24 days of paid leave. Unused leave can be carried over for one quarter." },
+  ];
+  const Q = ["When must I claim travel expenses?", "Can I get production access?", "What are the salary bands?", "What is the revenue forecast?"];
+  const quarter = (i) => `Q${(i % 4) + 1} ${2024 + Math.floor(i / 4)}`;
+  const stop = new Set("a an and are at be by can do for from get how i in is it may must of on or the to what when with".split(" "));
+  const toks = (s) => s.toLowerCase().match(/[a-z0-9]+/g)?.filter((w) => !stop.has(w)) || [];
+  const grams = (s) => {
+    const c = {}, t = " " + toks(s).join(" ") + " ";
+    for (let i = 0; i < t.length - 2; i++) c[t.slice(i, i + 3)] = (c[t.slice(i, i + 3)] || 0) + 1;
+    return c;
+  };
+  const cos = (a, c) => {
+    let d = 0, x = 0, y = 0;
+    for (const k in a) {
+      x += a[k] * a[k];
+      if (c[k]) d += a[k] * c[k];
+    }
+    for (const k in c) y += c[k] * c[k];
+    return d / (Math.sqrt(x * y) || 1);
+  };
+  DOCS.forEach((d) => {
+    d.text = d.t + " " + d.x;
+    d.tk = toks(d.text);
+    d.g = grams(d.text);
+  });
+  function bm25(q, pool) {
+    const N = pool.length || 1, avg = pool.reduce((m, d) => m + d.tk.length, 0) / N, K = 1.5, B = 0.75;
+    const res = new Map();
+    for (const d of pool) {
+      let s = 0;
+      for (const w of toks(q)) {
+        const f = d.tk.filter((t) => t === w).length;
+        if (!f) continue;
+        const n = pool.filter((p) => p.tk.includes(w)).length;
+        s += Math.log(1 + (N - n + 0.5) / (n + 0.5)) * ((f * (K + 1)) / (f + K * (1 - B + (B * d.tk.length) / avg)));
+      }
+      res.set(d, s);
+    }
+    return res;
+  }
+  let role = "Intern", when = 10, route = "RRF", gate = true, query = Q[0];
+  const top = document.createElement("div");
+  top.className = "pad";
+  top.innerHTML = `<div><label class="field-l" for="ah-q">Question</label><input class="txt" id="ah-q" value="${esc(query)}" autocomplete="off"></div>`;
+  const qs = seg(Q.map((x, i) => [i, ["Travel", "Access", "Salary", "Revenue"][i]]), 0, (i) => {
+    query = Q[i];
+    input.value = query;
+    render();
+  }, "Sample questions");
+  const roleS = seg(ALL, role, (v) => ((role = v), render()), "Role");
+  const routeS = seg([["BM25", "BM25"], ["Dense", "Dense"], ["RRF", "RRF"]], route, (v) => ((route = v), render()), "Retrieval route");
+  const gateS = seg([["on", "Gate on"], ["off", "Gate off"]], "on", (v) => ((gate = v === "on"), render()), "Eligibility gate");
+  const dateS = slider("Effective date", 0, 11, 1, when, quarter, (v) => ((when = v), render()));
+  const row1 = document.createElement("div");
+  row1.className = "ctl";
+  row1.style.cssText = "padding:0;border:0";
+  row1.append(qs, routeS);
+  const row2 = document.createElement("div");
+  row2.className = "ctl";
+  row2.style.cssText = "padding:0;border:0";
+  row2.append(roleS, gateS);
+  top.append(row1, row2, dateS);
+  const list = document.createElement("div");
+  list.className = "docs";
+  const m = meters([["e", "Eligible"], ["x", "Blocked"], ["l", "Leaked"]]);
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "Runs in your browser on 8 made-up documents, using real BM25 and rank fusion. Dense uses character n-gram similarity as a stand-in for embeddings.";
+  b.append(top, list, m, note);
+  const input = $("#ah-q", top);
+  input.addEventListener("input", () => {
+    query = input.value;
+    render();
+  });
+
+  function why(d) {
+    if (!d.roles.includes(role)) return "ROLE";
+    if (when < d.from || when >= d.to) return "NOT IN EFFECT";
+    return "";
+  }
+  function render() {
+    const reason = new Map(DOCS.map((d) => [d, why(d)]));
+    const pool = gate ? DOCS.filter((d) => !reason.get(d)) : DOCS;
+    const sb = bm25(query, pool);
+    const qg = grams(query);
+    const sd = new Map(pool.map((d) => [d, cos(qg, d.g)]));
+    const rankOf = (mp) => new Map([...mp.entries()].filter(([, v]) => v > 0).sort((a, c) => c[1] - a[1]).map(([d], i) => [d, i + 1]));
+    const rb = rankOf(sb), rd = rankOf(sd);
+    const score = new Map();
+    for (const d of pool) {
+      if (route === "BM25") score.set(d, sb.get(d));
+      else if (route === "Dense") score.set(d, sd.get(d));
+      else score.set(d, (rb.has(d) ? 1 / (60 + rb.get(d)) : 0) + (rd.has(d) ? 1 / (60 + rd.get(d)) : 0));
+    }
+    const ranked = [...score.entries()].filter(([, v]) => v > 0).sort((a, c) => c[1] - a[1]);
+    const max = ranked.length ? ranked[0][1] : 1;
+    const pos = new Map(ranked.map(([d], i) => [d, i]));
+    const order = [...DOCS].sort((a, c) => (pos.has(a) ? pos.get(a) : 99) - (pos.has(c) ? pos.get(c) : 99));
+    let leaks = 0;
+    list.innerHTML = order.map((d) => {
+      const blocked = gate && reason.get(d);
+      const p = pos.get(d);
+      const inTop = p !== undefined && p < 3;
+      const leak = !gate && reason.get(d) && inTop;
+      if (leak) leaks++;
+      const state = blocked ? `BLOCKED: ${reason.get(d)}` : leak ? "LEAKED" : p === undefined ? "NO MATCH" : `RANK ${p + 1}`;
+      const cls = ["doc", blocked ? "blocked" : "", leak ? "leak" : inTop ? "top" : ""].join(" ");
+      const bar = p === undefined ? 0 : (score.get(d) / max) * 100;
+      return `<div class="${cls}"><div class="doc-t">${esc(d.t)}<small>${esc(d.id)}</small></div><div class="doc-s">${state}${blocked ? "" : `<div class="doc-bar"><i style="width:${bar.toFixed(0)}%"></i></div>`}</div></div>`;
+    }).join("");
+    const elig = DOCS.filter((d) => !reason.get(d)).length;
+    m.set("e", elig);
+    m.set("x", gate ? DOCS.length - elig : 0);
+    m.set("l", leaks, leaks > 0);
+  }
+  render();
+}
+
+function toySummary(el) {
+  const b = shell(el, "Summary model", "Edit the text");
+  const SAMPLE = "The payments service failed for twelve minutes on Tuesday after a database migration locked a busy table. Customers saw timeouts at checkout during the outage. The on-call engineer rolled back the migration and traffic recovered within two minutes. Lunch was delayed for the whole team. The review found that the migration had never been tested against production-sized data. From now on, every migration must run against a full-sized copy of the data before release. The team will also add an alert for long table locks.";
+  b.innerHTML = `<div class="pad"><div><label class="field-l" for="sum-t">Document text</label><textarea class="txt" id="sum-t" rows="7">${esc(SAMPLE)}</textarea></div></div><div class="ctl"></div><ol class="sum-out" style="margin:0"></ol>`;
+  const ta = $("textarea", b), out = $("ol", b), ctl = $(".ctl", b);
+  let len = 2;
+  ctl.append(seg([[1, "Short"], [2, "Medium"], [3, "Long"]], len, (v) => ((len = +v), run()), "Summary length"));
+  const m = meters([["i", "Words in"], ["o", "Words out"], ["r", "Reduced"]]);
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "This model picks key sentences by word frequency, in your browser. The real app uses a language model, so try the live demo for proper summaries.";
+  b.append(m, note);
+  const stop = new Set("the a an and or but of to in on at for from by with is are was were be been it its this that will has had have after before during also must every not their they".split(" "));
+  function run() {
+    const text = ta.value.trim();
+    const sents = text.match(/[^.!?]+[.!?]*/g)?.map((x) => x.trim()).filter(Boolean) || [];
+    const words = (x) => x.toLowerCase().match(/[a-z0-9'-]+/g) || [];
+    const freq = {};
+    for (const w of words(text)) if (!stop.has(w)) freq[w] = (freq[w] || 0) + 1;
+    const scored = sents.map((x, i) => {
+      const ws = words(x).filter((w) => !stop.has(w));
+      const v = ws.reduce((m2, w) => m2 + (freq[w] > 1 ? freq[w] : 0.25), 0) / Math.max(4, ws.length) + (i === 0 ? 0.35 : 0);
+      return { x, i, v };
+    });
+    const max = Math.max(...scored.map((x) => x.v), 0.001);
+    const take = [...scored].sort((a, c) => c.v - a.v).slice(0, len).sort((a, c) => a.i - c.i);
+    out.innerHTML = take.length
+      ? take.map((x) => `<li><i style="width:${Math.max(16, (x.v / max) * 100).toFixed(0)}%" aria-hidden="true"></i><span>${esc(x.x)}</span></li>`).join("")
+      : `<li style="display:block;color:var(--t3)">Add some text to see a summary.</li>`;
+    const wi = words(text).length, wo = take.reduce((n, x) => n + words(x.x).length, 0);
+    m.set("i", wi);
+    m.set("o", wo);
+    m.set("r", wi ? Math.round((1 - wo / wi) * 100) + "%" : "0%");
+  }
+  ta.addEventListener("input", run);
+  run();
+}
+
+/* Working models for the HTTP server, resume analyzer, finance tracker and Huffman projects. */
+
+function toyHttp(el) {
+  const b = shell(el, "Thread pool model", "Flood it");
+  b.innerHTML = `<canvas class="cv" style="--h:236px" role="img" aria-label="Requests moving from a queue through worker threads to a served stack."></canvas><div class="ctl"></div>`;
+  const cv = $("canvas", b), ctl = $(".ctl", b);
+  const s = fit(cv);
+  const ctx = s.ctx;
+  const LINES = ["GET /index.html 200", "GET /api/health 200", "POST /upload 201", "GET /missing 404", "GET /style.css 200", "PUT /notes/7 204"];
+  let workers = 4, sync = true, served = 0, counter = 0, lost = 0, waitSum = 0, clock = 0, started = false, flash = 0;
+  const queue = [];
+  let slots = Array(8).fill(null);
+  const send = (n = 1) => {
+    for (let i = 0; i < n; i++) queue.push({ born: clock, line: pick(LINES), need: rand(0.5, 1.5), x: -20 });
+    Sound.blip(300, 0.03);
+  };
+  const w = slider("Workers", 1, 8, 1, workers, (v) => v, (v) => (workers = v));
+  w.classList.add("grow");
+  ctl.append(w, btn("Send 1", () => send(1)), btn("Burst 25", () => send(25)), seg([["on", "Sync on"], ["off", "Sync off"]], "on", (v) => (sync = v === "on"), "Shared counter locking"));
+  const m = meters([["s", "Served"], ["q", "Queued"], ["w", "Avg wait"], ["c", "Counter"], ["l", "Lost"]]);
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "A simplified model. The real server handles sockets, parsing and routing in Java.";
+  b.append(m, note);
+
+  function draw() {
+    const { w: W, h: H } = s;
+    ctx.clearRect(0, 0, W, H);
+    ctx.font = '500 10px "Geist Mono", ui-monospace, monospace';
+    const qx = 14, qw = W * 0.22, wx = qx + qw + 16, ww = W * 0.5, top = 28;
+    const rows = 8, gap = 3, rh = (H - top - 12 - gap * (rows - 1)) / rows;
+    ctx.fillStyle = "#8b8b95";
+    ctx.fillText("QUEUE", qx, 17);
+    ctx.fillText("WORKERS", wx, 17);
+    ctx.fillText("SERVED", wx + ww + 14, 17);
+    ctx.strokeStyle = "rgba(255,255,255,.14)";
+    ctx.strokeRect(qx + 0.5, top + 0.5, qw - 1, H - top - 12);
+    const size = 9;
+    const per = Math.max(1, Math.floor((qw - 8) / (size + 2)));
+    queue.slice(0, per * 15).forEach((q, i) => {
+      ctx.fillStyle = rgba(0.9);
+      ctx.fillRect(qx + 5 + (i % per) * (size + 2), H - 17 - size + 5 - Math.floor(i / per) * (size + 2), size, size);
+    });
+    for (let i = 0; i < rows; i++) {
+      const y = top + i * (rh + gap);
+      const open = i < workers, job = slots[i];
+      ctx.fillStyle = open ? "#131317" : "#0b0b0e";
+      ctx.fillRect(wx, y, ww, rh);
+      ctx.strokeStyle = open ? "rgba(255,255,255,.14)" : "rgba(255,255,255,.05)";
+      ctx.strokeRect(wx + 0.5, y + 0.5, ww - 1, rh - 1);
+      if (job) {
+        ctx.fillStyle = rgba(0.3);
+        ctx.fillRect(wx, y, ww * clamp(job.t / job.need, 0, 1), rh);
+        ctx.fillStyle = "#ededef";
+        if (ww > 150) ctx.fillText(job.line, wx + 7, y + rh / 2 + 3.5);
+      } else if (open) {
+        ctx.fillStyle = "#5c5c66";
+        ctx.fillText("idle", wx + 7, y + rh / 2 + 3.5);
+      }
+    }
+    const sx = wx + ww + 14, sw = W - sx - 14;
+    const c2 = Math.max(1, Math.floor(sw / 7));
+    const shown = Math.min(served, c2 * 24);
+    ctx.fillStyle = "#adadb6";
+    for (let i = 0; i < shown; i++) ctx.fillRect(sx + (i % c2) * 7, H - 17 - Math.floor(i / c2) * 7, 5, 5);
+    if (flash > 0) {
+      ctx.fillStyle = `rgba(255,107,87,${flash * 0.2})`;
+      ctx.fillRect(0, 0, W, H);
+    }
+    m.set("s", served);
+    m.set("q", queue.length);
+    m.set("w", served ? Math.round((waitSum / served) * 1000) + " ms" : "0 ms");
+    m.set("c", counter);
+    m.set("l", lost, lost > 0);
+  }
+  addTick(cv, (dt) => {
+    if (!started) {
+      started = true;
+      if (!REDUCED) send(10);
+    }
+    clock += dt;
+    flash = Math.max(0, flash - dt * 3);
+    for (let i = 0; i < 8; i++) {
+      const j = slots[i];
+      if (j) {
+        j.t += dt;
+        if (j.t >= j.need) {
+          const busy = slots.filter(Boolean).length - 1;
+          served++;
+          if (!sync && busy >= 2 && Math.random() < 0.35) {
+            lost++;
+            flash = 1;
+          } else counter++;
+          slots[i] = null;
+        }
+      }
+      if (!slots[i] && i < workers && queue.length) {
+        const q = queue.shift();
+        waitSum += clock - q.born;
+        slots[i] = { line: q.line, need: q.need, t: 0 };
+      }
+    }
+    draw();
+  });
+  draw();
+  document.addEventListener("accent", draw);
+}
+
+function toyAnalyzer(el) {
+  const b = shell(el, "Keyword overlap", "Paste a job post");
+  const SAMPLE = "We are hiring a backend engineer to build services in Python and Go. You will design REST APIs, write SQL, run containers with Docker on AWS and Kubernetes, and care about concurrency and reliability.";
+  b.innerHTML = `<div class="pad"><div><label class="field-l" for="ana-text">Job description</label><textarea class="txt" id="ana-text" rows="5">${esc(SAMPLE)}</textarea></div></div>
+  <div class="ana"><canvas width="120" height="120" role="img" aria-label="Keyword overlap score"></canvas><div class="ana-l"><div><span class="field-l">In my stack</span><ul class="mini have"></ul></div><div><span class="field-l">New to me</span><ul class="mini new"></ul></div></div></div>`;
+  const ta = $("textarea", b), cv = $("canvas", b), have = $(".have", b), fresh = $(".new", b);
+  $(".pad", b).append(btn("Clear", () => {
+    ta.value = "";
+    ta.focus();
+    run();
+  }));
+  $(".pad .btn", b).style.justifySelf = "start";
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "This is keyword matching only. The real project adds skill extraction with spaCy and semantic similarity with scikit-learn.";
+  b.append(note);
+  const s = fit(cv, () => draw());
+  const ctx = s.ctx;
+  const words = (list) => list.map((n) => ({ n, re: new RegExp("(?<![\\w+#.])" + n.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&") + "(?![\\w+#])", "i") }));
+  const KNOWN = [
+    { n: "Go", re: /(?<![\w+#.])(Go|Golang|golang)(?![\w+#])/ },
+    { n: "C", re: /(?<![\w+#./])C(?![\w+#/])/ },
+    ...words(["Python", "Java", "JavaScript", "TypeScript", "C++", "Flutter", "FastAPI", "Spring Boot", "React", "Streamlit", "scikit-learn", "spaCy", "Git", "Docker", "MySQL", "SQL", "AWS", "EC2", "S3", "Nginx", "Vercel", "Pytest", "REST", "concurrency", "distributed systems"]),
+  ];
+  const OTHER = words(["Kubernetes", "Terraform", "Rust", "Kafka", "Redis", "PostgreSQL", "MongoDB", "GraphQL", "GCP", "Azure", "C#", ".NET", "Ruby", "PHP", "Swift", "Kotlin", "Angular", "Vue", "Spark", "Airflow", "PyTorch", "TensorFlow", "Jenkins", "Ansible", "CI/CD"]);
+  let score = 0, shown = 0;
+  function draw() {
+    const { w, h } = s;
+    ctx.clearRect(0, 0, w, h);
+    const n = 40, lit = Math.round((shown / 100) * n), side = Math.min(w, h) - 6, per = n / 4, cell = side / per;
+    for (let i = 0; i < n; i++) {
+      const e = Math.floor(i / per), k = i % per;
+      const p = [[3 + k * cell, 3], [3 + side - 6, 3 + k * cell], [3 + side - 6 - k * cell, 3 + side - 6], [3, 3 + side - 6 - k * cell]][e];
+      ctx.fillStyle = i < lit ? Acc.hex : "#26262c";
+      ctx.fillRect(p[0], p[1], Math.max(2, cell - 2), 6);
+      if (e % 2) {
+        ctx.clearRect(p[0], p[1], Math.max(2, cell - 2), 6);
+        ctx.fillRect(p[0], p[1], 6, Math.max(2, cell - 2));
+      }
+    }
+    ctx.fillStyle = "#ededef";
+    ctx.font = `500 ${Math.round(side * 0.27)}px "Geist", ui-sans-serif, sans-serif`;
+    const t = String(Math.round(shown));
+    ctx.fillText(t, w / 2 - ctx.measureText(t).width / 2, h / 2 + side * 0.09);
+  }
+  function run() {
+    const text = ta.value;
+    const a = KNOWN.filter((k) => k.re.test(text)).map((k) => k.n);
+    const c = OTHER.filter((k) => k.re.test(text)).map((k) => k.n);
+    const total = a.length + c.length;
+    score = total ? Math.round((100 * a.length) / total) : 0;
+    have.innerHTML = a.length ? a.map((x) => `<li>${esc(x)}</li>`).join("") : `<li>None found yet</li>`;
+    fresh.innerHTML = c.length ? c.map((x) => `<li>${esc(x)}</li>`).join("") : `<li>None found</li>`;
+  }
+  ta.addEventListener("input", run);
+  run();
+  shown = score;
+  addTick(cv, (dt) => {
+    if (Math.abs(shown - score) > 0.2) {
+      shown = lerp(shown, score, 1 - Math.pow(0.001, dt));
+      draw();
+    } else if (shown !== score) {
+      shown = score;
+      draw();
+    }
+  });
+  draw();
+  document.addEventListener("accent", draw);
+}
+
+function toyFinance(el) {
+  const b = shell(el, "Ledger model", "Add a transaction");
+  const seed = {
+    a: [
+      { date: "2026-03-01", label: "Salary", amt: 2400 },
+      { date: "2026-03-02", label: "Rent", amt: -650 },
+      { date: "2026-03-06", label: "Groceries", amt: -120 },
+      { date: "2026-03-14", label: "Freelance work", amt: 300 },
+      { date: "2026-03-18", label: "Gym", amt: -45 },
+    ],
+    b: [
+      { date: "2026-03-01", label: "Stipend", amt: 900 },
+      { date: "2026-03-03", label: "Hostel fees", amt: -310 },
+      { date: "2026-03-09", label: "Books", amt: -85 },
+      { date: "2026-03-12", label: "Bus pass", amt: -30 },
+      { date: "2026-03-20", label: "Prize money", amt: 150 },
+    ],
+  };
+  let user = "a", sort = "Date", type = "exp";
+  b.innerHTML = `<div class="ctl" style="border-top:0"></div><canvas class="cv" style="--h:110px" role="img" aria-label="Running balance over time"></canvas><div class="ledger" tabindex="0" aria-label="Transactions"></div>
+  <form class="tx-form"><div><label class="field-l" for="fin-label">Label</label><input class="txt" id="fin-label" autocomplete="off" placeholder="Coffee"></div><div><label class="field-l" for="fin-amt">Amount</label><input class="txt" id="fin-amt" type="number" min="0" step="1" placeholder="12"></div></form>`;
+  const top = $(".ctl", b), cv = $("canvas", b), ledger = $(".ledger", b), form = $("form", b);
+  top.append(seg([["a", "User A"], ["b", "User B"]], user, (v) => ((user = v), render()), "Account"), seg(["Date", "Amount", "Type"], sort, (v) => ((sort = v), render()), "Sort transactions"));
+  const typeS = seg([["inc", "Income"], ["exp", "Expense"]], type, (v) => (type = v), "Transaction type");
+  typeS.style.alignSelf = "end";
+  const add = btn("Add", () => {});
+  add.type = "submit";
+  add.style.alignSelf = "end";
+  add.style.height = "auto";
+  form.append(typeS, add);
+  const m = meters([["b", "Balance"], ["i", "Income"], ["e", "Expenses"]]);
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "Sample data. Switching user shows that each account sees only its own transactions, as in the real app.";
+  b.append(m, note);
+  const s = fit(cv, () => drawChart());
+  const money = (n) => (n < 0 ? "-" : "") + "$" + Math.abs(n).toLocaleString("en-GB");
+
+  function drawChart() {
+    const ctx = s.ctx, { w, h } = s, rows = [...seed[user]].sort((x, y) => x.date.localeCompare(y.date));
+    ctx.clearRect(0, 0, w, h);
+    let bal = 0;
+    const pts = [0, ...rows.map((r) => (bal += r.amt))];
+    const lo = Math.min(...pts, 0), hi = Math.max(...pts, 1), pad = 14;
+    const X = (i) => pad + (i / Math.max(1, pts.length - 1)) * (w - pad * 2);
+    const Y = (v) => h - pad - ((v - lo) / (hi - lo || 1)) * (h - pad * 2);
+    ctx.strokeStyle = "rgba(255,255,255,.14)";
+    ctx.beginPath();
+    ctx.moveTo(pad, Y(0) + 0.5);
+    ctx.lineTo(w - pad, Y(0) + 0.5);
+    ctx.stroke();
+    ctx.strokeStyle = Acc.hex;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    pts.forEach((v, i) => {
+      if (!i) ctx.moveTo(X(0), Y(v));
+      else {
+        ctx.lineTo(X(i), Y(pts[i - 1]));
+        ctx.lineTo(X(i), Y(v));
+      }
+    });
+    ctx.stroke();
+    ctx.lineWidth = 1;
+    ctx.fillStyle = Acc.hex;
+    pts.forEach((v, i) => ctx.fillRect(X(i) - 2, Y(v) - 2, 4, 4));
+  }
+  function render() {
+    const list = [...seed[user]];
+    list.sort((x, y) => (sort === "Date" ? y.date.localeCompare(x.date) : sort === "Amount" ? Math.abs(y.amt) - Math.abs(x.amt) : Math.sign(y.amt) - Math.sign(x.amt)));
+    ledger.innerHTML = list.map((r) => `<div class="tx"><span class="d">${r.date.slice(5)}</span><span>${esc(r.label)}</span><span class="a ${r.amt > 0 ? "in" : ""}">${r.amt > 0 ? "+" : ""}${money(r.amt)}</span><button type="button" aria-label="Delete ${esc(r.label)}" data-i="${seed[user].indexOf(r)}">×</button></div>`).join("") || `<div class="tx"><span></span><span>No transactions</span></div>`;
+    const inc = seed[user].filter((r) => r.amt > 0).reduce((n, r) => n + r.amt, 0);
+    const exp = seed[user].filter((r) => r.amt < 0).reduce((n, r) => n + r.amt, 0);
+    m.set("b", money(inc + exp), inc + exp < 0);
+    m.set("i", money(inc));
+    m.set("e", money(-exp));
+    drawChart();
+  }
+  ledger.addEventListener("click", (e) => {
+    const t = e.target.closest("button[data-i]");
+    if (t) {
+      seed[user].splice(+t.dataset.i, 1);
+      render();
+    }
+  });
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const label = $("#fin-label").value.trim(), amt = parseFloat($("#fin-amt").value);
+    if (!label) return toast("Add a label for the transaction.");
+    if (!(amt > 0)) return toast("Enter an amount above zero.");
+    seed[user].push({ date: new Date().toISOString().slice(0, 10), label, amt: type === "inc" ? amt : -amt });
+    $("#fin-label").value = "";
+    $("#fin-amt").value = "";
+    render();
+  });
+  render();
+  document.addEventListener("accent", drawChart);
+}
+
+function huffBuild(text) {
+  const f = {};
+  for (const c of text) f[c] = (f[c] || 0) + 1;
+  const heap = [];
+  let order = 0;
+  const less = (a, c) => (a.f - c.f || a.o - c.o) < 0;
+  const push = (n) => {
+    heap.push(n);
+    let i = heap.length - 1;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (!less(heap[i], heap[p])) break;
+      [heap[i], heap[p]] = [heap[p], heap[i]];
+      i = p;
+    }
+  };
+  const popMin = () => {
+    const top = heap[0], end = heap.pop();
+    if (heap.length) {
+      heap[0] = end;
+      let i = 0;
+      for (;;) {
+        let m = i;
+        const l = 2 * i + 1, r = l + 1;
+        if (l < heap.length && less(heap[l], heap[m])) m = l;
+        if (r < heap.length && less(heap[r], heap[m])) m = r;
+        if (m === i) break;
+        [heap[i], heap[m]] = [heap[m], heap[i]];
+        i = m;
+      }
+    }
+    return top;
+  };
+  Object.keys(f).sort().forEach((c) => push({ c, f: f[c], o: order++ }));
+  if (!heap.length) return { root: null, codes: {}, freq: f, bits: "" };
+  while (heap.length > 1) {
+    const a = popMin(), c = popMin();
+    push({ l: a, r: c, f: a.f + c.f, o: order++ });
+  }
+  const root = popMin(), codes = {};
+  const walk = (n, p) => {
+    if (n.c !== undefined) codes[n.c] = p || "0";
+    else {
+      walk(n.l, p + "0");
+      walk(n.r, p + "1");
+    }
+  };
+  walk(root, "");
+  let bits = "";
+  for (const c of text) bits += codes[c];
+  return { root, codes, freq: f, bits };
+}
+function huffDecode(root, bits) {
+  if (!root) return "";
+  if (root.c !== undefined) return root.c.repeat(bits.length);
+  let out = "", n = root;
+  for (const b of bits) {
+    n = b === "0" ? n.l : n.r;
+    if (n.c !== undefined) {
+      out += n.c;
+      n = root;
+    }
+  }
+  return out;
+}
+
+function toyHuffman(el) {
+  const b = shell(el, "Huffman tree", "Type anything");
+  b.innerHTML = `<div class="pad"><div><label class="field-l" for="huf-text">Text</label><input class="txt" id="huf-text" maxlength="48" value="parthiban ilango" autocomplete="off"></div></div><canvas class="cv" style="--h:252px" role="img" aria-label="The Huffman tree built from your text"></canvas><div class="codes"></div>`;
+  const input = $("input", b), cv = $("canvas", b), codes = $(".codes", b);
+  const m = meters([["o", "Original bits"], ["e", "Encoded bits"], ["s", "Saved"], ["r", "Round trip"]]);
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "Header size is not counted here. The real tool stores the frequency table as a JSON header.";
+  b.append(m, note);
+  const label = (c) => (c === " " ? "␣" : c);
+  let res = huffBuild(""), leaves = [], hot = null;
+  const s = fit(cv, () => draw());
+  function layout(n, depth, st) {
+    n.d = depth;
+    if (n.c !== undefined) {
+      n.xi = st.i++;
+      st.max = Math.max(st.max, depth);
+      leaves.push(n);
+    } else {
+      layout(n.l, depth + 1, st);
+      layout(n.r, depth + 1, st);
+      n.xi = (n.l.xi + n.r.xi) / 2;
+    }
+  }
+  function draw() {
+    const ctx = s.ctx, { w, h } = s;
+    ctx.clearRect(0, 0, w, h);
+    leaves = [];
+    if (!res.root) {
+      ctx.fillStyle = "#8b8b95";
+      ctx.font = '500 11px "Geist Mono", ui-monospace, monospace';
+      ctx.fillText("Type some text to grow a tree.", 14, 28);
+      return;
+    }
+    const st = { i: 0, max: 0 };
+    layout(res.root, 0, st);
+    const X = (n) => 18 + ((n.xi + 0.5) / st.i) * (w - 36);
+    const Y = (n) => 18 + (n.d / Math.max(1, st.max)) * (h - 40);
+    const path = new Set();
+    if (hot !== null) {
+      let n = res.root;
+      path.add(n);
+      for (const bit of res.codes[hot]) {
+        if (n.c !== undefined) break;
+        n = bit === "0" ? n.l : n.r;
+        path.add(n);
+      }
+    }
+    ctx.font = '500 9.5px "Geist Mono", ui-monospace, monospace';
+    const edge = (p, c, bit) => {
+      const on = path.has(p) && path.has(c), x1 = X(p), y1 = Y(p), x2 = X(c), y2 = Y(c), ym = y1 + 9;
+      ctx.strokeStyle = on ? Acc.hex : "rgba(255,255,255,.2)";
+      ctx.lineWidth = on ? 1.6 : 1;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x1, ym);
+      ctx.lineTo(x2, ym);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      if (st.i < 15) {
+        ctx.fillStyle = on ? Acc.hex : "#5c5c66";
+        ctx.fillText(bit, (x1 + x2) / 2 - 3, ym - 3);
+      }
+    };
+    const walk = (n) => {
+      if (n.c === undefined) {
+        edge(n, n.l, "0");
+        edge(n, n.r, "1");
+        walk(n.l);
+        walk(n.r);
+      }
+    };
+    walk(res.root);
+    ctx.lineWidth = 1;
+    const nodes = (n) => {
+      const x = X(n), y = Y(n), on = path.has(n);
+      if (n.c !== undefined) {
+        const r = 8;
+        ctx.fillStyle = on ? Acc.hex : "#1b1b20";
+        ctx.fillRect(x - r, y - r, r * 2, r * 2);
+        ctx.strokeStyle = on ? Acc.hex : "rgba(255,255,255,.3)";
+        ctx.strokeRect(x - r + 0.5, y - r + 0.5, r * 2 - 1, r * 2 - 1);
+        ctx.fillStyle = on ? "#08080a" : "#ededef";
+        const t = label(n.c);
+        ctx.fillText(t, x - ctx.measureText(t).width / 2, y + 3.5);
+      } else {
+        const r = 5;
+        ctx.fillStyle = on ? Acc.hex : "#5c5c66";
+        ctx.beginPath();
+        ctx.moveTo(x, y - r);
+        ctx.lineTo(x + r, y);
+        ctx.lineTo(x, y + r);
+        ctx.lineTo(x - r, y);
+        ctx.closePath();
+        ctx.fill();
+        nodes(n.l);
+        nodes(n.r);
+      }
+    };
+    nodes(res.root);
+    leaves.forEach((n) => {
+      n.sx = X(n);
+      n.sy = Y(n);
+    });
+  }
+  function setHot(c) {
+    if (c === hot) return;
+    hot = c;
+    $$(".code", codes).forEach((x) => x.classList.toggle("on", x.dataset.c === c));
+    draw();
+  }
+  function run() {
+    const text = input.value;
+    res = huffBuild(text);
+    hot = null;
+    const o = text.length * 8, e = res.bits.length;
+    const list = Object.keys(res.freq).sort((a, c) => res.freq[c] - res.freq[a] || a.localeCompare(c));
+    codes.innerHTML = list.map((c) => `<span class="code" data-c="${esc(c)}" tabindex="0"><b>${esc(label(c))}</b>${res.codes[c]}</span>`).join("");
+    m.set("o", o);
+    m.set("e", e);
+    m.set("s", o ? Math.round((1 - e / o) * 100) + "%" : "0%");
+    const ok = huffDecode(res.root, res.bits) === text;
+    m.set("r", ok ? "OK" : "FAIL", !ok);
+    draw();
+  }
+  codes.addEventListener("pointerover", (e) => {
+    const t = e.target.closest(".code");
+    if (t) setHot(t.dataset.c);
+  });
+  codes.addEventListener("pointerleave", () => setHot(null));
+  codes.addEventListener("focusin", (e) => {
+    const t = e.target.closest(".code");
+    if (t) setHot(t.dataset.c);
+  });
+  cv.addEventListener("pointermove", (e) => {
+    const p = evPos(e, cv);
+    const n = leaves.find((l) => Math.abs(l.sx - p.x) < 11 && Math.abs(l.sy - p.y) < 11);
+    setHot(n ? n.c : null);
+  });
+  cv.addEventListener("pointerleave", () => setHot(null));
+  input.addEventListener("input", run);
+  run();
+  document.addEventListener("accent", draw);
+}
+
+/* Skill graph, barbell loader and the withheld research panel. */
+
+function toySkills(el) {
+  const b = shell(el, "Skill graph", "Drag the nodes");
+  b.innerHTML = `<canvas class="cv" role="img" aria-label="A graph connecting each skill to the projects that used it"></canvas>`;
+  const cv = $("canvas", b);
+  const DATA = {
+    Resharding: ["Go", "Concurrency", "Distributed systems"],
+    AHRAG: ["Python", "Streamlit", "scikit-learn", "Pytest"],
+    "Doc Summary": ["React", "TypeScript", "Vercel"],
+    "HTTP Server": ["Java", "Concurrency", "Sockets"],
+    "eValai app": ["Flutter"],
+    "Resume Analyzer": ["Python", "FastAPI", "Streamlit", "spaCy", "scikit-learn", "Docker", "AWS EC2/S3", "Nginx"],
+    "Finance Tracker": ["Java", "Spring Boot", "MySQL"],
+    Huffman: ["Python"],
+  };
+  const FREE = ["JavaScript", "C", "C++", "Git"];
+  const nodes = [], index = {}, edges = [];
+  const node = (name, kind) => {
+    if (index[name]) return index[name];
+    const n = { name, kind, x: 0, y: 0, vx: 0, vy: 0, fixed: false };
+    index[name] = n;
+    nodes.push(n);
+    return n;
+  };
+  for (const p in DATA) {
+    const a = node(p, "project");
+    DATA[p].forEach((k) => edges.push([a, node(k, "skill")]));
+  }
+  FREE.forEach((k) => node(k, "skill"));
+  let hover = null, pinned = null, drag = null, energy = 1;
+  const s = fit(cv, () => {
+    energy = 1;
+    draw();
+  });
+  nodes.forEach((n) => {
+    n.x = s.w / 2 + rand(-120, 120);
+    n.y = s.h / 2 + rand(-100, 100);
+  });
+  const neighbours = (n) => {
+    const set = new Set(n ? [n] : []);
+    if (n) edges.forEach(([a, c]) => {
+      if (a === n) set.add(c);
+      if (c === n) set.add(a);
+    });
+    return set;
+  };
+  function step(dt) {
+    const { w, h } = s;
+    const small = w < 480;
+    const kRep = small ? 620 : 1500, L = small ? 58 : 92;
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], c = nodes[j];
+        let dx = a.x - c.x, dy = a.y - c.y, d2 = dx * dx + dy * dy;
+        if (d2 < 1) {
+          dx = rand(-1, 1);
+          dy = rand(-1, 1);
+          d2 = 1;
+        }
+        const d = Math.sqrt(d2), f = (kRep * (a.kind === "project" && c.kind === "project" ? 3 : 1)) / d;
+        a.vx += (dx / d) * f * dt;
+        a.vy += (dy / d) * f * dt;
+        c.vx -= (dx / d) * f * dt;
+        c.vy -= (dy / d) * f * dt;
+      }
+    }
+    for (const [a, c] of edges) {
+      const dx = c.x - a.x, dy = c.y - a.y, d = Math.hypot(dx, dy) || 1, f = (d - L) * 1.3 * dt;
+      a.vx += (dx / d) * f;
+      a.vy += (dy / d) * f;
+      c.vx -= (dx / d) * f;
+      c.vy -= (dy / d) * f;
+    }
+    let total = 0;
+    for (const n of nodes) {
+      n.vx += (w / 2 - n.x) * 0.1 * dt;
+      n.vy += (h / 2 - n.y) * 0.2 * dt;
+      n.vx *= Math.pow(0.04, dt);
+      n.vy *= Math.pow(0.04, dt);
+      if (n === drag) {
+        n.vx = n.vy = 0;
+        continue;
+      }
+      const pad = n.kind === "project" ? (n.hw || 44) + 3 : 30;
+      n.x = clamp(n.x + n.vx * dt, pad, w - pad);
+      n.y = clamp(n.y + n.vy * dt, 16, h - 26);
+      total += Math.abs(n.vx) + Math.abs(n.vy);
+    }
+    return total;
+  }
+  function draw() {
+    const ctx = s.ctx, { w, h } = s;
+    ctx.clearRect(0, 0, w, h);
+    const focus = pinned || hover, near = neighbours(focus);
+    for (const [a, c] of edges) {
+      const on = focus && (a === focus || c === focus);
+      ctx.strokeStyle = on ? Acc.hex : focus ? "rgba(255,255,255,.05)" : "rgba(255,255,255,.15)";
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(c.x, c.y);
+      ctx.stroke();
+    }
+    for (const n of nodes) {
+      const dim = focus && !near.has(n), on = focus && near.has(n);
+      if (n.kind === "project") {
+        ctx.font = '500 11px "Geist Mono", ui-monospace, monospace';
+        const tw = ctx.measureText(n.name).width, bw = tw + 14;
+        n.hw = bw / 2;
+        n.hh = 11;
+        ctx.fillStyle = on ? Acc.hex : dim ? "#101013" : "#1b1b20";
+        ctx.fillRect(n.x - bw / 2, n.y - 11, bw, 22);
+        ctx.strokeStyle = on ? Acc.hex : dim ? "rgba(255,255,255,.08)" : "rgba(255,255,255,.3)";
+        ctx.strokeRect(n.x - bw / 2 + 0.5, n.y - 10.5, bw - 1, 21);
+        ctx.fillStyle = on ? "#08080a" : dim ? "#5c5c66" : "#ededef";
+        ctx.fillText(n.name, n.x - tw / 2, n.y + 4);
+      } else {
+        const r = 5;
+        n.hw = 42;
+        n.hh = 12;
+        ctx.fillStyle = on ? Acc.hex : dim ? "#33333a" : "#8b8b95";
+        ctx.beginPath();
+        ctx.moveTo(n.x, n.y - r);
+        ctx.lineTo(n.x + r, n.y);
+        ctx.lineTo(n.x, n.y + r);
+        ctx.lineTo(n.x - r, n.y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.font = '500 10px "Geist Mono", ui-monospace, monospace';
+        ctx.fillStyle = on ? Acc.hex : dim ? "#44444c" : "#adadb6";
+        const tw = ctx.measureText(n.name).width;
+        ctx.fillText(n.name, clamp(n.x - tw / 2, 3, w - tw - 3), n.y + 16);
+      }
+    }
+  }
+  const find = (p) => {
+    let best = null, bd = 1e9;
+    for (const n of nodes) {
+      const d = Math.abs(n.x - p.x) / Math.max(n.hw || 20, 18) + Math.abs(n.y - p.y) / 16;
+      if (d < 1.5 && d < bd) {
+        bd = d;
+        best = n;
+      }
+    }
+    return best;
+  };
+  cv.style.cursor = "grab";
+  cv.addEventListener("pointerdown", (e) => {
+    const n = find(evPos(e, cv));
+    if (!n) return;
+    drag = n;
+    pinned = null;
+    hover = n;
+    cv.setPointerCapture(e.pointerId);
+    energy = 1;
+    draw();
+  });
+  cv.addEventListener("pointermove", (e) => {
+    const p = evPos(e, cv);
+    if (drag) {
+      const pad = drag.kind === "project" ? (drag.hw || 44) + 3 : 30;
+      drag.x = clamp(p.x, pad, s.w - pad);
+      drag.y = clamp(p.y, 16, s.h - 26);
+      energy = 1;
+      if (REDUCED) draw();
+    } else {
+      const n = find(p);
+      if (n !== hover) {
+        hover = n;
+        draw();
+      }
+    }
+  });
+  const end = () => (drag = null);
+  cv.addEventListener("pointerup", end);
+  cv.addEventListener("pointercancel", end);
+  cv.addEventListener("pointerleave", () => {
+    if (!drag) {
+      hover = null;
+      draw();
+    }
+  });
+  document.addEventListener("skill", (e) => {
+    const n = index[e.detail];
+    pinned = pinned === n ? null : n || null;
+    document.dispatchEvent(new CustomEvent("skillstate", { detail: pinned ? pinned.name : null }));
+    draw();
+  });
+  document.addEventListener("accent", draw);
+  for (let i = 0; i < 700; i++) step(0.016);
+  draw();
+  if (!REDUCED) {
+    addTick(cv, (dt) => {
+      if (energy <= 0 && !drag) return;
+      const t = step(Math.min(dt, 0.03));
+      energy = t < 6 && !drag ? energy - dt : 1;
+      draw();
+    });
+  }
+}
+
+function toyPlates(el) {
+  const b = shell(el, "Load the bar", "Click a plate");
+  b.innerHTML = `<canvas class="cv" style="--h:236px" role="img" aria-label="A loaded barbell that bends as plates are added"></canvas><div class="ctl"></div>`;
+  const cv = $("canvas", b), ctl = $(".ctl", b);
+  const s = fit(cv);
+  const ctx = s.ctx;
+  const PLATES = {
+    25: { h: 148, t: 15 },
+    20: { h: 148, t: 12 },
+    15: { h: 122, t: 10 },
+    10: { h: 98, t: 8 },
+    5: { h: 72, t: 6 },
+    2.5: { h: 54, t: 5 },
+  };
+  const MAX = 8;
+  let side = [20], bend = 0, vel = 0;
+  const total = () => 25 + side.reduce((a, c) => a + c, 0) * 2;
+  const change = () => {
+    side.sort((a, c) => c - a);
+    vel += 26;
+    m.set("t", total());
+    m.set("l", (total() * 2.20462).toFixed(1));
+    m.set("p", 2.5 + side.reduce((a, c) => a + c, 0));
+    m.set("n", side.length * 2);
+    Sound.blip(160 + side.length * 18, 0.08, 0.04, "triangle");
+  };
+  [25, 20, 15, 10, 5, 2.5].forEach((p) => ctl.append(btn(String(p), () => {
+    if (side.length >= MAX) return toast("That's a full sleeve. Take a plate off first.");
+    side.push(p);
+    change();
+  })));
+  ctl.append(btn("Undo", () => {
+    side.pop();
+    change();
+  }), btn("Clear", () => {
+    side = [];
+    change();
+  }));
+  const m = meters([["t", "Total kg"], ["l", "Total lb"], ["p", "Per side kg"], ["n", "Plates"]]);
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "Bar 20 kg, collars 2.5 kg each. For fun, not a record of my lifts.";
+  b.append(m, note);
+  let hits = [];
+  function draw() {
+    const { w, h } = s;
+    ctx.clearRect(0, 0, w, h);
+    ctx.font = '500 9.5px "Geist Mono", ui-monospace, monospace';
+    const cy = h * 0.52, half = w / 2 - 12, sleeve = half * 0.38, scale = clamp(w / 640, 0.62, 1);
+    const sag = (x) => bend * Math.pow(Math.abs(x) / half, 2.1);
+    const slope = (x) => (bend * 2.1 * Math.pow(Math.abs(x) / half, 1.1)) / half * Math.sign(x);
+    ctx.strokeStyle = "rgba(255,255,255,.08)";
+    ctx.beginPath();
+    ctx.moveTo(0, cy + 0.5);
+    ctx.lineTo(w, cy + 0.5);
+    ctx.stroke();
+    ctx.strokeStyle = "#adadb6";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    for (let i = -half; i <= half; i += 8) {
+      const x = w / 2 + i, y = cy + sag(i);
+      i === -half ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.lineWidth = 1;
+    hits = [];
+    for (const dir of [-1, 1]) {
+      let off = half - sleeve;
+      const collar = (bx) => {
+        ctx.fillStyle = "#adadb6";
+        ctx.save();
+        ctx.translate(w / 2 + dir * bx, cy + sag(bx));
+        ctx.rotate(Math.atan(slope(dir * bx)));
+        ctx.fillRect(-3, -9, 6, 18);
+        ctx.restore();
+      };
+      collar(off - 7);
+      side.forEach((p, i) => {
+        const P = PLATES[p], t = P.t * scale * 1.6, ph = P.h * scale;
+        const x = off + t / 2;
+        ctx.save();
+        ctx.translate(w / 2 + dir * x, cy + sag(x));
+        ctx.rotate(Math.atan(slope(dir * x)));
+        const v = 34 + (6 - Object.keys(PLATES).indexOf(String(p))) * 7;
+        ctx.fillStyle = p === 25 ? rgba(0.9) : p === 20 ? "#ededef" : `rgb(${v},${v},${v + 5})`;
+        ctx.fillRect(-t / 2, -ph / 2, t, ph);
+        ctx.strokeStyle = "rgba(8,8,10,.9)";
+        ctx.strokeRect(-t / 2, -ph / 2, t, ph);
+        if (ph > 60 && t > 9) {
+          ctx.save();
+          ctx.rotate(-Math.PI / 2);
+          ctx.fillStyle = p >= 20 ? "#08080a" : "#ededef";
+          const lb = String(p);
+          ctx.fillText(lb, -ctx.measureText(lb).width / 2, 3.5);
+          ctx.restore();
+        }
+        ctx.restore();
+        hits.push({ x1: w / 2 + dir * off - (dir < 0 ? t : 0), x2: w / 2 + dir * off + (dir > 0 ? t : 0), i });
+        off += t + 1;
+      });
+      collar(off + 3);
+    }
+    ctx.fillStyle = "#ededef";
+    ctx.font = `600 ${Math.round(24 * scale + 6)}px "Geist", ui-sans-serif, sans-serif`;
+    const lab = `${total()} kg`;
+    ctx.fillText(lab, w / 2 - ctx.measureText(lab).width / 2, Math.max(30, cy - 60));
+  }
+  cv.addEventListener("click", (e) => {
+    const p = evPos(e, cv);
+    if (hits.some((t) => p.x >= t.x1 - 4 && p.x <= t.x2 + 4)) {
+      side.pop();
+      change();
+    }
+  });
+  addTick(cv, (dt) => {
+    const target = Math.pow(Math.max(0, total() - 25) / 400, 1.1) * 64;
+    vel += (target - bend) * 150 * dt;
+    vel *= Math.pow(0.012, dt);
+    bend += vel * dt;
+    draw();
+  });
+  change();
+  vel = 0;
+  bend = Math.pow(40 / 400, 1.1) * 64;
+  draw();
+  document.addEventListener("accent", draw);
+}
+
+function toyRedact(el) {
+  const b = shell(el, "Findings", "Withheld");
+  const w = document.createElement("div");
+  w.className = "redact";
+  let seed = 41;
+  const r = (a, c) => {
+    seed = (seed * 16807) % 2147483647;
+    return a + (seed % 1000) / 1000 * (c - a);
+  };
+  w.innerHTML = Array.from({ length: 8 }, () => `<div class="ln">${Array.from({ length: 3 + Math.floor(r(0, 3)) }, () => `<i style="width:${Math.round(r(30, 150))}px"></i>`).join("")}</div>`).join("");
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "Results will appear here once the affected parties have been notified.";
+  b.append(w, note);
+  const shuffle = () => $$("i", w).forEach((i) => (i.style.width = Math.round(r(30, 150)) + "px"));
+  $$("i", w).forEach((i) => (i.style.transition = "width .3s, background .12s"));
+  w.addEventListener("pointerenter", shuffle);
+}
+
+function boot() {
+  setAccent(store.get("accent", ACCENTS[0][1]), false);
+  initField();
+  initChips();
+  initDock();
+  initPalette();
+  initHeadline();
+  initStats();
+  initMarquee();
+  initScroll();
+  initMagnets();
+  initSkillList();
+  initFooter();
+  initForge();
+  const toys = { capture: toyCapture, reshard: toyReshard, ahrag: toyAhrag, summary: toySummary, http: toyHttp, analyzer: toyAnalyzer, finance: toyFinance, huffman: toyHuffman, skills: toySkills, plates: toyPlates, redact: toyRedact };
+  $$("[data-toy]").forEach((el) => {
+    try {
+      toys[el.dataset.toy](el);
+    } catch (e) {
+      console.error(el.dataset.toy, e);
+      el.innerHTML = `<p class="note">This model couldn't start in your browser.</p>`;
+    }
+  });
+  $("#mail").addEventListener("click", copyEmail);
+  if (matchMedia("(pointer: coarse)").matches) {
+    $(".hint").textContent = "The page behind this text is live. Tap anywhere to send a ripple.";
+    $$(".toy-h .label:last-child, .forge-h .label:last-child").forEach((l) => (l.textContent = l.textContent.replace(/click/i, (m) => (m[0] === "C" ? "Tap" : "tap"))));
+  }
+  requestAnimationFrame(frame);
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+else boot();
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<canvas id="field" aria-hidden="true"></canvas>
+<div id="progress" aria-hidden="true"></div>
+<a class="skip" href="#work">Skip to projects</a>
+
+<div class="page">
+  <header class="nav">
+    <div class="wrap nav-in">
+      <a class="brand" href="#top" aria-label="Parthiban Ilango, back to top">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M1 1h30v30H1z" fill="none" stroke="#ededef" stroke-opacity=".5"/><path d="M6 26 16 6l10 20z" fill="none" stroke="#ededef" stroke-width="1.4"/><path d="M16 6v20L6 26z" fill="#ffb224" class="brand-f"/></svg>
+        <span>Parthiban<span>Ilango</span></span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="#experience">Experience</a>
+        <a href="#work">Projects</a>
+        <a href="#earlier">Earlier work</a>
+        <a href="#skills">Skills</a>
+        <a href="#about">About</a>
+      </nav>
+      <div class="nav-r">
+        <button class="kbd-btn" id="pal-open" type="button" aria-label="Open command menu">Menu <kbd id="pal-key">⌘K</kbd></button>
+        <a class="btn solid sm" href="https://github.com/parthi-bun" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="label eyebrow"><i class="dot"></i>Open to 2027 graduate software roles <span aria-hidden="true">/</span> VIT Vellore</p>
+            <h1 id="title" aria-label="Correct under pressure.">
+              <span class="ln" data-split aria-hidden="true">Correct under</span>
+              <span class="ln dim" data-split aria-hidden="true">pressure.</span>
+            </h1>
+            <p class="hero-sub">I'm Parthiban Ilango, a computer science student graduating in May 2027. I build distributed systems, secure retrieval and production mobile apps, and I test them against the failures that would break them.</p>
+            <div class="cta">
+              <a class="btn solid mag" href="#work">See the work <span class="arr" aria-hidden="true">→</span></a>
+              <a class="btn mag" href="#contact">Get in touch</a>
+            </div>
+            <div class="modes">
+              <span class="label">Background</span>
+              <div class="chips" id="mode-chips" role="group" aria-label="Background style"></div>
+            </div>
+            <p class="hint">The page behind this text is live. Move, click or hold anywhere, or press 1 to 5.</p>
+          </div>
+
+          <div class="forge" data-nofield>
+            <div class="forge-h"><span class="label">Solid bench</span><span class="label" style="color:var(--accent)">Drag to spin, click a facet</span></div>
+            <canvas id="forge" role="img" aria-label="A rotating sharp geometric solid you can drag and reshape"></canvas>
+            <div class="euler" id="euler" aria-hidden="true"></div>
+            <div class="forge-ctl" id="forge-ctl"></div>
+          </div>
+        </div>
+
+        <dl class="stats" id="stats" style="margin-block-end:0">
+          <div class="stat"><dt class="label">Verified benchmark runs</dt><dd class="num" style="margin:0" data-count="252">252</dd></div>
+          <div class="stat"><dt class="label">Updates lost or duplicated</dt><dd class="num" style="margin:0" data-count="0">0</dd></div>
+          <div class="stat"><dt class="label">Retrieval route outcomes</dt><dd class="num" style="margin:0" data-count="124">124</dd></div>
+          <div class="stat"><dt class="label">CGPA at VIT</dt><dd class="num" style="margin:0" data-count="8.11" data-dec="2">8.11</dd></div>
+        </dl>
+      </div>
+      <div class="marq" aria-hidden="true" style="margin-top:56px"><div class="marq-t" id="marq"></div></div>
+    </section>
+
+    <section class="sec" id="experience">
+      <div class="wrap">
+        <div class="sec-h">
+          <div>
+            <p class="label sec-tag"><b>[01]</b> Experience <i></i></p>
+            <h2>In production, <span>not just in a demo.</span></h2>
+          </div>
+          <p>My internship work runs in a mobile app used in production at the company, where it took manual steps out of taking attendance.</p>
+        </div>
+
+        <article class="panel case">
+          <div class="case-t">
+            <div class="meta-row"><span class="label">Dec 2025 – Feb 2026 / Bengaluru</span><span class="pill">In production</span></div>
+            <p class="kick">eValai Infotech Solutions</p>
+            <h3>Software Development Engineer Intern, App Development</h3>
+            <ul class="pts">
+              <li>Developed a Flutter mobile application now in production use at the company.</li>
+              <li>Integrated Google ML Kit smile detection to trigger automatic student photo capture, removing manual steps from the workflow.</li>
+              <li>Built a facial-recognition pipeline that matches captured photos against student records to mark attendance automatically.</li>
+            </ul>
+            <ul class="tags"><li>Flutter</li><li>Google ML Kit</li><li>Facial recognition</li></ul>
+            <div class="links"><span class="muted">valaischool.com</span></div>
+          </div>
+          <div class="case-v"><div class="toy" data-toy="capture"></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="sec" id="work">
+      <div class="wrap">
+        <div class="sec-h">
+          <div>
+            <p class="label sec-tag"><b>[02]</b> Projects <i></i></p>
+            <h2>Work you can <span>press on.</span></h2>
+          </div>
+          <p>Each project comes with a small working model of its core idea. The models are simplified illustrations. The figures in the write-ups come from the real projects.</p>
+        </div>
+
+        <nav class="pidx" aria-label="Project index">
+          <a href="#p-reshard"><span>01</span>Resharding</a>
+          <a href="#p-ahrag"><span>02</span>AHRAG</a>
+          <a href="#p-summary"><span>03</span>Doc Summary</a>
+          <a href="#p-http"><span>04</span>HTTP Server</a>
+          <a href="#p-analyzer"><span>05</span>Resume Analyzer</a>
+          <a href="#p-finance"><span>06</span>Finance Tracker</a>
+          <a href="#p-huffman"><span>07</span>Huffman</a>
+        </nav>
+
+        <article class="panel case" id="p-reshard">
+          <div class="case-t">
+            <div class="meta-row"><span class="label">Project 01 / 2026</span><span class="pill acc">Patent applied</span></div>
+            <p class="kick">Distributed systems</p>
+            <h3>Barrier-Free Resharding of Distributed Sparse Arrays</h3>
+            <p class="lede">A Go simulator that moves sparse-array tiles between nodes while updates keep flowing, so rebalancing doesn't have to stop the whole array.</p>
+            <div class="figs">
+              <div class="fig"><b>61.8%</b><span>lower median p95 update latency under frequent migration</span></div>
+              <div class="fig"><b>80.8%</b><span>lower with longer delays</span></div>
+              <div class="fig"><b>0</b><span>lost or duplicated updates across 252 runs in 9 scenarios</span></div>
+            </div>
+            <ul class="pts">
+              <li>Results are measured against a global-stop baseline in local benchmarks.</li>
+              <li>Correctness was checked by an independent serial oracle.</li>
+            </ul>
+            <ul class="tags"><li>Go</li><li>Concurrency</li><li>Distributed systems</li></ul>
+          </div>
+          <div class="case-v"><div class="toy" data-toy="reshard"></div></div>
+        </article>
+
+        <article class="panel case" id="p-ahrag">
+          <div class="case-t">
+            <div class="meta-row"><span class="label">Project 02 / 2026</span><span class="pill">45 tests passing</span></div>
+            <p class="kick">Secure retrieval</p>
+            <h3>AHRAG: Secure Hybrid Retrieval</h3>
+            <p class="lede">A framework that benchmarks BM25, dense, reciprocal-rank-fusion and multi-step retrieval over versioned enterprise documents.</p>
+            <ul class="pts">
+              <li>Enforces role- and effective-date-based eligibility before retrieval, generation and citation.</li>
+              <li>Tested against evidence substitution, revocation, retries and data leakage.</li>
+              <li>Reproducible evaluation with grouped splits, ablations, repeated timings and confidence intervals.</li>
+            </ul>
+            <div class="figs">
+              <div class="fig"><b>31</b><span>evaluation scenarios</span></div>
+              <div class="fig"><b>124</b><span>route outcomes</span></div>
+              <div class="fig"><b>45</b><span>passing tests</span></div>
+            </div>
+            <ul class="tags"><li>Python</li><li>Streamlit</li><li>scikit-learn</li><li>Pytest</li></ul>
+          </div>
+          <div class="case-v"><div class="toy" data-toy="ahrag"></div></div>
+        </article>
+
+        <div class="grid2">
+          <article class="panel card" id="p-summary">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">Project 03 / 2026</span><span class="pill">Live</span></div>
+              <p class="kick">Document AI</p>
+              <h3>Document Summary Assistant</h3>
+              <p class="lede">A responsive web app that takes PDFs and images and returns configurable summaries, key points and suggestions for improving the document.</p>
+              <ul class="pts">
+                <li>Extracts PDF text with pdf.js and runs Tesseract OCR on scans in the browser.</li>
+                <li>Uploaded files stay on the client. Only the extracted text is sent for summarising.</li>
+              </ul>
+              <ul class="tags"><li>React</li><li>TypeScript</li><li>pdf.js</li><li>Tesseract OCR</li></ul>
+              <div class="links">
+                <a class="tlink" href="https://document-summary-assistant-murex.vercel.app/" target="_blank" rel="noopener">Live demo <span aria-hidden="true">↗</span></a>
+                <a class="tlink" href="https://github.com/Parthi-bun/document-summary-assistant" target="_blank" rel="noopener">Code <span aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+            <div class="toy" data-toy="summary"></div>
+          </article>
+
+          <article class="panel card" id="p-http">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">Project 04 / 2024</span><span class="pill mute">Raw sockets</span></div>
+              <p class="kick">Networking</p>
+              <h3>Multithreaded Java HTTP Server</h3>
+              <p class="lede">An HTTP/1.1 server written over raw sockets, with request parsing, routing, status codes and response generation.</p>
+              <ul class="pts">
+                <li>Serves concurrent clients through a managed thread pool.</li>
+                <li>Synchronizes shared state to eliminate race conditions.</li>
+              </ul>
+              <ul class="tags"><li>Java</li><li>Sockets</li><li>Concurrency</li></ul>
+            </div>
+            <div class="toy" data-toy="http"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="earlier">
+      <div class="wrap">
+        <div class="sec-h">
+          <div>
+            <p class="label sec-tag"><b>[03]</b> Earlier work <i></i></p>
+            <h2>The builds <span>before those.</span></h2>
+          </div>
+          <p>Full-stack and algorithm projects from earlier in my degree, along with my current security research.</p>
+        </div>
+        <div class="grid2">
+          <article class="panel card" id="p-analyzer">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">Project 05 / 2025</span><span class="pill mute">On AWS</span></div>
+              <p class="kick">Applied NLP</p>
+              <h3>AI Resume Analyzer</h3>
+              <p class="lede">Scores a resume against a job description using skill extraction, keyword matching and semantic similarity, then returns a 0 to 100 score, missing skills and suggestions.</p>
+              <ul class="pts">
+                <li>Handles PDF and DOCX uploads, with storage in AWS S3.</li>
+                <li>Containerized with Docker and deployed on EC2 behind an Nginx reverse proxy.</li>
+              </ul>
+              <ul class="tags"><li>FastAPI</li><li>Streamlit</li><li>spaCy</li><li>scikit-learn</li><li>Docker</li><li>AWS EC2/S3</li><li>Nginx</li></ul>
+              <div class="links"><a class="tlink" href="https://github.com/Parthi-bun/resume-analyser" target="_blank" rel="noopener">Code <span aria-hidden="true">↗</span></a></div>
+            </div>
+            <div class="toy" data-toy="analyzer"></div>
+          </article>
+
+          <article class="panel card" id="p-finance">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">Project 06 / 2025</span><span class="pill mute">Full stack</span></div>
+              <p class="kick">Web application</p>
+              <h3>Finance Tracker</h3>
+              <p class="lede">A personal finance app with registration and login, income and expense tracking, sortable transactions and live balance totals.</p>
+              <ul class="pts">
+                <li>Secured with Spring Security, BCrypt password hashing, session authentication and CSRF protection.</li>
+                <li>Each user sees only their own transactions.</li>
+              </ul>
+              <ul class="tags"><li>Spring Boot</li><li>Spring Security</li><li>MySQL</li><li>Java</li></ul>
+              <div class="links"><a class="tlink" href="https://github.com/Parthi-bun/Finance-Tracker" target="_blank" rel="noopener">Code <span aria-hidden="true">↗</span></a></div>
+            </div>
+            <div class="toy" data-toy="finance"></div>
+          </article>
+
+          <article class="panel card" id="p-huffman">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">Project 07 / 2024</span><span class="pill mute">Lossless</span></div>
+              <p class="kick">Algorithms</p>
+              <h3>Huffman File Compressor</h3>
+              <p class="lede">Huffman coding from scratch, compressing and decompressing text files with a min-heap priority queue.</p>
+              <ul class="pts">
+                <li>Full binary I/O pipeline with bit padding, byte serialization and a JSON frequency-table header.</li>
+                <li>Round-trip decompression verified on arbitrary text.</li>
+              </ul>
+              <ul class="tags"><li>Python</li><li>Data structures</li></ul>
+              <div class="links"><a class="tlink" href="https://github.com/Parthi-bun/File_Compression_Tool" target="_blank" rel="noopener">Code <span aria-hidden="true">↗</span></a></div>
+            </div>
+            <div class="toy" data-toy="huffman"></div>
+          </article>
+
+          <article class="panel card" id="p-research">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">Research / 2026</span><span class="pill acc">In disclosure</span></div>
+              <p class="kick">Security research</p>
+              <h3>Secret exposure in deployed web apps</h3>
+              <p class="lede">A measurement study of how credentials end up exposed in shipped web applications. The paper is finished. Its findings stay private until coordinated disclosure is complete.</p>
+              <ul class="tags"><li>Python</li><li>Measurement</li><li>Coordinated disclosure</li></ul>
+            </div>
+            <div class="toy" data-toy="redact"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="skills">
+      <div class="wrap">
+        <div class="sec-h">
+          <div>
+            <p class="label sec-tag"><b>[04]</b> Skills <i></i></p>
+            <h2>The stack, <span>and where it was used.</span></h2>
+          </div>
+          <p>Every skill links to the projects that used it. Drag the nodes, or pick a skill from the list to light up its connections.</p>
+        </div>
+        <div class="panel skills">
+          <div class="toy" data-toy="skills"></div>
+          <div class="skills-l">
+            <div><h3>Languages</h3><div class="sk" data-sk="Python,Go,Java,JavaScript,TypeScript,C,C++"></div></div>
+            <div><h3>Frameworks and libraries</h3><div class="sk" data-sk="Flutter,FastAPI,Spring Boot,React,Streamlit,scikit-learn,spaCy"></div></div>
+            <div><h3>Tools and platforms</h3><div class="sk" data-sk="Git,Docker,MySQL,AWS EC2/S3,Nginx,Vercel,Pytest"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="about">
+      <div class="wrap">
+        <div class="sec-h">
+          <div>
+            <p class="label sec-tag"><b>[05]</b> About <i></i></p>
+            <h2>Away from <span>the keyboard.</span></h2>
+          </div>
+          <p>I'm a competitive powerlifter, which is good practice for the same habit: add load, find the weak point, fix it, repeat.</p>
+        </div>
+        <div class="panel about">
+          <div class="case-t">
+            <dl class="facts" style="margin:0">
+              <div class="factr"><dt class="label">Education</dt><dd style="margin:0"><b>Vellore Institute of Technology</b><br>B.Tech in Computer Science, CGPA 8.11/10<br>Aug 2023 – May 2027</dd></div>
+              <div class="factr"><dt class="label">Community</dt><dd style="margin:0">CodeChef Chapter member at VIT, with coding contests, peer learning and DSA practice on LeetCode</dd></div>
+              <div class="factr"><dt class="label">Sport</dt><dd style="margin:0">Competitive powerlifter</dd></div>
+              <div class="factr"><dt class="label">Languages</dt><dd style="margin:0">English, Tamil, Kannada</dd></div>
+              <div class="factr"><dt class="label">Based in</dt><dd style="margin:0">Kumbakonam, Tamil Nadu</dd></div>
+              <div class="factr"><dt class="label">Work rights</dt><dd style="margin:0">UK citizen, no sponsorship required for UK employment</dd></div>
+            </dl>
+          </div>
+          <div class="case-v"><div class="toy" data-toy="plates"></div></div>
+        </div>
+
+        <div class="panel contact" id="contact">
+          <div>
+            <p class="label sec-tag"><b>[06]</b> Contact <i></i></p>
+            <h2>Hiring for a hard <span>problem?</span></h2>
+            <p>I'm looking for a 2027 graduate software engineering role. Email is the quickest way to reach me.</p>
+          </div>
+          <div>
+            <button class="mail" id="mail" type="button" data-email="Parthiban.i2023@vitstudent.ac.in">
+              <span class="label">Copy email address</span>
+              <b>Parthiban.i2023@vitstudent.ac.in</b>
+              <span aria-hidden="true">⧉</span>
+            </button>
+            <div class="side-l">
+              <a class="btn" href="mailto:Parthiban.i2023@vitstudent.ac.in">Write an email</a>
+              <a class="btn" href="https://github.com/parthi-bun" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <div>
+          <a class="brand" href="#top"><span>Parthiban<span>Ilango</span></span></a>
+          <p>Computer science student and software engineer, graduating May 2027.</p>
+        </div>
+        <div><h4 class="label">Work</h4><ul>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#work">Projects</a></li>
+          <li><a href="#earlier">Earlier work</a></li>
+        </ul></div>
+        <div><h4 class="label">Profile</h4><ul>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul></div>
+        <div><h4 class="label">Elsewhere</h4><ul>
+          <li><a href="https://github.com/parthi-bun" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="https://document-summary-assistant-murex.vercel.app/" target="_blank" rel="noopener">Live demo</a></li>
+        </ul></div>
+      </div>
+      <div class="foot-b label">
+        <span>© 2026 Parthiban Ilango</span>
+        <span id="clock">Kumbakonam</span>
+      </div>
+    </div>
+    <div class="bigname" id="bigname" aria-hidden="true">PARTHIBAN</div>
+  </footer>
+</div>
+
+<div id="dock" data-nofield>
+  <div class="dock-p" id="dock-p" hidden></div>
+  <button class="dock-b" id="dock-b" type="button" aria-expanded="false" aria-controls="dock-p"><i></i><span id="dock-l">Field</span></button>
+</div>
+<div id="pal" hidden data-nofield>
+  <div class="pal-b" role="dialog" aria-modal="true" aria-label="Command menu">
+    <input id="pal-i" type="text" placeholder="Jump to a section or change the background" aria-label="Search commands" autocomplete="off">
+    <div class="pal-l" id="pal-l" role="listbox"></div>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
