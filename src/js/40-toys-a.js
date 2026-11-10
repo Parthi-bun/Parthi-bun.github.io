@@ -123,7 +123,7 @@ function toyCapture(el) {
       ctx.fillStyle = rgba(0.08);
       ctx.fillRect(bx, y, bw, bh - (y - by));
     }
-    ctx.font = '500 10px "Geist Mono", ui-monospace, monospace';
+    ctx.font = '500 10px "IBM Plex Mono", ui-monospace, monospace';
     ctx.fillStyle = on ? rgba(1) : "#8b8b95";
     ctx.fillText(`smile ${smile.toFixed(2)} / trigger ${thr.toFixed(2)}`, bx, Math.max(12, by - 7));
     /* roster */
@@ -310,7 +310,7 @@ function toyReshard(el) {
     const { w, h } = s, L = layout();
     ctx.clearRect(0, 0, w, h);
     const frozen = stopped();
-    ctx.font = '500 10px "Geist Mono", ui-monospace, monospace';
+    ctx.font = '500 10px "IBM Plex Mono", ui-monospace, monospace';
     /* cable */
     const A = L.box(0), B = L.box(1);
     const cableR = route(L, 0, 1, { x: 0, y: 0 }, { x: 0, y: 0 }).slice(2, -2).map(([x, y]) => [x + L.tile / 2 + 2, y + L.tile / 2 + 2]);

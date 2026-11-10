@@ -104,7 +104,7 @@ function toySkills(el) {
     for (const n of nodes) {
       const dim = focus && !near.has(n), on = focus && near.has(n);
       if (n.kind === "project") {
-        ctx.font = '500 11px "Geist Mono", ui-monospace, monospace';
+        ctx.font = '500 11px "IBM Plex Mono", ui-monospace, monospace';
         const tw = ctx.measureText(n.name).width, bw = tw + 14;
         n.hw = bw / 2;
         n.hh = 11;
@@ -126,7 +126,7 @@ function toySkills(el) {
         ctx.lineTo(n.x - r, n.y);
         ctx.closePath();
         ctx.fill();
-        ctx.font = '500 10px "Geist Mono", ui-monospace, monospace';
+        ctx.font = '500 10px "IBM Plex Mono", ui-monospace, monospace';
         ctx.fillStyle = on ? Acc.hex : dim ? "#44444c" : "#adadb6";
         const tw = ctx.measureText(n.name).width;
         ctx.fillText(n.name, clamp(n.x - tw / 2, 3, w - tw - 3), n.y + 16);
@@ -206,12 +206,12 @@ function toyPlates(el) {
   const s = fit(cv);
   const ctx = s.ctx;
   const PLATES = {
-    25: { h: 148, t: 15 },
-    20: { h: 148, t: 12 },
-    15: { h: 122, t: 10 },
-    10: { h: 98, t: 8 },
-    5: { h: 72, t: 6 },
-    2.5: { h: 54, t: 5 },
+    25: { h: 148, t: 15, c: "#d8413c", ink: "#fff" },
+    20: { h: 148, t: 12, c: "#3f6fd8", ink: "#fff" },
+    15: { h: 122, t: 10, c: "#f2c230", ink: "#08080a" },
+    10: { h: 98, t: 8, c: "#2f9e58", ink: "#fff" },
+    5: { h: 72, t: 6, c: "#ededef", ink: "#08080a" },
+    2.5: { h: 54, t: 5, c: "#3a3a41", ink: "#ededef" },
   };
   const MAX = 8;
   let side = [20], bend = 0, vel = 0;
@@ -240,13 +240,13 @@ function toyPlates(el) {
   const m = meters([["t", "Total kg"], ["l", "Total lb"], ["p", "Per side kg"], ["n", "Plates"]]);
   const note = document.createElement("div");
   note.className = "note";
-  note.textContent = "Bar 20 kg, collars 2.5 kg each. For fun, not a record of my lifts.";
+  note.textContent = "Bar 20 kg, collars 2.5 kg each, plates in competition colours. For fun, not a record of my lifts.";
   b.append(m, note);
   let hits = [];
   function draw() {
     const { w, h } = s;
     ctx.clearRect(0, 0, w, h);
-    ctx.font = '500 9.5px "Geist Mono", ui-monospace, monospace';
+    ctx.font = '500 9.5px "IBM Plex Mono", ui-monospace, monospace';
     const cy = h * 0.52, half = w / 2 - 12, sleeve = half * 0.38, scale = clamp(w / 640, 0.62, 1);
     const sag = (x) => bend * Math.pow(Math.abs(x) / half, 2.1);
     const slope = (x) => (bend * 2.1 * Math.pow(Math.abs(x) / half, 1.1)) / half * Math.sign(x);
@@ -282,15 +282,14 @@ function toyPlates(el) {
         ctx.save();
         ctx.translate(w / 2 + dir * x, cy + sag(x));
         ctx.rotate(Math.atan(slope(dir * x)));
-        const v = 34 + (6 - Object.keys(PLATES).indexOf(String(p))) * 7;
-        ctx.fillStyle = p === 25 ? rgba(0.9) : p === 20 ? "#ededef" : `rgb(${v},${v},${v + 5})`;
+        ctx.fillStyle = PLATES[p].c;
         ctx.fillRect(-t / 2, -ph / 2, t, ph);
         ctx.strokeStyle = "rgba(8,8,10,.9)";
         ctx.strokeRect(-t / 2, -ph / 2, t, ph);
         if (ph > 60 && t > 9) {
           ctx.save();
           ctx.rotate(-Math.PI / 2);
-          ctx.fillStyle = p >= 20 ? "#08080a" : "#ededef";
+          ctx.fillStyle = PLATES[p].ink;
           const lb = String(p);
           ctx.fillText(lb, -ctx.measureText(lb).width / 2, 3.5);
           ctx.restore();
@@ -302,7 +301,7 @@ function toyPlates(el) {
       collar(off + 3);
     }
     ctx.fillStyle = "#ededef";
-    ctx.font = `600 ${Math.round(24 * scale + 6)}px "Geist", ui-sans-serif, sans-serif`;
+    ctx.font = `600 ${Math.round(24 * scale + 6)}px "IBM Plex Sans", ui-sans-serif, sans-serif`;
     const lab = `${total()} kg`;
     ctx.fillText(lab, w / 2 - ctx.measureText(lab).width / 2, Math.max(30, cy - 60));
   }

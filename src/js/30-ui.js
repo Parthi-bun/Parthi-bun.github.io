@@ -16,9 +16,9 @@ function initChips() {
   });
   Field.onMode((m) => {
     $$(".chip", w).forEach((b, i) => b.setAttribute("aria-pressed", i === m));
-    $("#dock-l").textContent = "Field / " + MODES[m];
+    $("#dock-l").textContent = "Background: " + MODES[m];
   });
-  $("#dock-l").textContent = "Field / " + MODES[Field.mode];
+  $("#dock-l").textContent = "Background: " + MODES[Field.mode];
 }
 
 function initDock() {
@@ -43,13 +43,14 @@ function initDock() {
   const sw = document.createElement("div");
   sw.className = "sw";
   sw.setAttribute("role", "group");
-  sw.setAttribute("aria-label", "Accent colour");
+  sw.setAttribute("aria-label", "Accent colour, in weight plate colours");
   const current = store.get("accent", ACCENTS[0][1]);
   ACCENTS.forEach(([n, hex]) => {
     const c = document.createElement("button");
     c.type = "button";
     c.style.setProperty("--c", hex);
     c.setAttribute("aria-label", n);
+    c.title = n;
     c.setAttribute("aria-pressed", hex === current);
     c.addEventListener("click", () => applyAccent(hex));
     sw.append(c);
@@ -84,8 +85,8 @@ function initDock() {
   addTick(p, () => (fps.textContent = `${Field.fps} fps`));
   const head = document.createElement("div");
   head.style.cssText = "display:flex;justify-content:space-between;gap:8px";
-  head.append(lab("Background field"), fps);
-  p.append(head, modeSeg, density, force, sw, acts);
+  head.append(lab("Background"), fps);
+  p.append(head, modeSeg, density, force, lab("Accent, in weight plate colours"), sw, acts);
   Dock.density = density;
   Dock.force = force;
   Dock.open = setOpen;
@@ -103,7 +104,7 @@ function initPalette() {
   const items = [
     ["Experience", "Section", go("#experience")],
     ["Projects", "Section", go("#work")],
-    ["Earlier work", "Section", go("#earlier")],
+    ["Earlier projects", "Section", go("#earlier")],
     ["Skills", "Section", go("#skills")],
     ["About", "Section", go("#about")],
     ["Contact", "Section", go("#contact")],
@@ -114,13 +115,13 @@ function initPalette() {
     ["AI Resume Analyzer", "Project", go("#p-analyzer")],
     ["Finance Tracker", "Project", go("#p-finance")],
     ["Huffman File Compressor", "Project", go("#p-huffman")],
-    ...MODES.map((m, i) => [`Background: ${m}`, "Field", () => Field.setMode(i)]),
+    ...MODES.map((m, i) => [`Background: ${m}`, "Background", () => Field.setMode(i)]),
     ...ACCENTS.map(([n, hex]) => [`Accent: ${n}`, "Colour", () => applyAccent(hex)]),
-    ["Send a pulse across the page", "Field", () => Field.pulse(innerWidth / 2, innerHeight / 2)],
-    ["Start a glider gun", "Field", () => Field.gun()],
+    ["Send a pulse across the page", "Background", () => Field.pulse(innerWidth / 2, innerHeight / 2)],
+    ["Start a glider gun", "Background", () => Field.gun()],
     ["Copy email address", "Contact", () => copyEmail()],
     ["Open GitHub", "Link", () => window.open("https://github.com/parthi-bun", "_blank", "noopener")],
-    ["Open the Field controls", "Field", () => Dock.open(true)],
+    ["Open the background controls", "Background", () => Dock.open(true)],
   ];
   let view = items, on = 0;
   const render = () => {
@@ -202,9 +203,12 @@ function initPalette() {
 }
 
 function copyEmail() {
-  const email = $("#mail").dataset.email;
-  copyText(email).then((ok) => toast(ok ? "Email address copied." : "Select the address on the page to copy it."));
+  const email = $("[data-email]").dataset.email;
+  copyText(email).then((ok) => toast(ok ? "Email address copied." : `Couldn't copy. The address is ${email}`));
 }
+
+/* Weight range of the headline typeface. Letters near the pointer get heavier, with a thin ring around them. */
+const HEAD_W = { base: 600, min: 180, max: 700 };
 
 function initHeadline() {
   const h = $("#title");
@@ -217,7 +221,7 @@ function initHeadline() {
       s.className = "ch";
       s.textContent = c === " " ? " " : c;
       ln.append(s);
-      chars.push({ s, w: 600 });
+      chars.push({ s, w: HEAD_W.base });
     }
   });
   if (REDUCED || !matchMedia("(hover: hover)").matches) return;
@@ -241,49 +245,15 @@ function initHeadline() {
     for (const c of chars) {
       if (c.x === undefined) continue;
       const d = Math.hypot(px - c.x, py - c.y);
-      const target = 600 + 300 * Math.exp(-(d * d) / 12000) - 420 * Math.exp(-((d - 150) * (d - 150)) / 5200);
+      const target = HEAD_W.base + (HEAD_W.max - HEAD_W.base) * Math.exp(-(d * d) / 12000) - (HEAD_W.base - HEAD_W.min) * Math.exp(-((d - 150) * (d - 150)) / 5200);
       c.w += (target - c.w) * 0.16;
-      const v = clamp(Math.round(c.w / 10) * 10, 100, 900);
+      const v = clamp(Math.round(c.w / 10) * 10, HEAD_W.min, HEAD_W.max);
       if (v !== c.v) {
         c.v = v;
         c.s.style.fontWeight = v;
       }
     }
   });
-}
-
-function initStats() {
-  const nums = $$("[data-count]");
-  const play = (el) => {
-    if (REDUCED) return;
-    const end = +el.dataset.count, dec = +(el.dataset.dec || 0), t0 = performance.now();
-    if (!end) {
-      el.textContent = end.toFixed(dec);
-      return;
-    }
-    const f = (n) => {
-      const k = clamp((n - t0) / 900, 0, 1);
-      el.textContent = (end * (1 - Math.pow(1 - k, 3))).toFixed(dec);
-      if (k < 1) requestAnimationFrame(f);
-    };
-    requestAnimationFrame(f);
-  };
-  const io = new IntersectionObserver((es) => es.forEach((e) => {
-    if (e.isIntersecting) {
-      play(e.target);
-      io.unobserve(e.target);
-    }
-  }), { threshold: 0.6 });
-  nums.forEach((n) => {
-    io.observe(n);
-    n.parentElement.addEventListener("pointerenter", () => play(n));
-  });
-}
-
-function initMarquee() {
-  const stack = ["Go", "Python", "Java", "TypeScript", "C++", "Flutter", "FastAPI", "Spring Boot", "React", "scikit-learn", "Docker", "AWS EC2/S3", "Nginx", "MySQL", "Pytest"];
-  const row = stack.map((s) => `<span>${s}</span>`).join("");
-  $("#marq").innerHTML = row + row + row + row;
 }
 
 function initScroll() {
@@ -302,17 +272,8 @@ function initScroll() {
   addEventListener("scroll", on, { passive: true });
   addEventListener("resize", on);
   on();
-}
-
-function initMagnets() {
-  if (REDUCED || !matchMedia("(hover: hover)").matches) return;
-  $$(".mag").forEach((b) => {
-    b.addEventListener("pointermove", (e) => {
-      const r = b.getBoundingClientRect();
-      b.style.transform = `translate(${((e.clientX - r.left) / r.width - 0.5) * 8}px,${((e.clientY - r.top) / r.height - 0.5) * 6}px)`;
-    });
-    b.addEventListener("pointerleave", () => (b.style.transform = ""));
-  });
+  const nav = $(".nav");
+  new IntersectionObserver(([e]) => nav.classList.toggle("past", !e.isIntersecting), { rootMargin: "-72px 0px 0px 0px" }).observe($("#title"));
 }
 
 function initFooter() {
@@ -351,20 +312,12 @@ function initFooter() {
 }
 
 function initSkillList() {
-  $$("[data-sk]").forEach((w) => {
-    w.dataset.sk.split(",").forEach((name) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.textContent = name;
-      b.dataset.name = name;
-      b.setAttribute("aria-pressed", "false");
-      b.addEventListener("click", () => document.dispatchEvent(new CustomEvent("skill", { detail: name })));
-      w.append(b);
-    });
+  $$(".sk button").forEach((b) => {
+    b.addEventListener("click", () => document.dispatchEvent(new CustomEvent("skill", { detail: b.textContent })));
   });
   document.addEventListener("skillstate", (e) => {
     $$(".sk button").forEach((b) => {
-      const on = b.dataset.name === e.detail;
+      const on = b.textContent === e.detail;
       b.classList.toggle("on", on);
       b.setAttribute("aria-pressed", on);
     });

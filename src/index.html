@@ -5,14 +5,11 @@
 <div class="page">
   <header class="nav">
     <div class="wrap nav-in">
-      <a class="brand" href="#top" aria-label="Parthiban Ilango, back to top">
-        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M1 1h30v30H1z" fill="none" stroke="#ededef" stroke-opacity=".5"/><path d="M6 26 16 6l10 20z" fill="none" stroke="#ededef" stroke-width="1.4"/><path d="M16 6v20L6 26z" fill="#ffb224" class="brand-f"/></svg>
-        <span>Parthiban<span>Ilango</span></span>
-      </a>
+      <a class="brand" href="#top">Parthiban Ilango</a>
       <nav class="nav-links" aria-label="Sections">
         <a href="#experience">Experience</a>
         <a href="#work">Projects</a>
-        <a href="#earlier">Earlier work</a>
+        <a href="#earlier">Earlier projects</a>
         <a href="#skills">Skills</a>
         <a href="#about">About</a>
       </nav>
@@ -26,51 +23,39 @@
   <main id="top">
     <section class="hero">
       <div class="wrap">
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <p class="label eyebrow"><i class="dot"></i>Open to 2027 graduate software roles <span class="sep" aria-hidden="true">/</span> <span class="vit">VIT Vellore</span></p>
-            <h1 id="title" aria-label="Correct under pressure.">
-              <span class="ln" data-split aria-hidden="true">Correct under</span>
-              <span class="ln dim" data-split aria-hidden="true">pressure.</span>
-            </h1>
-            <p class="hero-sub">I'm Parthiban Ilango, a computer science student graduating in May 2027. I build distributed systems, secure retrieval and production mobile apps, and I test them against the failures that would break them.</p>
-            <div class="cta">
-              <a class="btn solid mag" href="#work">See the work <span class="arr" aria-hidden="true">→</span></a>
-              <a class="btn mag" href="#contact">Get in touch</a>
-            </div>
-            <div class="modes">
-              <span class="label">Background</span>
-              <div class="chips" id="mode-chips" role="group" aria-label="Background style"></div>
-            </div>
-            <p class="hint">The page behind this text is live. Move, click or hold anywhere, or press 1 to 5.</p>
+        <div class="hero-copy">
+          <h1 id="title" aria-label="Parthiban Ilango">
+            <span class="ln" data-split aria-hidden="true">Parthiban</span>
+            <span class="ln" data-split aria-hidden="true">Ilango</span>
+          </h1>
+          <p class="intro">I'm a final-year computer science student at VIT Vellore. This year I built <a href="#p-reshard">a simulator for moving data between machines without stopping the work</a>, and <a href="#p-ahrag">a retrieval framework that checks who is allowed to see a document before it searches</a>. Before that, as an intern, I built <a href="#experience">a Flutter app that marks attendance when a student smiles at the camera</a>. It's in production now.</p>
+          <p class="intro">I graduate in May 2027 and I'm looking for a software engineering role.</p>
+          <p class="reach">
+            <button class="copy-mail" type="button" data-email="Parthiban.i2023@vitstudent.ac.in" title="Copy email address">Parthiban.i2023@vitstudent.ac.in</button>
+            <a href="https://github.com/parthi-bun" target="_blank" rel="noopener">github.com/parthi-bun</a>
+          </p>
+          <div class="modes">
+            <span class="label">Background</span>
+            <div class="chips" id="mode-chips" role="group" aria-label="Background style"></div>
           </div>
+          <p class="hint">The background reacts to you. Move, click or hold anywhere, or press 1 to 5 to change it.</p>
+          <noscript><p class="hint">The background and the working models need JavaScript. Everything else on this page works without it.</p></noscript>
         </div>
-
-        <dl class="stats" id="stats" style="margin-block-end:0">
-          <div class="stat"><dt class="label">Verified benchmark runs</dt><dd class="num" style="margin:0" data-count="252">252</dd></div>
-          <div class="stat"><dt class="label">Updates lost or duplicated</dt><dd class="num" style="margin:0" data-count="0">0</dd></div>
-          <div class="stat"><dt class="label">Retrieval route outcomes</dt><dd class="num" style="margin:0" data-count="124">124</dd></div>
-          <div class="stat"><dt class="label">CGPA at VIT</dt><dd class="num" style="margin:0" data-count="8.11" data-dec="2">8.11</dd></div>
-        </dl>
       </div>
-      <div class="marq" aria-hidden="true" style="margin-top:56px"><div class="marq-t" id="marq"></div></div>
     </section>
 
     <section class="sec" id="experience">
       <div class="wrap">
         <div class="sec-h">
-          <div>
-            <p class="label sec-tag"><b>[01]</b> Experience <i></i></p>
-            <h2>In production, <span>not just in a demo.</span></h2>
-          </div>
+          <h2>Experience</h2>
           <p>My internship work runs in a mobile app used in production at the company, where it took manual steps out of taking attendance.</p>
         </div>
 
         <article class="panel case">
           <div class="case-t">
-            <div class="meta-row"><span class="label">Dec 2025 – Feb 2026 / Bengaluru</span><span class="pill">In production</span></div>
-            <p class="kick">eValai Infotech Solutions</p>
+            <div class="meta-row"><span class="label">Dec 2025 – Feb 2026, Bengaluru</span><span class="pill">In production</span></div>
             <h3>Software Development Engineer Intern, App Development</h3>
+            <p class="org">eValai Infotech Solutions</p>
             <ul class="pts">
               <li>Developed a Flutter mobile application now in production use at the company.</li>
               <li>Integrated Google ML Kit smile detection to trigger automatic student photo capture, removing manual steps from the workflow.</li>
@@ -87,27 +72,24 @@
     <section class="sec" id="work">
       <div class="wrap">
         <div class="sec-h">
-          <div>
-            <p class="label sec-tag"><b>[02]</b> Projects <i></i></p>
-            <h2>Work you can <span>press on.</span></h2>
-          </div>
-          <p>Each project comes with a small working model of its core idea. The models are simplified illustrations. The figures in the write-ups come from the real projects.</p>
+          <h2>Projects</h2>
+          <p>Each project has a small working model of its core idea that you can poke at. The models are simplified. The numbers in the write-ups come from the real projects.</p>
         </div>
 
-        <nav class="pidx" aria-label="Project index">
-          <a href="#p-reshard"><span>01</span>Resharding</a>
-          <a href="#p-ahrag"><span>02</span>AHRAG</a>
-          <a href="#p-summary"><span>03</span>Doc Summary</a>
-          <a href="#p-http"><span>04</span>HTTP Server</a>
-          <a href="#p-analyzer"><span>05</span>Resume Analyzer</a>
-          <a href="#p-finance"><span>06</span>Finance Tracker</a>
-          <a href="#p-huffman"><span>07</span>Huffman</a>
+        <nav class="jump" aria-label="Project index">
+          <span>Jump to</span>
+          <a href="#p-reshard">Resharding</a>
+          <a href="#p-ahrag">AHRAG</a>
+          <a href="#p-summary">Document Summary</a>
+          <a href="#p-http">HTTP Server</a>
+          <a href="#p-analyzer">Resume Analyzer</a>
+          <a href="#p-finance">Finance Tracker</a>
+          <a href="#p-huffman">Huffman</a>
         </nav>
 
         <article class="panel case" id="p-reshard">
           <div class="case-t">
-            <div class="meta-row"><span class="label">Project 01 / 2026</span><span class="pill acc">Patent applied</span></div>
-            <p class="kick">Distributed systems</p>
+            <div class="meta-row"><span class="label">2026</span><span class="pill acc">Patent applied</span></div>
             <h3>Barrier-Free Resharding of Distributed Sparse Arrays</h3>
             <p class="lede">A Go simulator that moves sparse-array tiles between nodes while updates keep flowing, so rebalancing doesn't have to stop the whole array.</p>
             <div class="figs">
@@ -126,8 +108,7 @@
 
         <article class="panel case" id="p-ahrag">
           <div class="case-t">
-            <div class="meta-row"><span class="label">Project 02 / 2026</span><span class="pill">45 tests passing</span></div>
-            <p class="kick">Secure retrieval</p>
+            <div class="meta-row"><span class="label">2026</span></div>
             <h3>AHRAG: Secure Hybrid Retrieval</h3>
             <p class="lede">A framework that benchmarks BM25, dense, reciprocal-rank-fusion and multi-step retrieval over versioned enterprise documents.</p>
             <ul class="pts">
@@ -145,13 +126,15 @@
           <div class="case-v"><div class="toy" data-toy="ahrag"></div></div>
         </article>
 
-        <div class="grid2">
-          <article class="panel card" id="p-summary">
+          <article class="panel case" id="p-summary">
             <div class="case-t">
-              <div class="meta-row"><span class="label">Project 03 / 2026</span><span class="pill">Live</span></div>
-              <p class="kick">Document AI</p>
+              <div class="meta-row"><span class="label">2026</span><span class="pill">Live</span></div>
               <h3>Document Summary Assistant</h3>
               <p class="lede">A responsive web app that takes PDFs and images and returns configurable summaries, key points and suggestions for improving the document.</p>
+              <figure class="shot">
+                <a href="https://document-summary-assistant-murex.vercel.app/" target="_blank" rel="noopener"><img src="img/doc-summary.jpg" width="840" height="507" loading="lazy" alt="Screenshot of the app showing a summary and key points for an uploaded sample PDF"></a>
+                <figcaption>The real app, summarising a sample PDF.</figcaption>
+              </figure>
               <ul class="pts">
                 <li>Extracts PDF text with pdf.js and runs Tesseract OCR on scans in the browser.</li>
                 <li>Uploaded files stay on the client. Only the extracted text is sent for summarising.</li>
@@ -162,13 +145,31 @@
                 <a class="tlink" href="https://github.com/Parthi-bun/document-summary-assistant" target="_blank" rel="noopener">Code <span aria-hidden="true">↗</span></a>
               </div>
             </div>
-            <div class="toy" data-toy="summary"></div>
+            <div class="case-v"><div class="toy" data-toy="summary"></div></div>
           </article>
 
+          <article class="panel case" id="p-research">
+            <div class="case-t">
+              <div class="meta-row"><span class="label">2026, research in progress</span><span class="pill acc">In disclosure</span></div>
+              <h3>Secret exposure in deployed web apps</h3>
+              <p class="lede">A measurement study of how credentials end up exposed in shipped web applications. The paper is finished. Its findings stay private until coordinated disclosure is complete.</p>
+              <ul class="tags"><li>Python</li><li>Measurement</li><li>Coordinated disclosure</li></ul>
+            </div>
+            <div class="case-v"><div class="toy" data-toy="redact"></div></div>
+          </article>
+      </div>
+    </section>
+
+    <section class="sec" id="earlier">
+      <div class="wrap">
+        <div class="sec-h">
+          <h2>Earlier projects</h2>
+          <p>Networking, full-stack and algorithm projects from earlier in my degree.</p>
+        </div>
+        <div class="grid2">
           <article class="panel card" id="p-http">
             <div class="case-t">
-              <div class="meta-row"><span class="label">Project 04 / 2024</span><span class="pill mute">Raw sockets</span></div>
-              <p class="kick">Networking</p>
+              <div class="meta-row"><span class="label">2024</span></div>
               <h3>Multithreaded Java HTTP Server</h3>
               <p class="lede">An HTTP/1.1 server written over raw sockets, with request parsing, routing, status codes and response generation.</p>
               <ul class="pts">
@@ -179,24 +180,10 @@
             </div>
             <div class="toy" data-toy="http"></div>
           </article>
-        </div>
-      </div>
-    </section>
 
-    <section class="sec" id="earlier">
-      <div class="wrap">
-        <div class="sec-h">
-          <div>
-            <p class="label sec-tag"><b>[03]</b> Earlier work <i></i></p>
-            <h2>The builds <span>before those.</span></h2>
-          </div>
-          <p>Full-stack and algorithm projects from earlier in my degree, along with my current security research.</p>
-        </div>
-        <div class="grid2">
           <article class="panel card" id="p-analyzer">
             <div class="case-t">
-              <div class="meta-row"><span class="label">Project 05 / 2025</span><span class="pill mute">On AWS</span></div>
-              <p class="kick">Applied NLP</p>
+              <div class="meta-row"><span class="label">2025</span></div>
               <h3>AI Resume Analyzer</h3>
               <p class="lede">Scores a resume against a job description using skill extraction, keyword matching and semantic similarity, then returns a 0 to 100 score, missing skills and suggestions.</p>
               <ul class="pts">
@@ -211,8 +198,7 @@
 
           <article class="panel card" id="p-finance">
             <div class="case-t">
-              <div class="meta-row"><span class="label">Project 06 / 2025</span><span class="pill mute">Full stack</span></div>
-              <p class="kick">Web application</p>
+              <div class="meta-row"><span class="label">2025</span></div>
               <h3>Finance Tracker</h3>
               <p class="lede">A personal finance app with registration and login, income and expense tracking, sortable transactions and live balance totals.</p>
               <ul class="pts">
@@ -227,8 +213,7 @@
 
           <article class="panel card" id="p-huffman">
             <div class="case-t">
-              <div class="meta-row"><span class="label">Project 07 / 2024</span><span class="pill mute">Lossless</span></div>
-              <p class="kick">Algorithms</p>
+              <div class="meta-row"><span class="label">2024</span></div>
               <h3>Huffman File Compressor</h3>
               <p class="lede">Huffman coding from scratch, compressing and decompressing text files with a min-heap priority queue.</p>
               <ul class="pts">
@@ -241,16 +226,6 @@
             <div class="toy" data-toy="huffman"></div>
           </article>
 
-          <article class="panel card" id="p-research">
-            <div class="case-t">
-              <div class="meta-row"><span class="label">Research / 2026</span><span class="pill acc">In disclosure</span></div>
-              <p class="kick">Security research</p>
-              <h3>Secret exposure in deployed web apps</h3>
-              <p class="lede">A measurement study of how credentials end up exposed in shipped web applications. The paper is finished. Its findings stay private until coordinated disclosure is complete.</p>
-              <ul class="tags"><li>Python</li><li>Measurement</li><li>Coordinated disclosure</li></ul>
-            </div>
-            <div class="toy" data-toy="redact"></div>
-          </article>
         </div>
       </div>
     </section>
@@ -258,18 +233,21 @@
     <section class="sec" id="skills">
       <div class="wrap">
         <div class="sec-h">
-          <div>
-            <p class="label sec-tag"><b>[04]</b> Skills <i></i></p>
-            <h2>The stack, <span>and where it was used.</span></h2>
-          </div>
+          <h2>Skills</h2>
           <p>Every skill links to the projects that used it. Drag the nodes, or pick a skill from the list to light up its connections.</p>
         </div>
         <div class="panel skills">
           <div class="toy" data-toy="skills"></div>
           <div class="skills-l">
-            <div><h3>Languages</h3><div class="sk" data-sk="Python,Go,Java,JavaScript,TypeScript,C,C++"></div></div>
-            <div><h3>Frameworks and libraries</h3><div class="sk" data-sk="Flutter,FastAPI,Spring Boot,React,Streamlit,scikit-learn,spaCy"></div></div>
-            <div><h3>Tools and platforms</h3><div class="sk" data-sk="Git,Docker,MySQL,AWS EC2/S3,Nginx,Vercel,Pytest"></div></div>
+            <div><h3>Languages</h3><div class="sk">
+              <button type="button" aria-pressed="false">Python</button><button type="button" aria-pressed="false">Go</button><button type="button" aria-pressed="false">Java</button><button type="button" aria-pressed="false">JavaScript</button><button type="button" aria-pressed="false">TypeScript</button><button type="button" aria-pressed="false">C</button><button type="button" aria-pressed="false">C++</button>
+            </div></div>
+            <div><h3>Frameworks and libraries</h3><div class="sk">
+              <button type="button" aria-pressed="false">Flutter</button><button type="button" aria-pressed="false">FastAPI</button><button type="button" aria-pressed="false">Spring Boot</button><button type="button" aria-pressed="false">React</button><button type="button" aria-pressed="false">Streamlit</button><button type="button" aria-pressed="false">scikit-learn</button><button type="button" aria-pressed="false">spaCy</button>
+            </div></div>
+            <div><h3>Tools and platforms</h3><div class="sk">
+              <button type="button" aria-pressed="false">Git</button><button type="button" aria-pressed="false">Docker</button><button type="button" aria-pressed="false">MySQL</button><button type="button" aria-pressed="false">AWS EC2/S3</button><button type="button" aria-pressed="false">Nginx</button><button type="button" aria-pressed="false">Vercel</button><button type="button" aria-pressed="false">Pytest</button>
+            </div></div>
           </div>
         </div>
       </div>
@@ -278,11 +256,8 @@
     <section class="sec" id="about">
       <div class="wrap">
         <div class="sec-h">
-          <div>
-            <p class="label sec-tag"><b>[05]</b> About <i></i></p>
-            <h2>Away from <span>the keyboard.</span></h2>
-          </div>
-          <p>I'm a competitive powerlifter, which is good practice for the same habit: add load, find the weak point, fix it, repeat.</p>
+          <h2>About</h2>
+          <p>Outside of code, I compete in powerlifting and I'm part of the CodeChef chapter at VIT.</p>
         </div>
         <div class="panel about">
           <div class="case-t">
@@ -300,12 +275,11 @@
 
         <div class="panel contact" id="contact">
           <div>
-            <p class="label sec-tag"><b>[06]</b> Contact <i></i></p>
-            <h2>Hiring for a hard <span>problem?</span></h2>
+            <h2>Get in touch</h2>
             <p>I'm looking for a 2027 graduate software engineering role. Email is the quickest way to reach me.</p>
           </div>
           <div>
-            <button class="mail" id="mail" type="button" data-email="Parthiban.i2023@vitstudent.ac.in">
+            <button class="mail copy-mail" type="button" data-email="Parthiban.i2023@vitstudent.ac.in">
               <span class="label">Copy email address</span>
               <b>Parthiban.i2023@vitstudent.ac.in</b>
               <span aria-hidden="true">⧉</span>
@@ -324,13 +298,13 @@
     <div class="wrap">
       <div class="foot">
         <div>
-          <a class="brand" href="#top"><span>Parthiban<span>Ilango</span></span></a>
+          <a class="brand" href="#top">Parthiban Ilango</a>
           <p>Computer science student and software engineer, graduating May 2027.</p>
         </div>
         <div><h4 class="label">Work</h4><ul>
           <li><a href="#experience">Experience</a></li>
           <li><a href="#work">Projects</a></li>
-          <li><a href="#earlier">Earlier work</a></li>
+          <li><a href="#earlier">Earlier projects</a></li>
         </ul></div>
         <div><h4 class="label">Profile</h4><ul>
           <li><a href="#skills">Skills</a></li>
@@ -339,11 +313,13 @@
         </ul></div>
         <div><h4 class="label">Elsewhere</h4><ul>
           <li><a href="https://github.com/parthi-bun" target="_blank" rel="noopener">GitHub</a></li>
-          <li><a href="https://document-summary-assistant-murex.vercel.app/" target="_blank" rel="noopener">Live demo</a></li>
+          <li><a href="https://document-summary-assistant-murex.vercel.app/" target="_blank" rel="noopener">Document Summary demo</a></li>
+          <li><a href="https://github.com/Parthi-bun/Parthi-bun.github.io" target="_blank" rel="noopener">Source for this site</a></li>
         </ul></div>
       </div>
       <div class="foot-b label">
         <span>© 2026 Parthiban Ilango</span>
+        <span>Last updated {{UPDATED}}</span>
         <span id="clock">Kumbakonam</span>
       </div>
     </div>
@@ -353,7 +329,7 @@
 
 <div id="dock" data-nofield>
   <div class="dock-p" id="dock-p" hidden></div>
-  <button class="dock-b" id="dock-b" type="button" aria-expanded="false" aria-controls="dock-p"><i></i><span id="dock-l">Field</span></button>
+  <button class="dock-b" id="dock-b" type="button" aria-expanded="false" aria-controls="dock-p"><i></i><span id="dock-l">Background</span></button>
 </div>
 <div id="pal" hidden data-nofield>
   <div class="pal-b" role="dialog" aria-modal="true" aria-label="Command menu">

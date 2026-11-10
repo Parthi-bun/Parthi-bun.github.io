@@ -26,7 +26,7 @@ function toyHttp(el) {
   function draw() {
     const { w: W, h: H } = s;
     ctx.clearRect(0, 0, W, H);
-    ctx.font = '500 10px "Geist Mono", ui-monospace, monospace';
+    ctx.font = '500 10px "IBM Plex Mono", ui-monospace, monospace';
     const qx = 14, qw = W * 0.22, wx = qx + qw + 16, ww = W * 0.5, top = 28;
     const rows = 8, gap = 3, rh = (H - top - 12 - gap * (rows - 1)) / rows;
     ctx.fillStyle = "#8b8b95";
@@ -147,7 +147,7 @@ function toyAnalyzer(el) {
       }
     }
     ctx.fillStyle = "#ededef";
-    ctx.font = `500 ${Math.round(side * 0.27)}px "Geist", ui-sans-serif, sans-serif`;
+    ctx.font = `500 ${Math.round(side * 0.27)}px "IBM Plex Sans", ui-sans-serif, sans-serif`;
     const t = String(Math.round(shown));
     ctx.fillText(t, w / 2 - ctx.measureText(t).width / 2, h / 2 + side * 0.09);
   }
@@ -370,7 +370,7 @@ function toyHuffman(el) {
     leaves = [];
     if (!res.root) {
       ctx.fillStyle = "#8b8b95";
-      ctx.font = '500 11px "Geist Mono", ui-monospace, monospace';
+      ctx.font = '500 11px "IBM Plex Mono", ui-monospace, monospace';
       ctx.fillText("Type some text to grow a tree.", 14, 28);
       return;
     }
@@ -388,7 +388,7 @@ function toyHuffman(el) {
         path.add(n);
       }
     }
-    ctx.font = '500 9.5px "Geist Mono", ui-monospace, monospace';
+    ctx.font = '500 9.5px "IBM Plex Mono", ui-monospace, monospace';
     const edge = (p, c, bit) => {
       const on = path.has(p) && path.has(c), x1 = X(p), y1 = Y(p), x2 = X(c), y2 = Y(c), ym = y1 + 9;
       ctx.strokeStyle = on ? Acc.hex : "rgba(255,255,255,.2)";
