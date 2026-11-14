@@ -21,7 +21,7 @@ function boot() {
   });
   $$(".copy-mail").forEach((b) => b.addEventListener("click", copyEmail));
   if (matchMedia("(pointer: coarse)").matches) {
-    $(".hint").textContent = "The background reacts to you. Tap anywhere to send a ripple.";
+    $(".hint").textContent = "The creatures react to you. Tap anywhere to scatter them.";
     $$(".toy-h .label:last-child").forEach((l) => (l.textContent = l.textContent.replace(/click/i, (m) => (m[0] === "C" ? "Tap" : "tap"))));
   }
   console.log("Hello. If you want to see how this page works, the source is at https://github.com/Parthi-bun/Parthi-bun.github.io");

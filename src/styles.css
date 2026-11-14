@@ -47,13 +47,6 @@ h1, h2, h3, p, ul { margin: 0; padding: 0; }
 ul { list-style: none; }
 
 #field { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: block; }
-.no-webgl #field { display: none; }
-.no-webgl body, body.no-webgl {
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 48px 48px;
-}
 .page { position: relative; z-index: 1; }
 .wrap { max-width: 1248px; margin-inline: auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
 .mono { font-family: var(--mono); }
@@ -120,11 +113,9 @@ kbd {
 
 /* hero */
 .hero { position: relative; padding-top: calc(var(--nav) + env(safe-area-inset-top, 0px) + 88px); padding-bottom: 8px; }
-.hero::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(90deg, rgba(8, 8, 10, 0.72) 0%, rgba(8, 8, 10, 0.5) 42%, rgba(8, 8, 10, 0) 66%);
-}
-.hero-copy { position: relative; min-width: 0; }
+.hero-copy { position: relative; min-width: 0; width: fit-content; max-width: 100%; }
+/* A soft dark patch keeps the introduction readable while creatures pass behind it. */
+.hero-copy::before { content: ""; position: absolute; inset: -18px -44px -10px; background: rgba(8, 8, 10, 0.8); filter: blur(22px); z-index: -1; pointer-events: none; }
 h1 { font-size: clamp(46px, 7.2vw, 100px); font-weight: 600; letter-spacing: -0.035em; line-height: 0.98; cursor: default; }
 h1 .ln { display: inline-block; white-space: nowrap; }
 h1 .ch { display: inline-block; will-change: font-weight; }
@@ -142,6 +133,7 @@ h1 + .intro { margin-top: 30px; }
   border: 1px solid var(--line-2); padding: 7px 11px; margin-right: -1px; background: rgba(8, 8, 10, 0.6);
   transition: color 0.15s, background 0.15s;
 }
+.chip i { display: inline-block; width: 7px; height: 7px; margin-right: 8px; }
 .chip:hover { color: var(--t1); }
 .chip[aria-pressed="true"] { background: var(--t1); color: var(--bg); position: relative; z-index: 1; border-color: var(--t1); }
 .hint { font-size: 12.5px; color: var(--t3); margin-top: 12px; }
@@ -368,7 +360,6 @@ footer { margin-top: 80px; border-top: 1px solid var(--line); background: rgba(8
 #toast.on { opacity: 1; transform: translate(-50%, 0); }
 
 @media (max-width: 1040px) {
-  .hero::before { background: rgba(8, 8, 10, 0.42); }
   .case, .about, .skills { grid-template-columns: minmax(0, 1fr); }
   .case-v { border-left: 0; border-top: 1px solid var(--line); }
   .skills .toy { border-right: 0; border-bottom: 1px solid var(--line); --h: 400px; }

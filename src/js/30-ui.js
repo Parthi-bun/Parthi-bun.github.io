@@ -6,7 +6,9 @@ function initChips() {
     const b = document.createElement("button");
     b.type = "button";
     b.className = "chip";
-    b.textContent = name;
+    const dot = document.createElement("i");
+    dot.style.background = MODE_DOT[i];
+    b.append(dot, name);
     b.setAttribute("aria-pressed", i === Field.mode);
     b.addEventListener("click", () => {
       Sound.blip(420 + i * 90);
@@ -117,8 +119,8 @@ function initPalette() {
     ["Huffman File Compressor", "Project", go("#p-huffman")],
     ...MODES.map((m, i) => [`Background: ${m}`, "Background", () => Field.setMode(i)]),
     ...ACCENTS.map(([n, hex]) => [`Accent: ${n}`, "Colour", () => applyAccent(hex)]),
-    ["Send a pulse across the page", "Background", () => Field.pulse(innerWidth / 2, innerHeight / 2)],
-    ["Start a glider gun", "Background", () => Field.gun()],
+    ["Startle the creatures nearby", "Background", () => Field.pulse(innerWidth / 2, innerHeight / 2)],
+    ["Scatter the creatures", "Background", () => Field.scatter()],
     ["Copy email address", "Contact", () => copyEmail()],
     ["Open GitHub", "Link", () => window.open("https://github.com/parthi-bun", "_blank", "noopener")],
     ["Open the background controls", "Background", () => Dock.open(true)],
@@ -190,11 +192,11 @@ function initPalette() {
       kon++;
       if (kon === KONAMI.length) {
         kon = 0;
-        Field.gun();
-        toast("Glider gun armed.");
+        Field.scatter();
+        toast("Everything scattered.");
       }
     } else kon = e.key === KONAMI[0] ? 1 : 0;
-    if (/^[1-5]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey) Field.setMode(+e.key - 1);
+    if (+e.key >= 1 && +e.key <= MODES.length && !e.metaKey && !e.ctrlKey && !e.altKey) Field.setMode(+e.key - 1);
     if (e.key === "/") {
       e.preventDefault();
       open();

@@ -1,131 +1,240 @@
-/* The live background: one fragment shader with five scenes, plus a CPU Game of Life grid. */
-const VERT = `#version 300 es
-in vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
+/* The live background: flocks of pixel creatures drawn on a coarse grid.
+   Each creature is a small procedural model sampled once per grid cell, so it stays
+   blocky at any size or angle. Fine parts are drawn with keyboard characters. */
+const MODES = ["Butterfly", "Jellyfish", "Dragonfly", "Koi", "Frog", "Crane", "Crab"];
+const MODE_DOT = ["#4892e8", "#d63cce", "#4ade80", "#f2c438", "#62be40", "#e8e8ec", "#e86046"];
+const DEFAULT_MODE = 0;
+const GLYPHS = ["/", "\\", "-", "|", "(", ")", "{", "}", "0", "$", ":", ".", "v", "'"];
 
-const FRAG = `#version 300 es
-precision highp float;
-out vec4 fragColor;
-uniform vec2 uRes,uM,uV,uLifeSize;
-uniform float uDpr,uT,uScroll,uDim,uDensity,uForce,uHold,uMix,uLifeCell;
-uniform vec3 uAcc;
-uniform int uMode,uPrev;
-uniform vec3 uR[6];
-uniform sampler2D uLife;
-const vec3 BG=vec3(.031,.031,.039);
+/* Sample result, reused for every cell: k is 0 nothing, 1 tile, 2 character, 3 eye, 4 dot. */
+const crO = { k: 0, r: 0, g: 0, b: 0, a: 0, ch: 0 };
+function crTile(r, g, b, a) {
+  crO.k = 1;
+  crO.r = r;
+  crO.g = g;
+  crO.b = b;
+  crO.a = a;
+}
+function crGlyph(ch, r, g, b, a) {
+  crO.k = 2;
+  crO.ch = ch;
+  crO.r = r;
+  crO.g = g;
+  crO.b = b;
+  crO.a = a;
+}
+function crMark(k) {
+  crO.k = k;
+  crO.r = crO.g = crO.b = 240;
+  crO.a = 1;
+}
+function crHash(x, y, s) {
+  let n = (Math.imul(x, 374761393) + Math.imul(y, 668265263) + Math.imul(s, 1442695041)) | 0;
+  n = Math.imul(n ^ (n >>> 13), 1274126177);
+  return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
+}
+function crSeg(px, py, ax, ay, bx, by) {
+  const vx = bx - ax, vy = by - ay;
+  let t = ((px - ax) * vx + (py - ay) * vy) / (vx * vx + vy * vy);
+  t = t < 0 ? 0 : t > 1 ? 1 : t;
+  const dx = px - ax - vx * t, dy = py - ay - vy * t;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+/* Picks the stroke character that best matches a direction on screen. */
+function crDir(ang) {
+  const t = ((ang % Math.PI) + Math.PI) % Math.PI;
+  if (t < 0.3927 || t > 2.7489) return 2;
+  if (t < 1.1781) return 1;
+  if (t < 1.9635) return 3;
+  return 0;
+}
+const crDiff = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
 
-float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
-float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
- return mix(mix(h21(i),h21(i+vec2(1,0)),f.x),mix(h21(i+vec2(0,1)),h21(i+vec2(1,1)),f.x),f.y);}
-float spot(vec2 p,float R){vec2 d=p-uM;return exp(-dot(d,d)/(R*R));}
-float ripple(vec2 p){float s=0.;for(int i=0;i<6;i++){float a=uR[i].z;if(a<0.)continue;
- float e=(length(p-uR[i].xy)-a*560.)/64.;s+=exp(-e*e)*exp(-a*1.5);}return s;}
-vec2 warp(vec2 p){
- vec2 d=p-uM;float R=230.+60.*uForce;float f=exp(-dot(d,d)/(R*R));
- vec2 q=p-d*f*mix(.3,-.6,uHold)*uForce+uV*f*.9;
- for(int i=0;i<6;i++){float a=uR[i].z;if(a<0.)continue;vec2 e=p-uR[i].xy;float r=length(e)+.001;
-  float k=(r-a*560.)/64.;q-=e/r*exp(-k*k)*exp(-a*1.5)*30.*uForce;}
- return q;}
+/* Models. lx runs from tail to head, ly across the body, both in body lengths. S is cells per body length. */
+function crButterfly(lx, ly, c, S) {
+  const ay = Math.abs(ly), half = 0.55 / S, s = 0.5 + 0.5 * Math.sin(c.ph), f = 0.07 + 0.93 * (1 - s * s * s);
+  if (ay < half && lx > -0.34 && lx < 0.36) return f < 0.3 ? crTile(72, 146, 232, 1) : crTile(26, 44, 92, 1);
+  const a1 = (lx - 0.22) / 0.33, b1 = (ay - 0.5 * f) / (0.44 * f), d1 = Math.pow(a1 * a1, 1.5) + Math.pow(b1 * b1, 1.5);
+  const a2 = (lx + 0.36) / 0.25, b2 = (ay - 0.36 * f) / (0.3 * f), d2 = Math.pow(a2 * a2, 1.5) + Math.pow(b2 * b2, 1.5);
+  const d = d1 < d2 ? d1 : d2;
+  if (d <= 1) {
+    const h = crHash(Math.round(lx * S), Math.round(ly * S), c.id);
+    if (h > 0.93) return crTile(226, 240, 255, 1);
+    const n = d + (h - 0.5) * 0.3;
+    if (n < 0.3) return crTile(150, 206, 255, 1);
+    if (n < 0.66) return crTile(84, 160, 242, 1);
+    if (n < 0.9) return crTile(52, 116, 206, 1);
+    return crTile(36, 80, 156, 0.9);
+  }
+  if (lx > 0.36 && lx < 0.8 && Math.abs(ay - 0.04 - (lx - 0.36) * 0.62) < half) {
+    if (lx > 0.8 - 1.1 / S) return crGlyph(8, 190, 215, 245, 0.9);
+    crGlyph(crDir(c.a + (ly < 0 ? -0.55 : 0.55)), 150, 185, 225, 0.8);
+  }
+}
 
-vec3 lattice(vec2 p){
- float cell=48./uDensity;
- vec2 g=(warp(p)+vec2(0.,uScroll*.4))/cell;
- vec2 a=abs(fract(g-.5)-.5)/fwidth(g);float l=1.-min(min(a.x,a.y),1.);
- vec2 g5=g/5.;vec2 b=abs(fract(g5-.5)-.5)/fwidth(g5);float L=1.-min(min(b.x,b.y),1.);
- float sp=spot(p,250.),rp=ripple(p);
- vec2 id=floor(g);float hs=h21(id);
- float tile=step(.84,hs)*(.5+.5*sin(uT*1.4+hs*50.));
- vec2 nd=abs(fract(g+.5)-.5)*cell;float node=step(max(nd.x,nd.y),1.7);
- vec3 c=BG+vec3(.05)*l+vec3(.055)*L;
- c+=uAcc*(l*.5+L*.34)*(sp+rp*.9);
- c+=uAcc*tile*(.012+sp*.13+rp*.1);
- c+=uAcc*node*(sp*.85+rp*.6);
- return c;}
+function crJelly(lx, ly, c, S) {
+  const ay = Math.abs(ly), p = Math.sin(c.ph), ry = 0.46 * (1 - 0.1 * p), len = 0.56 * (1 + 0.08 * p);
+  const qi = Math.round(lx * S), qj = Math.round(ly * S);
+  if (lx >= -0.12) {
+    const a = (lx + 0.12) / len, b = ay / ry, d = a * a + b * b;
+    if (d > 1) return;
+    const h = crHash(qi, qj, c.id), n = d + ly * 0.5 - lx * 0.25 + (h - 0.5) * 0.25;
+    if (h > 0.94 || n < 0.12) return crTile(248, 190, 246, 1);
+    if (n < 0.55) return crTile(214, 60, 206, 1);
+    if (n < 0.9) return crTile(160, 34, 158, 1);
+    return crTile(104, 24, 110, 0.9);
+  }
+  if (lx >= -0.26) {
+    if (ay < ry && (qj & 1) === 0) crTile(150, 32, 150, 0.9);
+    return;
+  }
+  const u = (-lx - 0.26) / 2.1;
+  if (u > 1) return;
+  const sway = 0.1 * Math.sin(lx * 4.5 + c.ph * 1.2) * (0.3 + u);
+  if (Math.abs(ly - sway) > ry * (1 - 0.35 * u)) return;
+  const h = crHash(qi, qj, c.id + 7);
+  if (h > 0.62 * (1 - 0.6 * u)) return;
+  crGlyph([4, 5, 6, 7, 2, 9, 10][((h * 977) | 0) % 7], 214, 178, 222, 0.8 * (1 - u));
+}
 
-vec2 toW(vec2 v,float c){return vec2(v.x+v.y*.5,v.y*.8660254)*c;}
-float terrain(vec2 v,float c,vec2 off){
- vec2 w=toW(v,c)-off;
- float n=vn(v*.16+uT*.04)*1.1+vn(v*.41-uT*.06)*.45+h21(v)*.2;
- n+=spot(w,210.)*mix(1.5,-1.8,uHold)*uForce+ripple(w)*1.3*uForce;
- return n;}
-vec3 shards(vec2 p){
- float c=74./uDensity;vec2 off=vec2(0.,uScroll*.4),P=p+off;
- vec2 v=vec2(P.x/c-P.y/(c*1.7320508),P.y/(c*.8660254));
- vec2 i=floor(v),f=fract(v);bool up=f.x+f.y<1.;
- vec2 A=up?i:i+vec2(1.),B=up?i+vec2(1,0):i+vec2(0,1),C=up?i+vec2(0,1):i+vec2(1,0);
- float z=c*.85;
- vec3 a=vec3(toW(A,c)-off,terrain(A,c,off)*z),b=vec3(toW(B,c)-off,terrain(B,c,off)*z),d=vec3(toW(C,c)-off,terrain(C,c,off)*z);
- vec3 n=normalize(cross(b-a,d-a));
- vec2 ctr=(a.xy+b.xy+d.xy)/3.;
- vec3 lg=normalize(vec3(uM-ctr,190.));
- float k=max(dot(n,lg),0.);
- vec2 e=up?f:1.-f;float bar=min(min(e.x,e.y),1.-e.x-e.y);
- float edge=1.-smoothstep(0.,fwidth(bar)*1.25,bar);
- float sp=spot(ctr,320.);
- vec3 col=BG+vec3(.021,.021,.026)*(.3+k*1.5)+h21(i+(up?.3:.7))*.006;
- col+=uAcc*(pow(k,3.)*.2*sp+pow(k,26.)*.55*sp+ripple(ctr)*.06);
- col+=vec3(.06)*edge*(.22+.78*k)+uAcc*edge*sp*.34;
- return col;}
+function crDragonfly(lx, ly, c, S) {
+  const ay = Math.abs(ly), half = 0.55 / S;
+  if (Math.abs(lx - 0.52) < half && Math.abs(ay - 0.15) < half) return crMark(3);
+  if (lx > 0.3 && lx < 0.58 && ay < 0.13) return crTile(60, 200, 110, 1);
+  const qi = Math.round(lx * S), qj = Math.round(ly * S), h = crHash(qi, qj, c.id);
+  const ta = (lx - 0.12) / 0.25, tb = ay / 0.16, td = ta * ta + tb * tb;
+  if (td <= 1) {
+    if (h > 0.85) return crTile(205, 255, 215, 1);
+    return td < 0.5 ? crTile(70, 225, 125, 1) : crTile(36, 150, 80, 1);
+  }
+  if (lx <= -0.05 && lx > -1.55 && ay < half) {
+    const fade = 1 - 0.5 * (-lx / 1.55);
+    return Math.floor(-lx * S) & 1 ? crTile(74, 222, 128, fade) : crTile(30, 112, 64, fade);
+  }
+  const fa = (lx - 0.27 - 0.12 * ay) / 0.14, fb = (ay - 0.62) / 0.5, ha = (lx + 0.02 + 0.22 * ay) / 0.16, hb = (ay - 0.56) / 0.46;
+  const fore = fa * fa + fb * fb <= 1;
+  if (!fore && ha * ha + hb * hb > 1) return;
+  const b = fore ? fb : hb, a = fore ? fa : ha;
+  if (b > 0.82 && Math.abs(a) < 0.5) return crTile(220, 70, 84, 0.9);
+  if (h > 0.7) return;
+  const beat = 0.45 + 0.55 * crHash(qi, qj, c.ph | 0);
+  crGlyph(h < 0.45 ? crDir(c.a + (ly < 0 ? -1.35 : 1.35)) : 10, 220, 232, 226, 0.75 * beat);
+}
 
-float height(vec2 p){
- vec2 q=(p+vec2(0.,uScroll*.4))*.0032*uDensity;
- float h=vn(q+uT*.025)+.5*vn(q*2.1-uT*.03)+.25*vn(q*4.3);
- return h+spot(p,200.)*mix(.7,-.85,uHold)*uForce+ripple(p)*.35*uForce;}
-vec3 contour(vec2 p){
- float h=height(p)*11.;
- float l=1.-smoothstep(0.,1.3,abs(fract(h-.5)-.5)/fwidth(h));
- float h5=h/5.;float L=1.-smoothstep(0.,1.5,abs(fract(h5-.5)-.5)/fwidth(h5));
- float sp=spot(p,290.),rp=ripple(p);
- vec3 c=BG+vec3(.046)*l+vec3(.075)*L;
- c+=uAcc*(l*.38+L*.5)*(sp+rp*.8);
- return c;}
+function crKoi(lx, ly, c, S) {
+  if (lx > 0.58 || lx < -1.1) return;
+  const y = ly - c.amp * Math.sin(lx * 3.2 - c.ph) * (0.6 - lx), ay = Math.abs(y), half = 0.55 / S;
+  const qi = Math.round(lx * S), qj = Math.round(y * S), h = crHash(qi, qj, c.id);
+  if (lx < -0.75) {
+    const u = (-0.75 - lx) / 0.35;
+    if (ay >= 0.05 + u * 0.3) return;
+    return h < 0.72 ? crTile(165, 165, 172, 0.6 * (1 - 0.5 * u)) : crGlyph(12, 190, 190, 196, 0.7);
+  }
+  let w;
+  if (lx > 0.2) {
+    const t = (lx - 0.2) / 0.38;
+    w = 0.2 * Math.sqrt(Math.max(0, 1 - t * t));
+  } else w = 0.2 * (1 - (0.72 * (0.2 - lx)) / 0.95);
+  if (ay < w || (ay < half && lx < 0.5)) {
+    const pt = crHash(Math.floor((lx + 1.2) * 3.1), y > 0 ? 1 : 0, c.id);
+    let r, g, b;
+    if (c.v === 0) pt > 0.5 ? ((r = 214), (g = 44), (b = 44)) : ((r = 238), (g = 238), (b = 240));
+    else if (c.v === 1) pt > 0.62 ? ((r = 168), (g = 84), (b = 30)) : ((r = 236), (g = 134), (b = 44));
+    else if (c.v === 2) pt > 0.7 ? ((r = 255), (g = 232), (b = 150)) : ((r = 242), (g = 196), (b = 56));
+    else pt > 0.66 ? ((r = 52), (g = 52), (b = 58)) : pt > 0.33 ? ((r = 214), (g = 44), (b = 44)) : ((r = 238), (g = 238), (b = 240));
+    const k = h > 0.92 ? 1.12 : ay > w * 0.7 ? 0.78 : 1;
+    return crTile(Math.min(255, r * k), Math.min(255, g * k), Math.min(255, b * k), 1);
+  }
+  if (lx > 0.36 && lx < 0.5 && ay < w + 1.1 / S) return crMark(4);
+  if (lx > 0.05 && lx < 0.3 && ay < w + 0.16) crTile(150, 150, 158, 0.55);
+}
 
-vec3 prism(vec2 p){
- vec2 ctr=uRes/uDpr*vec2(.73,.42),c=p-ctr;
- float r=length(c),n=floor(5.+uDensity*3.);
- float ang=atan(c.y,c.x)+uT*.035+(uM.x/(uRes.x/uDpr)-.5)*.7*uForce;
- float sec=6.2831853/n;float a=abs(mod(ang,sec)-sec*.5);
- vec2 u=r*vec2(cos(a),sin(a))+(uM-ctr)*.2*uForce;
- u+=vec2(ripple(p)*34.*uForce,0.);
- float s=120./uDensity;
- vec3 k=vec3(u.y,u.x*.8660254+u.y*.5,u.x*.8660254-u.y*.5)/s;
- k+=uT*.03*vec3(0.,1.,-1.);
- vec3 fl=floor(k);
- vec3 fw=max(fwidth(k),vec3(.002));
- vec3 dd=abs(fract(k-.5)-.5)/fw;
- float l=1.-min(min(min(dd.x,dd.y),dd.z),1.);
- float h=h21(fl.xy+fl.z*7.31);
- float sp=spot(p,330.);
- float rad=exp(-r*r/(560.*560.));
- vec3 col=BG+vec3(.05)*l;
- col+=uAcc*l*(sp*.5+rad*.05);
- col+=uAcc*step(.7,h)*(.018+.09*sp)*(.5+rad);
- col+=vec3(1.)*step(.9,h)*.012*rad;
- return col;}
+function crFrog(lx, ly, c, S) {
+  const ay = Math.abs(ly), j = c.j, half = 0.55 / S, hx = 0.36 + 0.3 * j, sg = ly < 0 ? -1 : 1;
+  if (Math.abs(lx - hx - 0.1) < half && Math.abs(ay - 0.2) < half) return crMark(3);
+  const h = crHash(Math.round(lx * S), Math.round(ly * S), c.id);
+  const a1 = (lx - hx) / 0.24, b1 = ay / (0.27 - 0.05 * j), a2 = lx / (0.42 + 0.34 * j), b2 = ay / (0.36 - 0.14 * j);
+  const d = Math.min(a1 * a1 + b1 * b1, a2 * a2 + b2 * b2);
+  if (d <= 1) {
+    if (h > 0.9) return crTile(40, 100, 40, 1);
+    const n = d + (h - 0.5) * 0.3;
+    if (n < 0.3) return crTile(196, 228, 112, 1);
+    return n < 0.7 ? crTile(98, 190, 64, 1) : crTile(52, 132, 44, 1);
+  }
+  const ex = -0.44 - 1.25 * j, ey = 0.52 - 0.24 * j;
+  if (crSeg(lx, ay, -0.18 - 0.4 * j, 0.3 - 0.14 * j, ex, ey) < 0.13 - 0.06 * j) return crTile(70, 160, 56, 1);
+  const fx = 0.4 + 0.42 * j, fy = 0.48 - 0.2 * j;
+  if (crSeg(lx, ay, 0.2 + 0.2 * j, 0.26 - 0.06 * j, fx, fy) < 0.065) return crTile(70, 160, 56, 1);
+  const t1 = Math.hypot(lx - ex + 0.1, ay - ey - 0.06), t2 = Math.hypot(lx - fx - 0.08, ay - fy - 0.05);
+  if ((t1 < 0.17 || t2 < 0.13) && h < 0.6) crGlyph(crDir(c.a + sg * (t1 < 0.17 ? 2.5 : 0.7)), 150, 200, 130, 0.8);
+}
 
-vec3 lifeScene(vec2 p){
- vec2 g=p/uLifeCell,id=floor(g);
- float v=texture(uLife,(id+.5)/uLifeSize).r;
- vec2 f=fract(g);float sq=step(max(abs(f.x-.5),abs(f.y-.5)),.44);
- vec2 a=abs(fract(g-.5)-.5)/fwidth(g);float l=1.-min(min(a.x,a.y),1.);
- float sp=spot(p,270.);
- return BG+vec3(.04)*l+uAcc*sq*v*(.34+.55*sp)+vec3(1.)*sq*step(.98,v)*.03;}
+function crCrane(lx, ly, c, S) {
+  const ay = Math.abs(ly), half = 0.55 / S, w = 0.6 + 0.4 * (0.5 + 0.5 * Math.cos(c.ph));
+  if (ay < half) {
+    if (lx > 1.06 && lx < 1.24) return crGlyph(crDir(c.a), 200, 200, 206, 0.8);
+    if (lx > 0.96 && lx <= 1.06) return crTile(240, 240, 243, 1);
+    if (lx > 0.86 && lx <= 0.96) return crTile(228, 52, 62, 1);
+    if (lx > 0.26 && lx <= 0.86) return Math.floor(lx * S) & 1 ? crTile(232, 232, 236, 1) : crTile(150, 150, 158, 1);
+    if (lx < -0.34 && lx > -1) {
+      if ((Math.floor(-lx * S) & 1) === 0) crGlyph(crDir(c.a), 170, 170, 176, 0.55);
+      return;
+    }
+  }
+  const ba = lx / 0.34, bb = ay / 0.12;
+  if (ba * ba + bb * bb <= 1) return crTile(240, 240, 243, 1);
+  if (lx > -0.46 && lx < -0.3 && ay < 0.14) return crTile(170, 170, 178, 1);
+  const u = ay / (0.98 * w);
+  if (u > 1) return;
+  const hc = 0.21 * (1 - 0.5 * u) + 0.03, dx = lx - 0.06 + 0.38 * u * u;
+  if (Math.abs(dx) >= hc) return;
+  if (u > 0.55 && dx < -hc * 0.35 && Math.round(ly * S) & 1) return;
+  if (u > 0.8) return crTile(92, 92, 104, 1);
+  if (u > 0.6 || dx < -hc * 0.5) return crTile(186, 186, 194, 1);
+  crHash(Math.round(lx * S), Math.round(ly * S), c.id) > 0.9 ? crTile(255, 255, 255, 1) : crTile(232, 232, 236, 1);
+}
 
-vec3 scene(int m,vec2 p){
- if(m==0)return lattice(p);if(m==1)return shards(p);if(m==2)return contour(p);if(m==3)return prism(p);return lifeScene(p);}
+function crCrab(lx, ly, c, S) {
+  const ay = Math.abs(ly), sg = ly < 0 ? -1 : 1, half = 0.55 / S;
+  if (Math.abs(lx - 0.37) < half && Math.abs(ay - 0.13) < half) return crMark(4);
+  const h = crHash(Math.round(lx * S), Math.round(ly * S), c.id);
+  const a = lx / 0.3, b = ay / 0.44, d = a * a + b * b;
+  if (d <= 1) {
+    if (h > 0.92) return crTile(255, 205, 180, 1);
+    const n = d + (h - 0.5) * 0.3 - lx * 0.3;
+    if (n < 0.35) return crTile(244, 150, 120, 1);
+    return n < 0.75 ? crTile(226, 96, 70, 1) : crTile(168, 56, 46, 1);
+  }
+  if (crSeg(lx, ay, 0.16, 0.4, 0.5, 0.52) < 0.075) return crTile(200, 74, 56, 1);
+  const ca = (lx - 0.64) / 0.16, cb = (ay - 0.46) / 0.11;
+  if (ca * ca + cb * cb <= 1) {
+    if (lx > 0.62 && Math.abs(ay - 0.46) < 0.02 + 0.03 * (0.5 + 0.5 * Math.sin(c.ph * 0.7 + sg))) return;
+    return crTile(236, 110, 84, 1);
+  }
+  for (let i = 0; i < 3; i++) {
+    const x0 = 0.08 - i * 0.17, e = 0.08 * Math.sin(c.lp + i * 2.1 + (sg > 0 ? 0 : Math.PI));
+    if (crSeg(lx, ay, x0, 0.4, x0 - 0.06 + e * 0.6, 0.78 + e * 0.5) < 0.055) return crTile(190, 70, 54, 1);
+  }
+  if (c.mv < 0.05) return;
+  const t = -ly * c.sd;
+  if (t < 0.85 || t > 2 || Math.abs(lx) > 0.4) return;
+  const u = (t - 0.85) / 1.15;
+  if (h < 0.4 * (1 - u)) crGlyph([0, 10, 11][((h * 991) | 0) % 3], 170, 120, 108, 0.6 * c.mv * (1 - u));
+}
 
-void main(){
- vec2 p=vec2(gl_FragCoord.x,uRes.y-gl_FragCoord.y)/uDpr;
- vec3 c=scene(uMode,p);
- if(uMix<.999)c=mix(scene(uPrev,p),c,uMix);
- float keep=max(uDim,spot(p,300.)*.92);
- fragColor=vec4(mix(BG,c,keep),1.);
-}`;
-
-const MODES = ["Lattice", "Shards", "Contour", "Prism", "Life"];
-const DEFAULT_MODE = 2;
+/* ext is how far each model reaches forward, back and sideways. s0 to s1 is its size range in cells. */
+const SPECIES = [
+  { sample: crButterfly, ext: [0.85, 0.65, 1], s0: 4.2, s1: 11.5, n: 24, v: 46 },
+  { sample: crJelly, ext: [0.6, 2.45, 0.65], s0: 5.5, s1: 12.5, n: 13, v: 62 },
+  { sample: crDragonfly, ext: [0.65, 1.6, 1.2], s0: 5.5, s1: 12.5, n: 13, v: 16 },
+  { sample: crKoi, ext: [0.65, 1.15, 0.55], s0: 6, s1: 13.5, n: 18, v: 46 },
+  { sample: crFrog, ext: [1.15, 1.9, 0.8], s0: 4.8, s1: 10, n: 16, v: 520 },
+  { sample: crCrane, ext: [1.28, 1.05, 1.05], s0: 5.5, s1: 12, n: 14, v: 78 },
+  { sample: crCrab, ext: [0.9, 0.45, 2.05], s0: 4.2, s1: 8.5, n: 30, v: 34 },
+];
 
 const Field = {
-  mode: store.get("background", DEFAULT_MODE) % MODES.length,
+  mode: store.get("creature", DEFAULT_MODE) % MODES.length,
   density: 1,
   force: 1,
   paused: false,
@@ -134,266 +243,436 @@ const Field = {
   pulse() {},
   setMode() {},
   reset() {},
-  gun() {},
+  scatter() {},
+  touch() {},
   fps: 60,
 };
 
 function initField() {
   const cv = $("#field");
-  const gl = cv.getContext("webgl2", { antialias: false, alpha: false, powerPreference: "low-power" });
-  if (!gl) {
-    document.documentElement.classList.add("no-webgl");
-    return;
-  }
-  const sh = (type, src) => {
-    const s = gl.createShader(type);
-    gl.shaderSource(s, src);
-    gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
-    return s;
-  };
-  const prog = gl.createProgram();
-  gl.attachShader(prog, sh(gl.VERTEX_SHADER, VERT));
-  gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FRAG));
-  gl.linkProgram(prog);
-  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-    console.error(gl.getProgramInfoLog(prog));
-    document.documentElement.classList.add("no-webgl");
-    return;
-  }
-  gl.useProgram(prog);
-  const vb = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vb);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  const loc = gl.getAttribLocation(prog, "p");
-  gl.enableVertexAttribArray(loc);
-  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const U = {};
-  for (const n of ["uRes", "uM", "uV", "uLifeSize", "uDpr", "uT", "uScroll", "uDim", "uDensity", "uForce", "uHold", "uMix", "uLifeCell", "uAcc", "uMode", "uPrev", "uR", "uLife"]) {
-    U[n] = gl.getUniformLocation(prog, n);
-  }
+  const ctx = cv.getContext("2d", { alpha: false });
+  const BG = [8, 8, 10];
+  let W = 1, H = 1, dpr = 1, cell = 11, cols = 1, rows = 1, sizeK = 1;
+  let kind, cr, cg, cb, ca, cch, seen, touched, grid = null;
+  let frameId = 1, nT = 0, dirty = true, fade = 0, perfK = 1, frames = 0, fpsT = 0, slow = 0;
+  let herd = [];
+  const school = -0.72;
+  const M = { x: -999, y: -999, seen: -9, mouse: false };
+  let clock = 0;
 
-  let scale = 1;
-  let W = 1, H = 1, dpr = 1;
-  const resize = () => {
+  function resize() {
     W = innerWidth;
     H = innerHeight;
-    dpr = Math.min(devicePixelRatio || 1, 1.5) * scale;
-    cv.width = Math.max(1, Math.round(W * dpr));
-    cv.height = Math.max(1, Math.round(H * dpr));
-    gl.viewport(0, 0, cv.width, cv.height);
-    lifeInit();
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    cell = W < 720 ? 9 : 11;
+    sizeK = W < 720 ? 0.8 : 1;
+    cols = Math.ceil(W / cell) + 1;
+    rows = Math.ceil(H / cell) + 1;
+    cv.width = Math.round(W * dpr);
+    cv.height = Math.round(H * dpr);
+    const n = cols * rows;
+    kind = new Uint8Array(n);
+    cr = new Uint8Array(n);
+    cg = new Uint8Array(n);
+    cb = new Uint8Array(n);
+    ca = new Float32Array(n);
+    cch = new Uint8Array(n);
+    seen = new Uint32Array(n);
+    touched = new Int32Array(n);
+    const g = document.createElement("canvas");
+    g.width = g.height = cell;
+    const gx = g.getContext("2d");
+    gx.fillStyle = "rgba(255,255,255,0.04)";
+    gx.fillRect(0, 0, cell, 1);
+    gx.fillRect(0, 0, 1, cell);
+    grid = ctx.createPattern(g, "repeat");
+    populate();
     dirty = true;
-  };
+  }
 
-  /* Game of Life state lives on the CPU and is uploaded as a small texture. */
-  const LIFE_CELL = 22;
-  let lc = 0, lr = 0, life = null, next = null, tex8 = null, lifeAcc = 0;
-  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-  const tex = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, tex);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  function lifeInit() {
-    const c = Math.ceil(W / LIFE_CELL) + 1, r = Math.ceil(H / LIFE_CELL) + 1;
-    if (c === lc && r === lr) return;
-    lc = c;
-    lr = r;
-    life = new Uint8Array(c * r);
-    next = new Uint8Array(c * r);
-    tex8 = new Uint8Array(c * r);
-    lifeSeed();
-  }
-  function lifeSeed() {
-    for (let i = 0; i < life.length; i++) {
-      life[i] = Math.random() < 0.13 ? 1 : 0;
-      tex8[i] = life[i] ? 255 : 0;
+  function spawn() {
+    const sp = SPECIES[Field.mode], z = Math.pow(Math.random(), 1.35);
+    const c = {
+      id: (Math.random() * 1e6) | 0, x: rand(W), y: rand(H), py: 0, z,
+      size: lerp(sp.s0, sp.s1, z) * sizeK, alpha: lerp(0.5, 1, Math.pow(z, 0.6)), par: 0.04 + 0.1 * z,
+      a: rand(6.283), base: 0, spd: 0, v0: sp.v * (0.45 + 0.75 * z), vx: 0, vy: 0,
+      ph: rand(6.283), fl: 1, t: rand(0.2, 2), st: 0, u: 0, j: 0, amp: 0.1, v: 0, sd: 1, mv: 0, lp: 0, turn: 0, to: 0,
+    };
+    const m = Field.mode;
+    if (m === 0) c.fl = rand(5.5, 8.5);
+    else if (m === 1) {
+      c.base = c.a = school + rand(-0.3, 0.3);
+      c.fl = rand(1.5, 2.2);
+    } else if (m === 2) c.base = c.a = school + rand(-0.35, 0.35);
+    else if (m === 3) c.v = pick([0, 0, 0, 1, 1, 2, 3]);
+    else if (m === 4) c.to = c.a;
+    else if (m === 5) {
+      c.base = c.a = school + 0.25 + rand(-0.22, 0.22);
+      c.fl = rand(3, 4.2);
+    } else {
+      c.sd = Math.random() < 0.5 ? -1 : 1;
+      c.st = Math.random() < 0.5 ? 0 : 1;
     }
-    lifeUpload();
+    return c;
   }
-  function lifeUpload() {
-    gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, lc, lr, 0, gl.RED, gl.UNSIGNED_BYTE, tex8);
+  function populate() {
+    const sp = SPECIES[Field.mode], area = Math.pow(clamp((W * H) / (1440 * 900), 0.3, 1.7), 0.8);
+    const want = clamp(Math.round(sp.n * area * Field.density * perfK), 5, 70);
+    while (herd.length < want) herd.push(spawn());
+    herd.length = want;
+    herd.sort((a, c) => a.z - c.z);
   }
-  function lifeStep() {
-    for (let y = 0; y < lr; y++) {
-      const ym = ((y + lr - 1) % lr) * lc, y0 = y * lc, yp = ((y + 1) % lr) * lc;
-      for (let x = 0; x < lc; x++) {
-        const xm = (x + lc - 1) % lc, xp = (x + 1) % lc;
-        const n = life[ym + xm] + life[ym + x] + life[ym + xp] + life[y0 + xm] + life[y0 + xp] + life[yp + xm] + life[yp + x] + life[yp + xp];
-        const a = life[y0 + x];
-        const v = n === 3 || (a && n === 2) ? 1 : 0;
-        next[y0 + x] = v;
-        tex8[y0 + x] = v ? 255 : Math.floor(tex8[y0 + x] * 0.72);
+
+  function step(c, dt) {
+    const m = Field.mode, k = Math.min(1, dt * 6);
+    if (m === 0) {
+      c.t -= dt;
+      if (c.t <= 0) {
+        c.t = rand(0.5, 1.6);
+        c.turn = rand(-1.6, 1.6);
       }
-    }
-    [life, next] = [next, life];
-  }
-  function lifePaint(px, py, r = 1) {
-    const cx = Math.floor(px / LIFE_CELL), cy = Math.floor(py / LIFE_CELL);
-    for (let dy = -r; dy <= r; dy++) {
-      for (let dx = -r; dx <= r; dx++) {
-        if (Math.random() < 0.62) {
-          const i = ((cy + dy + lr) % lr) * lc + ((cx + dx + lc) % lc);
-          life[i] = 1;
-          tex8[i] = 255;
+      c.a += c.turn * dt;
+      c.ph += dt * c.fl;
+      c.spd = c.v0 * (0.7 + 0.3 * Math.cos(c.ph));
+    } else if (m === 1) {
+      c.ph += dt * c.fl;
+      c.a += crDiff(c.base, c.a) * Math.min(1, dt * 0.5);
+      c.spd = c.v0 * (0.8 + 0.3 * Math.sin(c.ph));
+    } else if (m === 2) {
+      c.ph += dt * 30;
+      c.t -= dt;
+      if (c.st === 0) {
+        c.spd = lerp(c.spd, c.v0, Math.min(1, dt * 5));
+        if (c.t <= 0) {
+          c.st = 1;
+          c.t = rand(0.18, 0.32);
+        }
+      } else {
+        c.spd = lerp(c.spd, c.v0 * 16, Math.min(1, dt * 14));
+        if (c.t <= 0) {
+          c.st = 0;
+          c.t = rand(2.5, 7);
+          c.base = school + rand(-0.35, 0.35);
         }
       }
+      c.a += crDiff(c.base, c.a) * k;
+    } else if (m === 3) {
+      c.t -= dt;
+      if (c.t <= 0) {
+        c.t = rand(1.5, 4);
+        c.turn = rand(-0.7, 0.7);
+      }
+      c.a += c.turn * dt;
+      c.ph += dt * (5 + c.spd * 0.04);
+      c.amp = lerp(c.amp, 0.1 + 0.08 * Math.abs(c.turn), k);
+      c.spd = c.v0;
+    } else if (m === 4) {
+      if (c.st === 0) {
+        c.t -= dt;
+        c.spd = 0;
+        c.j = lerp(c.j, 0, Math.min(1, dt * 10));
+        c.a += crDiff(c.to, c.a) * Math.min(1, dt * 5);
+        if (c.t <= 0) {
+          c.st = 1;
+          c.u = 0;
+        }
+      } else {
+        c.u += dt / 0.46;
+        c.j = Math.sin(Math.PI * Math.min(1, c.u));
+        c.spd = c.v0 * c.j;
+        if (c.u >= 1) {
+          c.st = 0;
+          c.t = rand(0.8, 4.5);
+          c.to = c.a + rand(-0.9, 0.9);
+        }
+      }
+    } else if (m === 5) {
+      c.ph += dt * c.fl;
+      c.a += crDiff(c.base, c.a) * Math.min(1, dt * 0.8);
+      c.spd = c.v0;
+    } else {
+      c.t -= dt;
+      c.ph += dt * 2;
+      if (c.st === 0) {
+        c.mv = lerp(c.mv, 1, k);
+        c.lp += dt * 15;
+        if (c.t <= 0) {
+          c.st = 1;
+          c.t = rand(0.4, 1.6);
+        }
+      } else {
+        c.mv = lerp(c.mv, 0, k);
+        if (c.t <= 0) {
+          c.st = 0;
+          c.t = rand(0.6, 2);
+          if (Math.random() < 0.4) c.sd = -c.sd;
+          c.turn = rand(-0.5, 0.5);
+        }
+      }
+      c.a += c.turn * dt * (c.st ? 1 : 0.15);
     }
-  }
-  const GUN = [[24,0],[22,1],[24,1],[12,2],[13,2],[20,2],[21,2],[34,2],[35,2],[11,3],[15,3],[20,3],[21,3],[34,3],[35,3],[0,4],[1,4],[10,4],[16,4],[20,4],[21,4],[0,5],[1,5],[10,5],[14,5],[16,5],[17,5],[22,5],[24,5],[10,6],[16,6],[24,6],[11,7],[15,7],[12,8],[13,8]];
-  Field.gun = () => {
-    Field.setMode(4);
-    life.fill(0);
-    tex8.fill(0);
-    const ox = Math.max(1, (lc >> 1) - 18), oy = Math.max(1, (lr >> 1) - 8);
-    for (const [x, y] of GUN) {
-      const i = (y + oy) * lc + x + ox;
-      if (i < life.length) {
-        life[i] = 1;
-        tex8[i] = 255;
+    /* Keep away from the pointer. */
+    if (clock - M.seen < 2.5) {
+      const dx = c.x - M.x, dy = c.py - M.y, R = 150 * Field.force, d2 = dx * dx + dy * dy;
+      if (d2 < R * R) {
+        const d = Math.sqrt(d2) || 1, f = 1 - d / R;
+        c.vx += (dx / d) * f * 900 * dt * Field.force;
+        c.vy += (dy / d) * f * 900 * dt * Field.force;
+        if (m === 4) {
+          c.to = Math.atan2(dy, dx);
+          if (c.st === 0) c.t = Math.min(c.t, 0.1);
+        } else if (m !== 6) c.a += crDiff(Math.atan2(dy, dx), c.a) * Math.min(1, dt * 5 * f);
       }
     }
-  };
+    let mx = Math.cos(c.a) * c.spd, my = Math.sin(c.a) * c.spd;
+    if (m === 6) {
+      mx = -Math.sin(c.a) * c.sd * c.v0 * c.mv;
+      my = Math.cos(c.a) * c.sd * c.v0 * c.mv;
+    }
+    c.x += (mx + c.vx) * dt;
+    c.y += (my + c.vy) * dt;
+    const damp = Math.exp(-2.2 * dt);
+    c.vx *= damp;
+    c.vy *= damp;
+    const e = SPECIES[m].ext, pad = Math.max(e[0], e[1], e[2]) * c.size * cell;
+    if (c.x < -pad) c.x += W + 2 * pad;
+    else if (c.x > W + pad) c.x -= W + 2 * pad;
+  }
+  function place(c) {
+    const e = SPECIES[Field.mode].ext, pad = Math.max(e[0], e[1], e[2]) * c.size * cell, span = H + 2 * pad;
+    c.py = ((((c.y - scrollY * c.par + pad) % span) + span) % span) - pad;
+  }
 
-  /* Pointer state */
-  const M = { x: innerWidth * 0.72, y: innerHeight * 0.4, tx: innerWidth * 0.72, ty: innerHeight * 0.4, vx: 0, vy: 0, hold: 0, down: false };
-  const ripples = Array.from({ length: 6 }, () => ({ x: 0, y: 0, t0: -99 }));
-  let rippleI = 0, dirty = true, t = 0, mix = 1, prev = Field.mode, frames = 0, fpsT = 0, slow = 0, fast = 0;
+  function stamp(c, dim) {
+    const sp = SPECIES[Field.mode], S = c.size, cs = Math.cos(c.a), sn = Math.sin(c.a), cx = c.x / cell, cy = c.py / cell;
+    const f = sp.ext[0] * S, bk = sp.ext[1] * S, sd = sp.ext[2] * S;
+    const ex = Math.abs(cs) * Math.max(f, bk) + Math.abs(sn) * sd, ey = Math.abs(sn) * Math.max(f, bk) + Math.abs(cs) * sd;
+    const x0 = Math.max(0, Math.floor(cx - ex)), x1 = Math.min(cols - 1, Math.ceil(cx + ex));
+    const y0 = Math.max(0, Math.floor(cy - ey)), y1 = Math.min(rows - 1, Math.ceil(cy + ey));
+    const al = c.alpha * dim, sample = sp.sample;
+    for (let gy = y0; gy <= y1; gy++) {
+      const dy = gy + 0.5 - cy;
+      for (let gx = x0; gx <= x1; gx++) {
+        const dx = gx + 0.5 - cx, lx = (dx * cs + dy * sn) / S;
+        if (lx > sp.ext[0] || lx < -sp.ext[1]) continue;
+        crO.k = 0;
+        sample(lx, (-dx * sn + dy * cs) / S, c, S);
+        if (!crO.k) continue;
+        const i = gy * cols + gx, fresh = seen[i] !== frameId;
+        if (!fresh && crO.k === 2 && kind[i] !== 2) continue;
+        if (fresh) {
+          seen[i] = frameId;
+          touched[nT++] = i;
+        }
+        kind[i] = crO.k;
+        cr[i] = crO.r;
+        cg[i] = crO.g;
+        cb[i] = crO.b;
+        ca[i] = crO.a * al;
+        cch[i] = crO.ch;
+      }
+    }
+  }
 
-  Field.pulse = (x = M.x, y = M.y) => {
-    const r = ripples[rippleI++ % 6];
-    r.x = x;
-    r.y = y;
-    r.t0 = t;
+  /* Cells are grouped by colour so each colour is filled once. */
+  const tiles = new Map(), glyphs = new Map(), usedT = [], usedG = [];
+  function bucket(map, used, key) {
+    let b = map.get(key);
+    if (!b) map.set(key, (b = { n: 0, cells: [] }));
+    if (!b.n) used.push(key);
+    return b;
+  }
+  const rgbOf = (key, k) => `rgb(${(((key >> 12) & 63) * 4 * k) | 0},${(((key >> 6) & 63) * 4 * k) | 0},${((key & 63) * 4 * k) | 0})`;
+
+  function draw() {
+    const dim = lerp(1, 0.5, clamp(scrollY / Math.max(1, H * 0.9), 0, 1)) * Math.min(1, fade);
+    frameId++;
+    nT = 0;
+    for (const c of herd) {
+      place(c);
+      stamp(c, dim);
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = "#08080a";
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = grid;
+    ctx.fillRect(0, 0, W, H);
+
+    /* A soft dotted ring follows the mouse. */
+    const idle = clock - M.seen;
+    if (M.mouse && idle < 2.5) {
+      const mx = Math.floor(M.x / cell), my = Math.floor(M.y / cell), R = 6.5, strength = Math.min(1, 2.5 - idle);
+      ctx.fillStyle = "#9a9aa6";
+      for (let y = -6; y <= 6; y++) {
+        for (let x = -6; x <= 6; x++) {
+          const d = Math.hypot(x, y);
+          if (d > R) continue;
+          const f = 1 - d / R, s = 1 + 2.4 * f;
+          ctx.globalAlpha = (0.12 + 0.5 * f) * strength;
+          ctx.fillRect((mx + x + 0.5) * cell - s / 2, (my + y + 0.5) * cell - s / 2, s, s);
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    const eyes = [], dots = [];
+    for (let n = 0; n < nT; n++) {
+      const i = touched[n], k = kind[i], a = ca[i];
+      if (k === 3) {
+        eyes.push(i);
+        continue;
+      }
+      if (k === 4) {
+        dots.push(i);
+        continue;
+      }
+      const r = BG[0] + (cr[i] - BG[0]) * a, g = BG[1] + (cg[i] - BG[1]) * a, b = BG[2] + (cb[i] - BG[2]) * a;
+      const key = ((r >> 2) << 12) | ((g >> 2) << 6) | (b >> 2);
+      const bk = k === 1 ? bucket(tiles, usedT, key) : bucket(glyphs, usedG, (key << 4) | cch[i]);
+      bk.cells[bk.n++] = i;
+    }
+    for (const key of usedT) {
+      const bk = tiles.get(key);
+      ctx.fillStyle = rgbOf(key, 0.74);
+      ctx.beginPath();
+      for (let n = 0; n < bk.n; n++) {
+        const i = bk.cells[n];
+        ctx.rect((i % cols) * cell + 0.5, ((i / cols) | 0) * cell + 0.5, cell - 1, cell - 1);
+      }
+      ctx.fill();
+      ctx.fillStyle = rgbOf(key, 1);
+      ctx.beginPath();
+      for (let n = 0; n < bk.n; n++) {
+        const i = bk.cells[n];
+        ctx.rect((i % cols) * cell + 1.5, ((i / cols) | 0) * cell + 1.5, cell - 3, cell - 3);
+      }
+      ctx.fill();
+      bk.n = 0;
+    }
+    usedT.length = 0;
+    ctx.font = `500 ${cell}px "IBM Plex Mono", ui-monospace, monospace`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    for (const key of usedG) {
+      const bk = glyphs.get(key), ch = GLYPHS[key & 15];
+      ctx.fillStyle = rgbOf(key >> 4, 1);
+      for (let n = 0; n < bk.n; n++) {
+        const i = bk.cells[n];
+        ctx.fillText(ch, ((i % cols) + 0.5) * cell, (((i / cols) | 0) + 0.55) * cell);
+      }
+      bk.n = 0;
+    }
+    usedG.length = 0;
+    for (const i of eyes) {
+      const x = (i % cols) * cell, y = ((i / cols) | 0) * cell;
+      ctx.globalAlpha = Math.min(1, ca[i] + 0.15);
+      ctx.fillStyle = "#f2f2f4";
+      ctx.fillRect(x + 0.5, y + 0.5, cell - 1, cell - 1);
+      ctx.fillStyle = "#0b0b0e";
+      ctx.fillRect(x + 3, y + 3, cell - 6, cell - 6);
+    }
+    for (const i of dots) {
+      const x = ((i % cols) + 0.5) * cell, y = (((i / cols) | 0) + 0.5) * cell, s = Math.max(3, cell * 0.36);
+      ctx.globalAlpha = Math.min(1, ca[i] + 0.15);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(x - s / 2, y - s / 2, s, s);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  /* Startles everything near a point. */
+  function startle(x, y, reach) {
+    const R = reach * Field.force, m = Field.mode;
+    for (const c of herd) {
+      const dx = c.x - x, dy = c.py - y, d = Math.hypot(dx, dy) || 1;
+      if (d > R) continue;
+      const f = 1 - d / R, away = Math.atan2(dy, dx);
+      c.vx += (dx / d) * f * 720;
+      c.vy += (dy / d) * f * 720;
+      if (m === 4) {
+        c.a = c.to = away + rand(-0.3, 0.3);
+        c.st = 1;
+        c.u = 0;
+      } else if (m === 2) {
+        c.a = c.base = away;
+        c.st = 1;
+        c.t = 0.3;
+      } else if (m !== 6 && m !== 1 && m !== 5) c.a = away + rand(-0.4, 0.4);
+    }
     dirty = true;
-    if (Field.mode === 4) lifePaint(x, y, 2);
-  };
+  }
+
+  Field.pulse = (x = W / 2, y = H / 2) => startle(x, y, 420);
+  Field.scatter = () => startle(W / 2, H / 2, Math.hypot(W, H));
   Field.setMode = (m) => {
     if (m === Field.mode) return;
-    prev = Field.mode;
     Field.mode = m;
-    mix = 0;
+    store.set("creature", m);
+    herd = [];
+    populate();
+    fade = 0;
     dirty = true;
-    store.set("background", m);
     Field.listeners.forEach((f) => f(m));
   };
   Field.reset = () => {
     Field.density = 1;
     Field.force = 1;
     Field.paused = false;
-    Field.setMode(DEFAULT_MODE);
-    if (life) lifeSeed();
+    perfK = 1;
+    herd = [];
+    if (Field.mode !== DEFAULT_MODE) Field.setMode(DEFAULT_MODE);
+    else populate();
+    fade = 0;
     dirty = true;
   };
-  Field.seed = () => life && lifeSeed();
-  Field.touch = () => (dirty = true);
+  Field.touch = () => {
+    populate();
+    dirty = true;
+  };
 
   const blocked = (e) => e.target && e.target.closest && e.target.closest("a,button,input,textarea,label,canvas,[data-nofield]");
   addEventListener("pointermove", (e) => {
-    M.tx = e.clientX;
-    M.ty = e.clientY;
+    M.x = e.clientX;
+    M.y = e.clientY;
+    M.seen = clock;
+    M.mouse = e.pointerType === "mouse";
     dirty = true;
-    if (Field.mode === 4 && e.pointerType === "mouse" && !blocked(e)) lifePaint(e.clientX, e.clientY, M.down ? 2 : 0);
   }, { passive: true });
   addEventListener("pointerdown", (e) => {
     if (blocked(e)) return;
-    M.tx = e.clientX;
-    M.ty = e.clientY;
-    Field.pulse(e.clientX, e.clientY);
+    startle(e.clientX, e.clientY, 420);
     Sound.blip(180, 0.09, 0.03, "triangle");
-    if (e.pointerType === "mouse") M.down = true;
   }, { passive: true });
-  addEventListener("pointerup", () => (M.down = false), { passive: true });
-  addEventListener("pointercancel", () => (M.down = false), { passive: true });
-  addEventListener("blur", () => (M.down = false));
   addEventListener("resize", resize);
   addEventListener("scroll", () => (dirty = true), { passive: true });
-  cv.addEventListener("webglcontextlost", (e) => {
-    e.preventDefault();
-    document.documentElement.classList.add("no-webgl");
-  });
-  document.addEventListener("accent", () => (dirty = true));
+  document.fonts.ready.then(() => (dirty = true));
 
   resize();
-  gl.uniform1i(U.uLife, 0);
-
-  const render = (dt) => {
-    const y = scrollY;
-    const heroEnd = Math.max(1, H * 0.95);
-    const dim = lerp(1, 0.5, clamp(y / heroEnd, 0, 1));
-    gl.uniform2f(U.uRes, cv.width, cv.height);
-    gl.uniform1f(U.uDpr, dpr);
-    gl.uniform1f(U.uT, t);
-    gl.uniform2f(U.uM, M.x, M.y);
-    gl.uniform2f(U.uV, M.vx, M.vy);
-    gl.uniform1f(U.uScroll, y);
-    gl.uniform1f(U.uDim, dim);
-    gl.uniform1f(U.uDensity, Field.density);
-    gl.uniform1f(U.uForce, Field.force);
-    gl.uniform1f(U.uHold, M.hold);
-    gl.uniform1f(U.uMix, mix);
-    gl.uniform1i(U.uMode, Field.mode);
-    gl.uniform1i(U.uPrev, prev);
-    gl.uniform3f(U.uAcc, Acc.rgb[0] / 255, Acc.rgb[1] / 255, Acc.rgb[2] / 255);
-    gl.uniform2f(U.uLifeSize, lc, lr);
-    gl.uniform1f(U.uLifeCell, LIFE_CELL);
-    const arr = new Float32Array(18);
-    ripples.forEach((r, i) => {
-      const age = t - r.t0;
-      arr[i * 3] = r.x;
-      arr[i * 3 + 1] = r.y;
-      arr[i * 3 + 2] = age < 3.2 ? age : -1;
-    });
-    gl.uniform3fv(U.uR, arr);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-  };
+  if (REDUCED) fade = 1;
 
   addTick(null, (dt) => {
+    clock += dt;
     const moving = !REDUCED && !Field.paused;
-    if (moving) t += dt;
-    else if (ripples.some((r) => t - r.t0 < 3.2)) t += dt;
-    const k = 1 - Math.pow(0.0008, dt);
-    const ox = M.x, oy = M.y;
-    M.x += (M.tx - M.x) * k;
-    M.y += (M.ty - M.y) * k;
-    M.vx = lerp(M.vx, clamp((M.x - ox) * 3, -90, 90), 0.2);
-    M.vy = lerp(M.vy, clamp((M.y - oy) * 3, -90, 90), 0.2);
-    M.hold = lerp(M.hold, M.down ? 1 : 0, 1 - Math.pow(0.002, dt));
-    if (mix < 1) mix = Math.min(1, mix + dt * 2.4);
-    if (Field.mode === 4 && moving) {
-      lifeAcc += dt;
-      if (lifeAcc > 0.11) {
-        lifeAcc = 0;
-        lifeStep();
-      }
+    if (moving) {
+      fade += dt * 2.5;
+      for (const c of herd) step(c, dt);
     }
-    if (Field.mode === 4 || prev === 4) lifeUpload();
-    const settling = Math.abs(M.tx - M.x) + Math.abs(M.ty - M.y) > 0.2 || mix < 1 || ripples.some((r) => t - r.t0 < 3.2);
-    if (moving || settling || dirty) {
-      render(dt);
+    if (moving || dirty || clock - M.seen < 2.6) {
+      draw();
       dirty = false;
     }
-    /* Trade resolution for smoothness on slower machines. */
+    /* Thin the herd on slower machines. */
     frames++;
     fpsT += dt;
     if (fpsT >= 1) {
       Field.fps = Math.round(frames / fpsT);
       frames = 0;
       fpsT = 0;
-      if (Field.fps < 34) slow++, (fast = 0);
-      else if (Field.fps > 54) fast++, (slow = 0);
-      else slow = fast = 0;
-      if (slow >= 2 && scale > 0.5) {
-        scale = Math.max(0.5, scale - 0.2);
+      slow = Field.fps < 40 ? slow + 1 : 0;
+      if (slow >= 2 && perfK > 0.4) {
+        perfK *= 0.8;
         slow = 0;
-        resize();
-      } else if (fast >= 12 && scale < 1) {
-        scale = Math.min(1, scale + 0.1);
-        fast = 0;
-        resize();
+        populate();
       }
     }
   });
