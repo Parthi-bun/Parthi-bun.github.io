@@ -51,7 +51,7 @@ function toyHttp(el) {
       if (job) {
         ctx.fillStyle = rgba(0.3);
         ctx.fillRect(wx, y, ww * clamp(job.t / job.need, 0, 1), rh);
-        ctx.fillStyle = "#ededef";
+        ctx.fillStyle = "#e4e4ea";
         if (ww > 150) ctx.fillText(job.line, wx + 7, y + rh / 2 + 3.5);
       } else if (open) {
         ctx.fillStyle = "#5c5c66";
@@ -64,7 +64,7 @@ function toyHttp(el) {
     ctx.fillStyle = "#adadb6";
     for (let i = 0; i < shown; i++) ctx.fillRect(sx + (i % c2) * 7, H - 17 - Math.floor(i / c2) * 7, 5, 5);
     if (flash > 0) {
-      ctx.fillStyle = `rgba(255,107,87,${flash * 0.2})`;
+      ctx.fillStyle = `rgba(238,138,124,${flash * 0.2})`;
       ctx.fillRect(0, 0, W, H);
     }
     m.set("s", served);
@@ -146,7 +146,7 @@ function toyAnalyzer(el) {
         ctx.fillRect(p[0], p[1], 6, Math.max(2, cell - 2));
       }
     }
-    ctx.fillStyle = "#ededef";
+    ctx.fillStyle = "#e4e4ea";
     ctx.font = `500 ${Math.round(side * 0.27)}px "IBM Plex Sans", ui-sans-serif, sans-serif`;
     const t = String(Math.round(shown));
     ctx.fillText(t, w / 2 - ctx.measureText(t).width / 2, h / 2 + side * 0.09);
@@ -422,7 +422,7 @@ function toyHuffman(el) {
         ctx.fillRect(x - r, y - r, r * 2, r * 2);
         ctx.strokeStyle = on ? Acc.hex : "rgba(255,255,255,.3)";
         ctx.strokeRect(x - r + 0.5, y - r + 0.5, r * 2 - 1, r * 2 - 1);
-        ctx.fillStyle = on ? "#08080a" : "#ededef";
+        ctx.fillStyle = on ? "#08080a" : "#e4e4ea";
         const t = label(n.c);
         ctx.fillText(t, x - ctx.measureText(t).width / 2, y + 3.5);
       } else {

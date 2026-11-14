@@ -112,7 +112,7 @@ function toySkills(el) {
         ctx.fillRect(n.x - bw / 2, n.y - 11, bw, 22);
         ctx.strokeStyle = on ? Acc.hex : dim ? "rgba(255,255,255,.08)" : "rgba(255,255,255,.3)";
         ctx.strokeRect(n.x - bw / 2 + 0.5, n.y - 10.5, bw - 1, 21);
-        ctx.fillStyle = on ? "#08080a" : dim ? "#5c5c66" : "#ededef";
+        ctx.fillStyle = on ? "#08080a" : dim ? "#5c5c66" : "#e4e4ea";
         ctx.fillText(n.name, n.x - tw / 2, n.y + 4);
       } else {
         const r = 5;
@@ -206,12 +206,12 @@ function toyPlates(el) {
   const s = fit(cv);
   const ctx = s.ctx;
   const PLATES = {
-    25: { h: 148, t: 15, c: "#d8413c", ink: "#fff" },
-    20: { h: 148, t: 12, c: "#3f6fd8", ink: "#fff" },
-    15: { h: 122, t: 10, c: "#f2c230", ink: "#08080a" },
-    10: { h: 98, t: 8, c: "#2f9e58", ink: "#fff" },
-    5: { h: 72, t: 6, c: "#ededef", ink: "#08080a" },
-    2.5: { h: 54, t: 5, c: "#3a3a41", ink: "#ededef" },
+    25: { h: 148, t: 15, c: "#c9655f", ink: "#08080a" },
+    20: { h: 148, t: 12, c: "#6c8fd6", ink: "#08080a" },
+    15: { h: 122, t: 10, c: "#d9c06c", ink: "#08080a" },
+    10: { h: 98, t: 8, c: "#6fae84", ink: "#08080a" },
+    5: { h: 72, t: 6, c: "#dcdce2", ink: "#08080a" },
+    2.5: { h: 54, t: 5, c: "#3a3a41", ink: "#e4e4ea" },
   };
   const MAX = 8;
   let side = [20], bend = 0, vel = 0;
@@ -240,7 +240,7 @@ function toyPlates(el) {
   const m = meters([["t", "Total kg"], ["l", "Total lb"], ["p", "Per side kg"], ["n", "Plates"]]);
   const note = document.createElement("div");
   note.className = "note";
-  note.textContent = "Bar 20 kg, collars 2.5 kg each, plates in competition colours. For fun, not a record of my lifts.";
+  note.textContent = "Bar 20 kg, collars 2.5 kg each, plates in softened competition colours. For fun, not a record of my lifts.";
   b.append(m, note);
   let hits = [];
   function draw() {
@@ -300,7 +300,7 @@ function toyPlates(el) {
       });
       collar(off + 3);
     }
-    ctx.fillStyle = "#ededef";
+    ctx.fillStyle = "#e4e4ea";
     ctx.font = `600 ${Math.round(24 * scale + 6)}px "IBM Plex Sans", ui-sans-serif, sans-serif`;
     const lab = `${total()} kg`;
     ctx.fillText(lab, w / 2 - ctx.measureText(lab).width / 2, Math.max(30, cy - 60));

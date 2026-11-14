@@ -23,23 +23,15 @@ const store = {
   },
 };
 
-/* Accent choices are the colours of competition weight plates. */
-const ACCENTS = [
-  ["15 kg yellow", "#f2c230"],
-  ["25 kg red", "#ec4f4a"],
-  ["20 kg blue", "#5b8def"],
-  ["10 kg green", "#3fb56b"],
-  ["5 kg white", "#ededef"],
-];
-const Acc = { hex: "#f2c230", rgb: [242, 194, 48] };
+/* The accent follows whichever creature is on screen. */
+const Acc = { hex: "#8fbcf2", rgb: [143, 188, 242] };
 const rgba = (a) => `rgba(${Acc.rgb[0]},${Acc.rgb[1]},${Acc.rgb[2]},${a})`;
 
-function setAccent(hex, save = true) {
+function setAccent(hex) {
   const n = parseInt(hex.slice(1), 16);
   Acc.hex = hex;
   Acc.rgb = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
   document.documentElement.style.setProperty("--acc", Acc.rgb.join(" "));
-  if (save) store.set("accent", hex);
   document.dispatchEvent(new CustomEvent("accent"));
 }
 

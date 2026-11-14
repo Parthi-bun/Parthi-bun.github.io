@@ -2,7 +2,8 @@
    Each creature is a small procedural model sampled once per grid cell, so it stays
    blocky at any size or angle. Fine parts are drawn with keyboard characters. */
 const MODES = ["Butterfly", "Jellyfish", "Dragonfly", "Koi", "Frog", "Crane", "Crab"];
-const MODE_DOT = ["#4892e8", "#d63cce", "#4ade80", "#f2c438", "#62be40", "#e8e8ec", "#e86046"];
+/* A soft tint per creature, used for its button and for the page accent. */
+const MODE_DOT = ["#8fbcf2", "#dd9ae6", "#8fd9ae", "#f2b08a", "#a9d48a", "#d4d4dc", "#f09a86"];
 const DEFAULT_MODE = 0;
 const GLYPHS = ["/", "\\", "-", "|", "(", ")", "{", "}", "0", "$", ":", ".", "v", "'"];
 
@@ -608,6 +609,7 @@ function initField() {
     if (m === Field.mode) return;
     Field.mode = m;
     store.set("creature", m);
+    setAccent(MODE_DOT[m]);
     herd = [];
     populate();
     fade = 0;

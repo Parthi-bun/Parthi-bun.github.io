@@ -13,8 +13,8 @@ const url = "https://parthi-bun.github.io/";
 const description = "Final-year computer science student at VIT Vellore, graduating in May 2027. Distributed systems, secure retrieval and a production mobile app, each with a working model you can try.";
 const fonts = `<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@100..700&display=swap">`;
-const favicon = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#08080a"/><path d="M6 26 16 6l10 20z" fill="none" stroke="#ededef" stroke-width="2"/><path d="M16 6v20H6z" fill="#f2c230"/></svg>')}`;
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@100..700&family=Pixelify+Sans:wght@400..700&display=swap">`;
+const favicon = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#08080a"/><path d="M6 26 16 6l10 20z" fill="none" stroke="#ededef" stroke-width="2"/><path d="M16 6v20H6z" fill="#8fbcf2"/></svg>')}`;
 const person = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Person",

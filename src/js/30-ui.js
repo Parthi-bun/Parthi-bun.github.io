@@ -42,21 +42,6 @@ function initDock() {
     Field.force = v;
     Field.touch();
   });
-  const sw = document.createElement("div");
-  sw.className = "sw";
-  sw.setAttribute("role", "group");
-  sw.setAttribute("aria-label", "Accent colour, in weight plate colours");
-  const current = store.get("accent", ACCENTS[0][1]);
-  ACCENTS.forEach(([n, hex]) => {
-    const c = document.createElement("button");
-    c.type = "button";
-    c.style.setProperty("--c", hex);
-    c.setAttribute("aria-label", n);
-    c.title = n;
-    c.setAttribute("aria-pressed", hex === current);
-    c.addEventListener("click", () => applyAccent(hex));
-    sw.append(c);
-  });
   const acts = document.createElement("div");
   acts.className = "dock-a";
   const pause = btn("Pause", () => {
@@ -72,7 +57,6 @@ function initDock() {
     Field.reset();
     density.setValue(1);
     force.setValue(1);
-    applyAccent(ACCENTS[0][1]);
     pause.textContent = "Pause";
     toast("Background reset.");
   });
@@ -88,17 +72,12 @@ function initDock() {
   const head = document.createElement("div");
   head.style.cssText = "display:flex;justify-content:space-between;gap:8px";
   head.append(lab("Background"), fps);
-  p.append(head, modeSeg, density, force, lab("Accent, in weight plate colours"), sw, acts);
+  p.append(head, modeSeg, density, force, acts);
   Dock.density = density;
   Dock.force = force;
   Dock.open = setOpen;
 }
 const Dock = {};
-
-function applyAccent(hex) {
-  setAccent(hex);
-  $$(".sw button").forEach((b) => b.setAttribute("aria-pressed", getComputedStyle(b).getPropertyValue("--c").trim() === hex));
-}
 
 function initPalette() {
   const pal = $("#pal"), input = $("#pal-i"), list = $("#pal-l");
@@ -118,7 +97,6 @@ function initPalette() {
     ["Finance Tracker", "Project", go("#p-finance")],
     ["Huffman File Compressor", "Project", go("#p-huffman")],
     ...MODES.map((m, i) => [`Background: ${m}`, "Background", () => Field.setMode(i)]),
-    ...ACCENTS.map(([n, hex]) => [`Accent: ${n}`, "Colour", () => applyAccent(hex)]),
     ["Startle the creatures nearby", "Background", () => Field.pulse(innerWidth / 2, innerHeight / 2)],
     ["Scatter the creatures", "Background", () => Field.scatter()],
     ["Copy email address", "Contact", () => copyEmail()],
@@ -210,7 +188,7 @@ function copyEmail() {
 }
 
 /* Weight range of the headline typeface. Letters near the pointer get heavier, with a thin ring around them. */
-const HEAD_W = { base: 600, min: 180, max: 700 };
+const HEAD_W = { base: 500, min: 400, max: 700 };
 
 function initHeadline() {
   const h = $("#title");

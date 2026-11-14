@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08080a">
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20fill%3D%22%2308080a%22%2F%3E%3Cpath%20d%3D%22M6%2026%2016%206l10%2020z%22%20fill%3D%22none%22%20stroke%3D%22%23ededef%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M16%206v20H6z%22%20fill%3D%22%23f2c230%22%2F%3E%3C%2Fsvg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20fill%3D%22%2308080a%22%2F%3E%3Cpath%20d%3D%22M6%2026%2016%206l10%2020z%22%20fill%3D%22none%22%20stroke%3D%22%23ededef%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M16%206v20H6z%22%20fill%3D%22%238fbcf2%22%2F%3E%3C%2Fsvg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@100..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@100..700&family=Pixelify+Sans:wght@400..700&display=swap">
 <title>Parthiban Ilango</title>
 <meta name="description" content="Final-year computer science student at VIT Vellore, graduating in May 2027. Distributed systems, secure retrieval and a production mobile app, each with a working model you can try.">
 <link rel="canonical" href="https://parthi-bun.github.io/">
@@ -35,16 +35,19 @@
   --line: rgba(255, 255, 255, 0.075);
   --line-2: rgba(255, 255, 255, 0.14);
   --line-3: rgba(255, 255, 255, 0.26);
-  --t1: #ededef;
+  --t1: #e4e4ea;
   --t2: #adadb6;
   --t3: #8b8b95;
   --t4: #5c5c66;
-  --acc: 242 194 48;
+  --acc: 143 188 242;
   --accent: rgb(var(--acc));
-  --ok: #4ade80;
-  --bad: #ff6b57;
+  --ok: #8fd6a6;
+  --bad: #ee8a7c;
   --sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --pixel: "Pixelify Sans", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  /* Stepped corners, one pixel-art notch per corner. */
+  --notch: polygon(3px 0, calc(100% - 3px) 0, calc(100% - 3px) 3px, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 3px calc(100% - 3px), 0 calc(100% - 3px), 0 3px, 3px 3px);
   --nav: 72px;
   --gutter-l: max(24px, env(safe-area-inset-left, 0px));
   --gutter-r: max(24px, env(safe-area-inset-right, 0px));
@@ -63,11 +66,14 @@ body {
   overflow-x: hidden;
   overflow-x: clip;
 }
-::selection { background: rgb(var(--acc) / 0.32); color: #fff; }
+::selection { background: rgb(var(--acc) / 0.32); color: #f4f4f8; }
 a { color: inherit; text-decoration: none; }
 button, input, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; background: none; border: 0; padding: 0; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Notched controls clip anything drawn outside them, so their focus ring sits inside. */
+.btn, .kbd-btn, .dock-b, .mail, #toast, .skip, .chips, .seg { clip-path: var(--notch); }
+.btn:focus-visible, .kbd-btn:focus-visible, .dock-b:focus-visible, .mail:focus-visible, .chip:focus-visible, .seg button:focus-visible { outline-offset: -4px; }
 h1, h2, h3, p, ul { margin: 0; padding: 0; }
 ul { list-style: none; }
 
@@ -131,7 +137,7 @@ kbd {
 .btn:hover { border-color: var(--line-3); background: var(--surface); }
 .btn:active { transform: translateY(1px); }
 .btn.solid { background: var(--t1); color: var(--bg); border-color: var(--t1); }
-.btn.solid:hover { background: #fff; }
+.btn.solid:hover { background: #f4f4f8; }
 .btn.sm { height: 36px; padding: 0 14px; font-size: 13px; gap: 8px; }
 .btn .arr { transition: transform 0.18s; }
 .btn:hover .arr { transform: translate(3px, 0); }
@@ -141,7 +147,7 @@ kbd {
 .hero-copy { position: relative; min-width: 0; width: fit-content; max-width: 100%; }
 /* A soft dark patch keeps the introduction readable while creatures pass behind it. */
 .hero-copy::before { content: ""; position: absolute; inset: -18px -44px -10px; background: rgba(8, 8, 10, 0.8); filter: blur(22px); z-index: -1; pointer-events: none; }
-h1 { font-size: clamp(46px, 7.2vw, 100px); font-weight: 600; letter-spacing: -0.035em; line-height: 0.98; cursor: default; }
+h1 { font-family: var(--pixel); font-size: clamp(44px, 7vw, 98px); font-weight: 500; letter-spacing: -0.01em; line-height: 1; cursor: default; }
 h1 .ln { display: inline-block; white-space: nowrap; }
 h1 .ch { display: inline-block; will-change: font-weight; }
 .intro { max-width: 37em; margin-top: 18px; color: var(--t2); font-size: 18px; line-height: 1.62; }
@@ -160,7 +166,8 @@ h1 + .intro { margin-top: 30px; }
 }
 .chip i { display: inline-block; width: 7px; height: 7px; margin-right: 8px; }
 .chip:hover { color: var(--t1); }
-.chip[aria-pressed="true"] { background: var(--t1); color: var(--bg); position: relative; z-index: 1; border-color: var(--t1); }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--bg); position: relative; z-index: 1; border-color: var(--accent); }
+.chip[aria-pressed="true"] i { background: var(--bg) !important; }
 .hint { font-size: 12.5px; color: var(--t3); margin-top: 12px; }
 
 /* controls */
@@ -187,7 +194,7 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
 section { position: relative; }
 .sec { padding-block: 96px 0; }
 .sec-h { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 12px 64px; align-items: end; margin-bottom: 30px; }
-h2 { font-size: clamp(30px, 3.8vw, 46px); line-height: 1.05; letter-spacing: -0.03em; font-weight: 600; text-wrap: balance; }
+h2 { font-family: var(--pixel); font-size: clamp(30px, 3.8vw, 46px); line-height: 1.05; letter-spacing: 0; font-weight: 500; text-wrap: balance; }
 .sec-h p { color: var(--t2); max-width: 38em; }
 /* Keep section text readable where background lines pass behind it. */
 .sec-h h2, .sec-h p, .jump { background: rgba(8, 8, 10, 0.7); box-shadow: 0 0 0 8px rgba(8, 8, 10, 0.7); width: fit-content; }
@@ -207,7 +214,7 @@ h3 { font-size: clamp(24px, 2.6vw, 32px); line-height: 1.12; letter-spacing: -0.
 .lede { color: var(--t2); margin-top: 14px; }
 .pts { margin-top: 16px; display: grid; gap: 9px; font-size: 14.5px; color: var(--t2); line-height: 1.55; }
 .pts li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 6px; }
-.pts li::before { content: ""; width: 5px; height: 5px; background: var(--t4); margin-top: 8px; transform: rotate(45deg); }
+.pts li::before { content: ""; width: 5px; height: 5px; background: rgb(var(--acc) / 0.75); margin-top: 9px; }
 .figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 20px; }
 .fig { background: var(--raised); padding: 12px 12px 11px; min-width: 0; }
 .fig b { display: block; font-size: 24px; font-weight: 500; letter-spacing: -0.03em; line-height: 1.15; font-variant-numeric: tabular-nums; }
@@ -266,7 +273,7 @@ h3 { font-size: clamp(24px, 2.6vw, 32px); line-height: 1.12; letter-spacing: -0.
 .doc.blocked .doc-t { color: var(--t3); text-decoration: line-through; text-decoration-color: var(--t4); }
 .doc.top { background: rgb(var(--acc) / 0.09); }
 .doc.top .doc-s { color: var(--accent); }
-.doc.leak { background: rgba(255, 107, 87, 0.12); }
+.doc.leak { background: rgba(238, 138, 124, 0.12); }
 .doc.leak .doc-s { color: var(--bad); }
 
 /* summary model */
@@ -328,7 +335,7 @@ h3 { font-size: clamp(24px, 2.6vw, 32px); line-height: 1.12; letter-spacing: -0.
   display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: center; width: 100%; text-align: left;
   background: var(--t1); color: var(--bg); padding: 18px 20px; transition: background 0.15s;
 }
-.mail:hover { background: #fff; }
+.mail:hover { background: #f4f4f8; }
 .mail .label { color: #55555e; grid-column: 1 / -1; }
 .mail b { font-size: clamp(14px, 1.45vw, 18px); font-weight: 600; letter-spacing: -0.02em; overflow-wrap: anywhere; }
 .side-l { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
@@ -364,9 +371,6 @@ footer { margin-top: 80px; border-top: 1px solid var(--line); background: rgba(8
 #dock.open .dock-b i { transform: rotate(135deg) scale(1.1); }
 .dock-p { background: var(--raised); border: 1px solid var(--line-3); padding: 14px; display: grid; gap: 14px; margin-bottom: 8px; max-height: calc(100dvh - 120px); overflow-y: auto; }
 .dock-p[hidden] { display: none; }
-.sw { display: flex; gap: 6px; }
-.sw button { width: 26px; height: 26px; background: var(--c); border: 2px solid transparent; outline-offset: 1px; clip-path: polygon(0 0, 100% 0, 100% 72%, 72% 100%, 0 100%); }
-.sw button[aria-pressed="true"] { outline: 1px solid var(--t1); clip-path: none; }
 .dock-a { display: flex; flex-wrap: wrap; gap: 6px; }
 
 /* palette */
@@ -788,23 +792,15 @@ const store = {
   },
 };
 
-/* Accent choices are the colours of competition weight plates. */
-const ACCENTS = [
-  ["15 kg yellow", "#f2c230"],
-  ["25 kg red", "#ec4f4a"],
-  ["20 kg blue", "#5b8def"],
-  ["10 kg green", "#3fb56b"],
-  ["5 kg white", "#ededef"],
-];
-const Acc = { hex: "#f2c230", rgb: [242, 194, 48] };
+/* The accent follows whichever creature is on screen. */
+const Acc = { hex: "#8fbcf2", rgb: [143, 188, 242] };
 const rgba = (a) => `rgba(${Acc.rgb[0]},${Acc.rgb[1]},${Acc.rgb[2]},${a})`;
 
-function setAccent(hex, save = true) {
+function setAccent(hex) {
   const n = parseInt(hex.slice(1), 16);
   Acc.hex = hex;
   Acc.rgb = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
   document.documentElement.style.setProperty("--acc", Acc.rgb.join(" "));
-  if (save) store.set("accent", hex);
   document.dispatchEvent(new CustomEvent("accent"));
 }
 
@@ -987,7 +983,8 @@ function roundRectless(ctx, x, y, w, h) {
    Each creature is a small procedural model sampled once per grid cell, so it stays
    blocky at any size or angle. Fine parts are drawn with keyboard characters. */
 const MODES = ["Butterfly", "Jellyfish", "Dragonfly", "Koi", "Frog", "Crane", "Crab"];
-const MODE_DOT = ["#4892e8", "#d63cce", "#4ade80", "#f2c438", "#62be40", "#e8e8ec", "#e86046"];
+/* A soft tint per creature, used for its button and for the page accent. */
+const MODE_DOT = ["#8fbcf2", "#dd9ae6", "#8fd9ae", "#f2b08a", "#a9d48a", "#d4d4dc", "#f09a86"];
 const DEFAULT_MODE = 0;
 const GLYPHS = ["/", "\\", "-", "|", "(", ")", "{", "}", "0", "$", ":", ".", "v", "'"];
 
@@ -1593,6 +1590,7 @@ function initField() {
     if (m === Field.mode) return;
     Field.mode = m;
     store.set("creature", m);
+    setAccent(MODE_DOT[m]);
     herd = [];
     populate();
     fade = 0;
@@ -1707,21 +1705,6 @@ function initDock() {
     Field.force = v;
     Field.touch();
   });
-  const sw = document.createElement("div");
-  sw.className = "sw";
-  sw.setAttribute("role", "group");
-  sw.setAttribute("aria-label", "Accent colour, in weight plate colours");
-  const current = store.get("accent", ACCENTS[0][1]);
-  ACCENTS.forEach(([n, hex]) => {
-    const c = document.createElement("button");
-    c.type = "button";
-    c.style.setProperty("--c", hex);
-    c.setAttribute("aria-label", n);
-    c.title = n;
-    c.setAttribute("aria-pressed", hex === current);
-    c.addEventListener("click", () => applyAccent(hex));
-    sw.append(c);
-  });
   const acts = document.createElement("div");
   acts.className = "dock-a";
   const pause = btn("Pause", () => {
@@ -1737,7 +1720,6 @@ function initDock() {
     Field.reset();
     density.setValue(1);
     force.setValue(1);
-    applyAccent(ACCENTS[0][1]);
     pause.textContent = "Pause";
     toast("Background reset.");
   });
@@ -1753,17 +1735,12 @@ function initDock() {
   const head = document.createElement("div");
   head.style.cssText = "display:flex;justify-content:space-between;gap:8px";
   head.append(lab("Background"), fps);
-  p.append(head, modeSeg, density, force, lab("Accent, in weight plate colours"), sw, acts);
+  p.append(head, modeSeg, density, force, acts);
   Dock.density = density;
   Dock.force = force;
   Dock.open = setOpen;
 }
 const Dock = {};
-
-function applyAccent(hex) {
-  setAccent(hex);
-  $$(".sw button").forEach((b) => b.setAttribute("aria-pressed", getComputedStyle(b).getPropertyValue("--c").trim() === hex));
-}
 
 function initPalette() {
   const pal = $("#pal"), input = $("#pal-i"), list = $("#pal-l");
@@ -1783,7 +1760,6 @@ function initPalette() {
     ["Finance Tracker", "Project", go("#p-finance")],
     ["Huffman File Compressor", "Project", go("#p-huffman")],
     ...MODES.map((m, i) => [`Background: ${m}`, "Background", () => Field.setMode(i)]),
-    ...ACCENTS.map(([n, hex]) => [`Accent: ${n}`, "Colour", () => applyAccent(hex)]),
     ["Startle the creatures nearby", "Background", () => Field.pulse(innerWidth / 2, innerHeight / 2)],
     ["Scatter the creatures", "Background", () => Field.scatter()],
     ["Copy email address", "Contact", () => copyEmail()],
@@ -1875,7 +1851,7 @@ function copyEmail() {
 }
 
 /* Weight range of the headline typeface. Letters near the pointer get heavier, with a thin ring around them. */
-const HEAD_W = { base: 600, min: 180, max: 700 };
+const HEAD_W = { base: 500, min: 400, max: 700 };
 
 function initHeadline() {
   const h = $("#title");
@@ -2084,7 +2060,7 @@ function toyCapture(el) {
     /* eyes */
     for (const sx of [-1, 1]) {
       const ex = cx + sx * r * 0.4, ey = cy - r * 0.26, ew = r * 0.25, squint = smile * 0.45;
-      ctx.fillStyle = "#ededef";
+      ctx.fillStyle = "#e4e4ea";
       ctx.beginPath();
       ctx.moveTo(ex - ew, ey);
       ctx.lineTo(ex, ey - ew * (0.62 - squint * 0.4));
@@ -2099,7 +2075,7 @@ function toyCapture(el) {
     /* mouth */
     const my = cy + r * 0.48, mw = r * 0.54, curve = (smile - 0.28) * r * 0.62;
     const mouth = [[-1, -1], [-0.55, -0.02], [0, 0.62], [0.55, -0.02], [1, -1]].map(([x, y]) => [cx + x * mw, my + y * curve * 0.58 + (Math.abs(x) === 1 ? 0 : 0)]);
-    ctx.strokeStyle = on ? rgba(1) : "#ededef";
+    ctx.strokeStyle = on ? rgba(1) : "#e4e4ea";
     ctx.lineWidth = 2.5;
     ctx.beginPath();
     mouth.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
@@ -2329,7 +2305,7 @@ function toyReshard(el) {
       ctx.strokeRect(Bx.x + 0.5, Bx.y + 0.5, Bx.w - 1, Bx.h - 1);
       ctx.fillStyle = "#8b8b95";
       ctx.fillText(n ? "COMPUTER B" : "COMPUTER A", Bx.x + 9, Bx.y + 15);
-      ctx.fillStyle = frozen ? rgba(1) : "#4ade80";
+      ctx.fillStyle = frozen ? rgba(1) : "#8fd6a6";
       ctx.fillRect(Bx.x + Bx.w - 15, Bx.y + 8, 6, 6);
       /* stand */
       const cx = Bx.x + Bx.w / 2, by = Bx.y + Bx.h;
@@ -2371,7 +2347,7 @@ function toyReshard(el) {
       const k = Math.min(p.t, hold);
       if (frozen) waiting++;
       const x = lerp(sx, q.x + L.tile / 2, k), y = lerp(sy, q.y + L.tile / 2, k);
-      ctx.fillStyle = frozen ? "#ff6b57" : rgba(0.95);
+      ctx.fillStyle = frozen ? "#ee8a7c" : rgba(0.95);
       ctx.fillRect(x - 2, y - 2, 4, 4);
     }
     /* blocks on the wire */
@@ -2391,11 +2367,11 @@ function toyReshard(el) {
       const px = x + full / 2 + 2 - sz / 2, py = y + full / 2 + 2 - sz / 2;
       ctx.fillStyle = Acc.hex;
       ctx.fillRect(px, py, sz, sz);
-      ctx.strokeStyle = "#ededef";
+      ctx.strokeStyle = "#e4e4ea";
       ctx.strokeRect(px - 0.5, py - 0.5, sz + 1, sz + 1);
     }
     if (frozen) {
-      ctx.fillStyle = "#ff6b57";
+      ctx.fillStyle = "#ee8a7c";
       const t = "ALL UPDATES PAUSED";
       ctx.fillText(t, w / 2 - ctx.measureText(t).width / 2, h - 8);
     } else {
@@ -2692,7 +2668,7 @@ function toyHttp(el) {
       if (job) {
         ctx.fillStyle = rgba(0.3);
         ctx.fillRect(wx, y, ww * clamp(job.t / job.need, 0, 1), rh);
-        ctx.fillStyle = "#ededef";
+        ctx.fillStyle = "#e4e4ea";
         if (ww > 150) ctx.fillText(job.line, wx + 7, y + rh / 2 + 3.5);
       } else if (open) {
         ctx.fillStyle = "#5c5c66";
@@ -2705,7 +2681,7 @@ function toyHttp(el) {
     ctx.fillStyle = "#adadb6";
     for (let i = 0; i < shown; i++) ctx.fillRect(sx + (i % c2) * 7, H - 17 - Math.floor(i / c2) * 7, 5, 5);
     if (flash > 0) {
-      ctx.fillStyle = `rgba(255,107,87,${flash * 0.2})`;
+      ctx.fillStyle = `rgba(238,138,124,${flash * 0.2})`;
       ctx.fillRect(0, 0, W, H);
     }
     m.set("s", served);
@@ -2787,7 +2763,7 @@ function toyAnalyzer(el) {
         ctx.fillRect(p[0], p[1], 6, Math.max(2, cell - 2));
       }
     }
-    ctx.fillStyle = "#ededef";
+    ctx.fillStyle = "#e4e4ea";
     ctx.font = `500 ${Math.round(side * 0.27)}px "IBM Plex Sans", ui-sans-serif, sans-serif`;
     const t = String(Math.round(shown));
     ctx.fillText(t, w / 2 - ctx.measureText(t).width / 2, h / 2 + side * 0.09);
@@ -3063,7 +3039,7 @@ function toyHuffman(el) {
         ctx.fillRect(x - r, y - r, r * 2, r * 2);
         ctx.strokeStyle = on ? Acc.hex : "rgba(255,255,255,.3)";
         ctx.strokeRect(x - r + 0.5, y - r + 0.5, r * 2 - 1, r * 2 - 1);
-        ctx.fillStyle = on ? "#08080a" : "#ededef";
+        ctx.fillStyle = on ? "#08080a" : "#e4e4ea";
         const t = label(n.c);
         ctx.fillText(t, x - ctx.measureText(t).width / 2, y + 3.5);
       } else {
@@ -3240,7 +3216,7 @@ function toySkills(el) {
         ctx.fillRect(n.x - bw / 2, n.y - 11, bw, 22);
         ctx.strokeStyle = on ? Acc.hex : dim ? "rgba(255,255,255,.08)" : "rgba(255,255,255,.3)";
         ctx.strokeRect(n.x - bw / 2 + 0.5, n.y - 10.5, bw - 1, 21);
-        ctx.fillStyle = on ? "#08080a" : dim ? "#5c5c66" : "#ededef";
+        ctx.fillStyle = on ? "#08080a" : dim ? "#5c5c66" : "#e4e4ea";
         ctx.fillText(n.name, n.x - tw / 2, n.y + 4);
       } else {
         const r = 5;
@@ -3334,12 +3310,12 @@ function toyPlates(el) {
   const s = fit(cv);
   const ctx = s.ctx;
   const PLATES = {
-    25: { h: 148, t: 15, c: "#d8413c", ink: "#fff" },
-    20: { h: 148, t: 12, c: "#3f6fd8", ink: "#fff" },
-    15: { h: 122, t: 10, c: "#f2c230", ink: "#08080a" },
-    10: { h: 98, t: 8, c: "#2f9e58", ink: "#fff" },
-    5: { h: 72, t: 6, c: "#ededef", ink: "#08080a" },
-    2.5: { h: 54, t: 5, c: "#3a3a41", ink: "#ededef" },
+    25: { h: 148, t: 15, c: "#c9655f", ink: "#08080a" },
+    20: { h: 148, t: 12, c: "#6c8fd6", ink: "#08080a" },
+    15: { h: 122, t: 10, c: "#d9c06c", ink: "#08080a" },
+    10: { h: 98, t: 8, c: "#6fae84", ink: "#08080a" },
+    5: { h: 72, t: 6, c: "#dcdce2", ink: "#08080a" },
+    2.5: { h: 54, t: 5, c: "#3a3a41", ink: "#e4e4ea" },
   };
   const MAX = 8;
   let side = [20], bend = 0, vel = 0;
@@ -3368,7 +3344,7 @@ function toyPlates(el) {
   const m = meters([["t", "Total kg"], ["l", "Total lb"], ["p", "Per side kg"], ["n", "Plates"]]);
   const note = document.createElement("div");
   note.className = "note";
-  note.textContent = "Bar 20 kg, collars 2.5 kg each, plates in competition colours. For fun, not a record of my lifts.";
+  note.textContent = "Bar 20 kg, collars 2.5 kg each, plates in softened competition colours. For fun, not a record of my lifts.";
   b.append(m, note);
   let hits = [];
   function draw() {
@@ -3428,7 +3404,7 @@ function toyPlates(el) {
       });
       collar(off + 3);
     }
-    ctx.fillStyle = "#ededef";
+    ctx.fillStyle = "#e4e4ea";
     ctx.font = `600 ${Math.round(24 * scale + 6)}px "IBM Plex Sans", ui-sans-serif, sans-serif`;
     const lab = `${total()} kg`;
     ctx.fillText(lab, w / 2 - ctx.measureText(lab).width / 2, Math.max(30, cy - 60));
@@ -3475,8 +3451,7 @@ function toyRedact(el) {
 
 function boot() {
   document.documentElement.classList.add("js");
-  const saved = store.get("accent", ACCENTS[0][1]);
-  setAccent(ACCENTS.some((a) => a[1] === saved) ? saved : ACCENTS[0][1], false);
+  setAccent(MODE_DOT[Field.mode]);
   initField();
   initChips();
   initDock();

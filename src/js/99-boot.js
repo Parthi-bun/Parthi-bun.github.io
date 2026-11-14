@@ -1,7 +1,6 @@
 function boot() {
   document.documentElement.classList.add("js");
-  const saved = store.get("accent", ACCENTS[0][1]);
-  setAccent(ACCENTS.some((a) => a[1] === saved) ? saved : ACCENTS[0][1], false);
+  setAccent(MODE_DOT[Field.mode]);
   initField();
   initChips();
   initDock();

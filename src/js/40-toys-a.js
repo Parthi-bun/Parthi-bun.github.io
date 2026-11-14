@@ -91,7 +91,7 @@ function toyCapture(el) {
     /* eyes */
     for (const sx of [-1, 1]) {
       const ex = cx + sx * r * 0.4, ey = cy - r * 0.26, ew = r * 0.25, squint = smile * 0.45;
-      ctx.fillStyle = "#ededef";
+      ctx.fillStyle = "#e4e4ea";
       ctx.beginPath();
       ctx.moveTo(ex - ew, ey);
       ctx.lineTo(ex, ey - ew * (0.62 - squint * 0.4));
@@ -106,7 +106,7 @@ function toyCapture(el) {
     /* mouth */
     const my = cy + r * 0.48, mw = r * 0.54, curve = (smile - 0.28) * r * 0.62;
     const mouth = [[-1, -1], [-0.55, -0.02], [0, 0.62], [0.55, -0.02], [1, -1]].map(([x, y]) => [cx + x * mw, my + y * curve * 0.58 + (Math.abs(x) === 1 ? 0 : 0)]);
-    ctx.strokeStyle = on ? rgba(1) : "#ededef";
+    ctx.strokeStyle = on ? rgba(1) : "#e4e4ea";
     ctx.lineWidth = 2.5;
     ctx.beginPath();
     mouth.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
@@ -336,7 +336,7 @@ function toyReshard(el) {
       ctx.strokeRect(Bx.x + 0.5, Bx.y + 0.5, Bx.w - 1, Bx.h - 1);
       ctx.fillStyle = "#8b8b95";
       ctx.fillText(n ? "COMPUTER B" : "COMPUTER A", Bx.x + 9, Bx.y + 15);
-      ctx.fillStyle = frozen ? rgba(1) : "#4ade80";
+      ctx.fillStyle = frozen ? rgba(1) : "#8fd6a6";
       ctx.fillRect(Bx.x + Bx.w - 15, Bx.y + 8, 6, 6);
       /* stand */
       const cx = Bx.x + Bx.w / 2, by = Bx.y + Bx.h;
@@ -378,7 +378,7 @@ function toyReshard(el) {
       const k = Math.min(p.t, hold);
       if (frozen) waiting++;
       const x = lerp(sx, q.x + L.tile / 2, k), y = lerp(sy, q.y + L.tile / 2, k);
-      ctx.fillStyle = frozen ? "#ff6b57" : rgba(0.95);
+      ctx.fillStyle = frozen ? "#ee8a7c" : rgba(0.95);
       ctx.fillRect(x - 2, y - 2, 4, 4);
     }
     /* blocks on the wire */
@@ -398,11 +398,11 @@ function toyReshard(el) {
       const px = x + full / 2 + 2 - sz / 2, py = y + full / 2 + 2 - sz / 2;
       ctx.fillStyle = Acc.hex;
       ctx.fillRect(px, py, sz, sz);
-      ctx.strokeStyle = "#ededef";
+      ctx.strokeStyle = "#e4e4ea";
       ctx.strokeRect(px - 0.5, py - 0.5, sz + 1, sz + 1);
     }
     if (frozen) {
-      ctx.fillStyle = "#ff6b57";
+      ctx.fillStyle = "#ee8a7c";
       const t = "ALL UPDATES PAUSED";
       ctx.fillText(t, w / 2 - ctx.measureText(t).width / 2, h - 8);
     } else {
